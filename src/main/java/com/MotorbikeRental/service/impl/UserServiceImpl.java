@@ -1,6 +1,8 @@
 package com.MotorbikeRental.service.impl;
 
 
+import com.MotorbikeRental.config.VNPayConfig;
+import com.MotorbikeRental.dto.PaymentDto;
 import com.MotorbikeRental.entity.Role;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.exception.UserNotFoundException;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -25,6 +28,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    @Autowired
+    private final VNPayConfig vnpayConfig;
 
     @Override
     public UserDetailsService userDetailsService() {
@@ -47,6 +52,7 @@ public class UserServiceImpl implements UserService {
         user.setActive(!user.isActive());
         userRepository.save(user);
     }
+
 
     @Override
     public User getUserById(Long id) {
@@ -97,7 +103,25 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
-
-
-
+    public void updateUserBalance(Long userId, double amount) {
+        // Kiểm tra xem userId có tồn tại hay không
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            // Kiểm tra xem balance có phải là null không trước khi gán
+            Double currentBalance = user.getBalance();
+            if (currentBalance != null) {
+                // Thực hiện cập nhật balance
+                double newBalance = currentBalance + amount;
+                user.setBalance(newBalance);
+                userRepository.save(user);
+            } else {
+                // Nếu balance là null, bạn có thể gán một giá trị mặc định hoặc xử lý theo cách khác
+                // Ví dụ: user.setBalance(amount);
+            }
+        } else {
+            // Xử lý khi không tìm thấy userId
+            System.out.println("User with ID " + userId + " not found.");
+        }
+    }
 }
