@@ -20,10 +20,12 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
+
     @RequestMapping (value="/signup",method =RequestMethod.POST)
     public ResponseEntity<User> signUp(@RequestBody SignupRequest signupRequest){
         User user = authenticationService.signUp(signupRequest);
         return ResponseEntity.ok(user);
+
     }
 
     @CrossOrigin
