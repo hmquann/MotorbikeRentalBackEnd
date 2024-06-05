@@ -57,6 +57,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setLastName(signupRequest.getLastname());
         user.setPhone(signupRequest.getPhone());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        user.setGender(signupRequest.isGender());
         user.setActive(true);
 
         Role defaultRole = roleRepository.findByName("USER");
@@ -66,7 +67,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         user.getRoles().add(defaultRole);
-
         return userRepository.save(user);
 
     }

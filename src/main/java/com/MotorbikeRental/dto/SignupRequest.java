@@ -16,4 +16,6 @@ public class SignupRequest {
 
         private String password;
 
+        private boolean gender;
+
 }
