@@ -29,6 +29,7 @@ public class User implements UserDetails {
     private String phone;
 
     private String password;
+    private boolean gender;
 
     private boolean isActive;
     @Column(name = "balance")
@@ -42,6 +43,9 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "license_number", referencedColumnName = "id")
+    private License license;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
