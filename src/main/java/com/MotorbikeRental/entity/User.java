@@ -31,6 +31,8 @@ public class User implements UserDetails {
     private String password;
 
     private boolean isActive;
+    @Column(name = "balance")
+    private double balance;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(

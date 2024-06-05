@@ -23,7 +23,7 @@ public class AuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity<User> signup(@RequestBody SignupRequest signupRequest){
             User user = authenticationService.signUp(signupRequest);
-            return ResponseEntity.ok(authenticationService.signUp(signupRequest));
+            return ResponseEntity.ok(user);
     }
 
     @CrossOrigin
