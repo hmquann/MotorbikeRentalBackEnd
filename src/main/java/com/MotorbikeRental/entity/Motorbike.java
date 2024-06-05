@@ -55,7 +55,8 @@ public class Motorbike {
 
     @Column(name="year_of_manufacture")
     private int yearOfManuFacture;
-
+    @Column(name = "motorbike_plate",unique = true,length = 11)
+    private String motorbikePlate;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
