@@ -1,6 +1,8 @@
 package com.MotorbikeRental.service.impl;
 
+import com.MotorbikeRental.dto.RegisterMotorbikeDto;
 import com.MotorbikeRental.entity.Motorbike;
+import com.MotorbikeRental.exception.ExistPlateException;
 import com.MotorbikeRental.service.MotorbikeService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 
 public class MotorbikeServiceImpl  implements MotorbikeService {
+    private final MotorbikeService motorbikeService;
+
     @Override
     public List<Motorbike> getAllMotorbike() {
         return null;
@@ -38,7 +42,17 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
 
     @Override
-    public void registerMotorbike(Motorbike motorbike) {
+    public void registerMotorbike(RegisterMotorbikeDto registerMotorbikeDto) {
+        if(motorbikeService.checkExistPlate(registerMotorbikeDto.getMotorbikePlate())){
+            throw  new ExistPlateException("The plate is exist in the system");
+        }
+        Motorbike motorbike=new Motorbike();
+        motorbike.setMotorbikePlate(registerMotorbikeDto.getMotorbikePlate());
+        motorbike.setConstraintMotorbike(registerMotorbikeDto.getConstraintMotorbike());
+        motorbike.setDelivery(registerMotorbikeDto.isDelivery());
+        motorbike.setDeliveryFee(registerMotorbikeDto.getDeliveyFeePerKilometer());
+        motorbike.setDistanceLimitPerDay(registerMotorbikeDto.getDistanceLimitPerDay());
+//        motorbike.setModel(registerMotorbikeDto.getModelName());
 
     }
 
@@ -48,32 +62,32 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public boolean checkExistPlate(List<Motorbike> motorbikeList, String motorbikePlate) {
+    public boolean checkExistPlate( String motorbikePlate) {
         return false;
     }
 
     @Override
-    public void getMotorbikeByAddress(List<Motorbike> motorbikeList, String address) {
+    public void getMotorbikeByAddress( String address) {
 
     }
 
     @Override
-    public void sortMotorbikeBycriteria(List<Motorbike> motorbikeList, String criteria) {
+    public void sortMotorbikeBycriteria( String criteria) {
 
     }
 
     @Override
-    public List<Motorbike> getMotorbikeByBrand(List<Motorbike> motorbikeList, String brandName) {
+    public List<Motorbike> getMotorbikeByBrand( String brandName) {
         return null;
     }
 
     @Override
-    public List<Motorbike> getMotorbikeByModel(List<Motorbike> motorbikeList, String modelName) {
+    public List<Motorbike> getMotorbikeByModel( String modelName) {
         return null;
     }
 
     @Override
-    public List<Motorbike> getMotorbikeByRequireTime(Date startDate, Date endDate, List<Motorbike> motorbikeList) {
+    public List<Motorbike> getMotorbikeByRequireTime(Date startDate, Date endDate) {
         return null;
     }
 
