@@ -36,4 +36,6 @@ public class Model {
     @ManyToOne
     @JoinColumn(name="brand_id")
     private Brand brand;
+    @OneToMany(mappedBy = "model",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Motorbike>motorbikeSet=new HashSet<>();
 }

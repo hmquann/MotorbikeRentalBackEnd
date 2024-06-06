@@ -43,10 +43,12 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "license_number", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
     private License license;
-
+    @OneToMany(mappedBy = "user")
+    private Set<Location> locationSet;
+    @OneToMany(mappedBy = "user")
+    private Set<Motorbike>motorbikeSet=new HashSet<Motorbike>();
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()

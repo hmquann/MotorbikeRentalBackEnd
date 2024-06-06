@@ -38,16 +38,16 @@ public class UserServiceImpl implements UserService {
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                 User user = userRepository.findByEmailOrPhone(username)
                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-                        if(!user.isActive()){
-                            throw new LockedException("User is locked");
-                        }
-                        return user;
+                if (!user.isActive()) {
+                    throw new LockedException("User is locked");
+                }
+                return user;
             }
 
         };
     }
 
-    public void toggleUserStatus(Long id){
+    public void toggleUserStatus(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setActive(!user.isActive());
         userRepository.save(user);
@@ -92,36 +92,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id){
-        if(!userRepository.existsById(id)){
-            throw new EntityNotFoundException("User with ID "+ id + " not found");
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new EntityNotFoundException("User with ID " + id + " not found");
         }
         userRepository.deleteById(id);
     }
 
-    public List<User> getAllUser(){
+    public List<User> getAllUser() {
         return userRepository.findAll();
     }
 
     public void updateUserBalance(Long userId, double amount) {
-        // Kiểm tra xem userId có tồn tại hay không
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            // Kiểm tra xem balance có phải là null không trước khi gán
-            Double currentBalance = user.getBalance();
-            if (currentBalance != null) {
-                // Thực hiện cập nhật balance
-                double newBalance = currentBalance + amount;
-                user.setBalance(newBalance);
-                userRepository.save(user);
-            } else {
-                // Nếu balance là null, bạn có thể gán một giá trị mặc định hoặc xử lý theo cách khác
-                // Ví dụ: user.setBalance(amount);
-            }
-        } else {
-            // Xử lý khi không tìm thấy userId
-            System.out.println("User with ID " + userId + " not found.");
-        }
+//        // Kiểm tra xem userId có tồn tại hay không
+//        Optional<User> optionalUser = userRepository.findById(userId);
+//        if (optionalUser.isPresent()) {
+//            User user = optionalUser.get();
+//            // Kiểm tra xem balance có phải là null không trước khi gán
+//            Double currentBalance = user.getBalance();
+//            if (currentBalance != null) {
+//                // Thực hiện cập nhật balance
+//                double newBalance = currentBalance + amount;
+//                user.setBalance(newBalance);
+//                userRepository.save(user);
+//            } else {
+//                // Nếu balance là null, bạn có thể gán một giá trị mặc định hoặc xử lý theo cách khác
+//                // Ví dụ: user.setBalance(amount);
+//            }
+//        } else {
+//            // Xử lý khi không tìm thấy userId
+//            System.out.println("User with ID " + userId + " not found.");
+//        }
     }
 }
