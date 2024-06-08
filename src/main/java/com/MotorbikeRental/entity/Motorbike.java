@@ -60,4 +60,8 @@ public class Motorbike {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
 }

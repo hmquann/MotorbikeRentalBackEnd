@@ -30,6 +30,7 @@ public class Location {
     private String ward;
 
     private String addressDetail;
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+
+    @OneToOne(mappedBy = "location", cascade = CascadeType.ALL)
     private Motorbike motorbike;
 }
