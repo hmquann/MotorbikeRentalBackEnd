@@ -21,7 +21,6 @@ public class License {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="license_id")
     private Long id;
-
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

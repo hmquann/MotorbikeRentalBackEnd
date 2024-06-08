@@ -32,6 +32,8 @@ public class User implements UserDetails {
     private boolean gender;
 
     private boolean isActive;
+    @Column(name = "balance")
+    private double balance;
 
     private String token;
 
@@ -72,6 +74,7 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Location> locations;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

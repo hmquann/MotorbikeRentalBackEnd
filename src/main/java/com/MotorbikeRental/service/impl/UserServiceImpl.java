@@ -38,14 +38,15 @@ public class UserServiceImpl implements UserService {
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                 User user = userRepository.findByEmailOrPhone(username)
                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-                        if(!user.isActive()){
-                            throw new LockedException("User is locked");
-                        }
-                        return user;
+                if (!user.isActive()) {
+                    throw new LockedException("User is locked");
+                }
+                return user;
             }
 
         };
     }
+
 
     public void toggleUserActiveStatus(Long id){
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -104,19 +105,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id){
-        if(!userRepository.existsById(id)){
-            throw new EntityNotFoundException("User with ID "+ id + " not found");
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new EntityNotFoundException("User with ID " + id + " not found");
         }
         userRepository.deleteById(id);
     }
 
-    public List<User> getAllUser(){
+    public List<User> getAllUser() {
         return userRepository.findAll();
     }
 
     public void updateUserBalance(Long userId, double amount) {
         // Kiểm tra xem userId có tồn tại hay không
+//        // Kiểm tra xem userId có tồn tại hay không
+
 //        Optional<User> optionalUser = userRepository.findById(userId);
 //        if (optionalUser.isPresent()) {
 //            User user = optionalUser.get();

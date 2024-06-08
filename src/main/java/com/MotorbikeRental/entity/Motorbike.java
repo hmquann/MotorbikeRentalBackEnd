@@ -2,6 +2,7 @@ package com.MotorbikeRental.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -9,7 +10,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
@@ -57,11 +60,12 @@ public class Motorbike {
     private int yearOfManuFacture;
     @Column(name = "motorbike_plate",unique = true,length = 11)
     private String motorbikePlate;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToOne
     @JoinColumn(name = "location_id")
     private Location location;
+
 }

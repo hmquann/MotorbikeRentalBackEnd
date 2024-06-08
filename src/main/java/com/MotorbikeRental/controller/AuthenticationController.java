@@ -24,6 +24,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final EmailService emailService;
 
+
     @RequestMapping (value="/signup",method =RequestMethod.POST)
     public ResponseEntity<User> signUp(@RequestBody SignupRequest signupRequest, HttpServletRequest httpServletRequest){
         User user = authenticationService.signUp(signupRequest);
@@ -31,6 +32,7 @@ public class AuthenticationController {
         String newUrl = url.replace("localhost:8080", "localhost:3000");
         emailService.sendVerificationEmail(user, newUrl.replace(httpServletRequest.getServletPath(),""));
         return ResponseEntity.ok(user);
+
     }
 
     @CrossOrigin
