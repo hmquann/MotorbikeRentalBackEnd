@@ -58,7 +58,7 @@ public class UserController {
     @PatchMapping("/{id}/toggle")
     public ResponseEntity<?> toggleUser(@PathVariable Long id){
         try {
-            userService.toggleUserStatus(id);
+            userService.toggleUserActiveStatus(id);
             // Return success message based on user's new status
             String message = userService.getUserById(id).isActive() ? "User activated successfully" : "User deactivated successfully";
             return new ResponseEntity<>(message, HttpStatus.OK);
@@ -66,4 +66,5 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
 }

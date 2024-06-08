@@ -47,7 +47,8 @@ public class UserServiceImpl implements UserService {
         };
     }
 
-    public void toggleUserStatus(Long id) {
+
+    public void toggleUserActiveStatus(Long id){
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setActive(!user.isActive());
         userRepository.save(user);
@@ -58,6 +59,18 @@ public class UserServiceImpl implements UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.getUserByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+    }
+
+    @Override
+    public User getUserByToken(String token) {
+        return userRepository.findByToken(token)
+                .orElseThrow(() -> new UserNotFoundException("User with token " + token + " not found"));
     }
 
     @Override
@@ -104,7 +117,9 @@ public class UserServiceImpl implements UserService {
     }
 
     public void updateUserBalance(Long userId, double amount) {
+        // Kiểm tra xem userId có tồn tại hay không
 //        // Kiểm tra xem userId có tồn tại hay không
+
 //        Optional<User> optionalUser = userRepository.findById(userId);
 //        if (optionalUser.isPresent()) {
 //            User user = optionalUser.get();

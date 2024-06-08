@@ -63,10 +63,9 @@ public class Motorbike {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @ManyToOne
-    @JoinColumn(name="motorbike")
-    private Model model;
-    @ManyToMany(mappedBy = "motorbikeSet")
-    @JsonIgnore
-    private List<Feature> features = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
+
 }
