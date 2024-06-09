@@ -15,6 +15,7 @@ import com.MotorbikeRental.service.AuthenticationService;
 import com.MotorbikeRental.service.JWTService;
 import lombok.RequiredArgsConstructor;
 import com.MotorbikeRental.entity.User;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.Hibernate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,6 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new DuplicateUserException("Phone existed");
         }
 
+
         User user = new User();
 
         user.setEmail(signupRequest.getEmail());
@@ -57,7 +59,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setLastName(signupRequest.getLastname());
         user.setPhone(signupRequest.getPhone());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        user.setActive(true);
+        user.setGender(signupRequest.isGender());
+        user.setActive(false);
 
         Role defaultRole = roleRepository.findByName("USER");
         if (defaultRole == null) {
@@ -67,9 +70,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         user.getRoles().add(defaultRole);
 
+        String randomCode = RandomStringUtils.randomAlphanumeric(64);
+        user.setToken(randomCode);
+        user.setActive(false);
         return userRepository.save(user);
 
     }
+
+
     @Override
     public JwtAuthenticationResponse signin(SigninRequest signinRequest) {
         User user = userRepository.findByEmailOrPhone(signinRequest.getEmailOrPhone()).orElseThrow(

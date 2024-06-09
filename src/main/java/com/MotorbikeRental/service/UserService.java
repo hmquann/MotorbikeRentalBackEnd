@@ -11,10 +11,15 @@ import java.util.List;
 public interface UserService {
     UserDetailsService userDetailsService();
     User getUserById(Long id);
+
+    User getUserByEmail(String email);
+
+    User getUserByToken(String token);
+
     User updateUser(Long id, User user);
     void deleteUser(Long id);
     List<User> getAllUser();
-    void toggleUserStatus(Long id);
+    void toggleUserActiveStatus(Long id);
     void updateUserBalance(Long id, double balance);
 
 }
