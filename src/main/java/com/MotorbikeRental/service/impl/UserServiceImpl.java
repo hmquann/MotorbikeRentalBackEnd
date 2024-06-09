@@ -104,14 +104,14 @@ public class UserServiceImpl implements UserService {
     }
 
     public void updateUserBalance(Long userId, double amount) {
-        // Kiểm tra xem userId có tồn tại hay không
+
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            // Kiểm tra xem balance có phải là null không trước khi gán
+
             Double currentBalance = user.getBalance();
             if (currentBalance != null) {
-                // Thực hiện cập nhật balance
+
                 double newBalance = currentBalance + amount;
                 user.setBalance(newBalance);
                 userRepository.save(user);

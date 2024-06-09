@@ -16,5 +16,14 @@ public class JwtAuthenticationResponse {
 
     private List<String> roles;
 
+    private Long id;
+
+    private double balance;
+
+    private String firstName;
+
+    private String lastName;
+
+
 
 }

@@ -30,8 +30,6 @@ public class JWTServiceImpl implements JWTService {
         for (GrantedAuthority authority : authorities) {
             roles.add(authority.getAuthority());
         }
-
-        System.out.println("ROles: " + roles);
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", roles);
 
