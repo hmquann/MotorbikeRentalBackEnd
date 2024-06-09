@@ -90,7 +90,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new InvalidCredentialsException("Password not correct");
         }
 
-
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     signinRequest.getEmailOrPhone(), signinRequest.getPassword()
@@ -104,8 +103,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Hibernate.initialize(user.getRoles());
 
 
-
-
         String jwt = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
@@ -113,11 +110,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         List<String> roleNames = roles.stream().map(Role::getName).collect(Collectors.toList());
 
 
-
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
         jwtAuthenticationResponse.setToken(jwt);
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
         jwtAuthenticationResponse.setRoles(roleNames);
+        jwtAuthenticationResponse.setId(user.getId());
+        jwtAuthenticationResponse.setBalance(user.getBalance());
+        jwtAuthenticationResponse.setFirstName(user.getFirstName());
+        jwtAuthenticationResponse.setLastName(user.getLastName());
 
         return jwtAuthenticationResponse;
     }

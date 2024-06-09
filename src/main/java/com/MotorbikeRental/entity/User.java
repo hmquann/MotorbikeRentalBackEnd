@@ -61,6 +61,11 @@ public class User implements UserDetails {
         this.license = license;
     }
 
+    private double balance;
+
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    private Set<Transaction> transactions = new HashSet<>();
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles",
