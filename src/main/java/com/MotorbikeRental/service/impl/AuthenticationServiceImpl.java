@@ -118,6 +118,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         jwtAuthenticationResponse.setToken(jwt);
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
         jwtAuthenticationResponse.setRoles(roleNames);
+        jwtAuthenticationResponse.setUser(user);
 
         return jwtAuthenticationResponse;
     }
