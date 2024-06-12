@@ -1,20 +1,37 @@
 package com.MotorbikeRental.entity;
 
-import lombok.*;
+import jakarta.persistence.*;
+import lombok.Data;
 
-@AllArgsConstructor
-@ToString
-@NoArgsConstructor
-@Getter
-@Setter
+import java.time.LocalDateTime;
+
+@Data
+@Entity
+@Table(name = "chat_messages")
 public class ChatMessage {
-    private MessageType type;
-    private String content;
-    private String sender;
 
-    public enum MessageType {
-        CHAT, JOIN, LEAVE
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String userName;
+
+    private String message;
+
+    private LocalDateTime timestamp;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public ChatMessage() {
+        this.timestamp = LocalDateTime.now();
     }
 
-    // Getters and setters
+    public ChatMessage(String userName, String message, User user) {
+        this.userName = userName;
+        this.message = message;
+        this.user = user;
+        this.timestamp = LocalDateTime.now();
+    }
 }
