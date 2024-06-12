@@ -1,11 +1,15 @@
 package com.MotorbikeRental.dto;
+import com.MotorbikeRental.entity.Brand;
+import com.MotorbikeRental.entity.Model;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class RegisterMotorbikeDto {
-    private String brandName;
+    private Brand brand;
 
-    private String modelName;
+    private Model model;
 
     private String motorbikePlate;
 
@@ -31,6 +35,6 @@ public class RegisterMotorbikeDto {
 
     private String constraintMotorbike;
 
-
+    private List<Feature> featureList;
 
 }

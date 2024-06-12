@@ -2,6 +2,7 @@ package com.MotorbikeRental.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -50,23 +51,25 @@ public class Motorbike {
     @Column(name="delivery_fee")
     private Long deliveryFee;
 
-    @Column(name="status")
-    private Enum<MotorbikeStatus> status;
+    @Enumerated(EnumType.STRING)
+    private MotorbikeStatus status;
 
     @Column(name="constraint_motorbike")
     private String constraintMotorbike;
 
     @Column(name="year_of_manufacture")
-    private int yearOfManuFacture;
+    private Long yearOfManuFacture;
     @Column(name = "motorbike_plate",unique = true,length = 11)
     private String motorbikePlate;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @JsonBackReference
+    public User user(){
+        return user;
+    }
     @ManyToOne
-    @JoinColumn(name="motorbike")
+    @JoinColumn(name="model_id")
     private Model model;
-    @ManyToMany(mappedBy = "motorbikeSet")
-    @JsonIgnore
-    private List<Feature> features = new ArrayList<>();
 }

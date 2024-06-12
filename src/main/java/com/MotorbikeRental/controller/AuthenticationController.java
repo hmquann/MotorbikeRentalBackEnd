@@ -22,7 +22,7 @@ public class AuthenticationController {
 
 
     @RequestMapping (value="/signup",method =RequestMethod.POST)
-    public ResponseEntity<User> signUp(@RequestBody SignupRequest signupRequest){
+    public ResponseEntity<User> signUp( @RequestBody SignupRequest signupRequest){
         User user = authenticationService.signUp(signupRequest);
         return ResponseEntity.ok(user);
 
@@ -30,9 +30,12 @@ public class AuthenticationController {
 
     @CrossOrigin
     @PostMapping("/signin")
-    public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest){
+    public ResponseEntity<?> signin(@RequestHeader("Authorization") String accessToken, @Valid @RequestBody SigninRequest signinRequest){
 //        try {
+        System.out.println(accessToken);
+
             return ResponseEntity.ok(authenticationService.signin(signinRequest));
+
 //        } catch (InvalidCredentialsException e) {
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong password or email");
 //        }

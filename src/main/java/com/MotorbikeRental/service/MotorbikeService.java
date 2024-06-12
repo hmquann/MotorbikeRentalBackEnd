@@ -13,7 +13,7 @@ public interface MotorbikeService {
 
     public List<Motorbike>getAllMotorbikeByStatus(List<Motorbike>motorbikeList,String status);
 
-    public void registerMotorbike(RegisterMotorbikeDto registerMotorbikeDto);
+    public Motorbike registerMotorbike(Motorbike motorbike);
 
     public void approveMotorbike(int motorbikeId);
 

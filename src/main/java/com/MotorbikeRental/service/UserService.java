@@ -17,4 +17,5 @@ public interface UserService {
     void toggleUserStatus(Long id);
     void updateUserBalance(Long id, double balance);
 
+
 }
