@@ -24,8 +24,6 @@ public class MotorbikeController {
 
     @Autowired
     private ModelService modelService;
-    @Autowired
-    private FeatureService featureService;
 
     @Autowired
     private JWTService jwtService;
