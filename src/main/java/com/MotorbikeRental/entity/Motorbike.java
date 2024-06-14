@@ -64,7 +64,6 @@ public class Motorbike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
     @JsonBackReference
     public User user(){
         return user;
@@ -72,4 +71,5 @@ public class Motorbike {
     @ManyToOne
     @JoinColumn(name="model_id")
     private Model model;
+
 }

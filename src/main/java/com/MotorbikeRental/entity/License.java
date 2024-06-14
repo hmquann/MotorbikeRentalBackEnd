@@ -22,7 +22,7 @@ public class License {
     @Column(name="license_id")
     private Long id;
     @OneToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
 }

@@ -7,6 +7,9 @@ import com.MotorbikeRental.dto.SigninRequest;
 import com.MotorbikeRental.dto.SignupRequest;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.service.AuthenticationService;
+import com.MotorbikeRental.service.EmailService;
+import com.MotorbikeRental.service.impl.EmailServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +22,15 @@ public class AuthenticationController {
 
 
     private final AuthenticationService authenticationService;
+    private final EmailService emailService;
 
 
     @RequestMapping (value="/signup",method =RequestMethod.POST)
-    public ResponseEntity<User> signUp( @RequestBody SignupRequest signupRequest){
+    public ResponseEntity<User> signUp(@RequestBody SignupRequest signupRequest, HttpServletRequest httpServletRequest){
         User user = authenticationService.signUp(signupRequest);
+        String url = httpServletRequest.getRequestURL().toString()+"/verify/"+user.getToken();
+        String newUrl = url.replace("localhost:8080", "localhost:3000");
+        emailService.sendVerificationEmail(user, newUrl.replace(httpServletRequest.getServletPath(),""));
         return ResponseEntity.ok(user);
 
     }

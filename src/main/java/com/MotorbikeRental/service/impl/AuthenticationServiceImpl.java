@@ -15,6 +15,7 @@ import com.MotorbikeRental.service.AuthenticationService;
 import com.MotorbikeRental.service.JWTService;
 import lombok.RequiredArgsConstructor;
 import com.MotorbikeRental.entity.User;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.Hibernate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,6 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new DuplicateUserException("Phone existed");
         }
 
+
         User user = new User();
 
         user.setEmail(signupRequest.getEmail());
@@ -58,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPhone(signupRequest.getPhone());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setGender(signupRequest.isGender());
-        user.setActive(true);
+        user.setActive(false);
 
         Role defaultRole = roleRepository.findByName("USER");
         if (defaultRole == null) {
@@ -67,9 +69,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         user.getRoles().add(defaultRole);
+
+        String randomCode = RandomStringUtils.randomAlphanumeric(64);
+        user.setToken(randomCode);
+        user.setActive(false);
         return userRepository.save(user);
 
     }
+
+
     @Override
     public JwtAuthenticationResponse signin(SigninRequest signinRequest) {
         User user = userRepository.findByEmailOrPhone(signinRequest.getEmailOrPhone()).orElseThrow(
@@ -81,7 +89,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!passwordEncoder.matches(signinRequest.getPassword(), user.getPassword())) {
             throw new InvalidCredentialsException("Password not correct");
         }
-
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -96,8 +103,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Hibernate.initialize(user.getRoles());
 
 
-
-
         String jwt = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
@@ -105,11 +110,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         List<String> roleNames = roles.stream().map(Role::getName).collect(Collectors.toList());
 
 
-
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
         jwtAuthenticationResponse.setToken(jwt);
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
         jwtAuthenticationResponse.setRoles(roleNames);
+        jwtAuthenticationResponse.setId(user.getId());
+        jwtAuthenticationResponse.setBalance(user.getBalance());
+        jwtAuthenticationResponse.setFirstName(user.getFirstName());
+        jwtAuthenticationResponse.setLastName(user.getLastName());
 
         return jwtAuthenticationResponse;
     }
