@@ -2,6 +2,8 @@ package com.MotorbikeRental.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -23,6 +25,11 @@ public class Location {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @JsonBackReference
+    public User getUser(){
+        return user;
+    }
+
     private String province;
 
     private String district;
@@ -32,7 +39,7 @@ public class Location {
     private String addressDetail;
 
 
-    @OneToOne(mappedBy = "location", cascade = CascadeType.ALL)
-    private Motorbike motorbike;
+
+
 
 }

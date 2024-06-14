@@ -31,4 +31,8 @@ public interface MotorbikeService {
 
     public List<Motorbike> getDeliveryMotorbike(boolean delivery);
 
+    List<Motorbike> getPendingMotorbikes();
+    Motorbike approveMotorbike(Long id);
+    Motorbike rejectMotorbike(Long id);
+
 }

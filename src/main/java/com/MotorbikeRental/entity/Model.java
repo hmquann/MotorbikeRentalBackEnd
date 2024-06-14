@@ -1,6 +1,10 @@
 package com.MotorbikeRental.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -13,8 +17,8 @@ import java.util.stream.Collectors;
 
 @Data
 @Entity
-@Table(name = "[Model]")
-
+@Table(name = "[ModelService]")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Model {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,17 +28,20 @@ public class Model {
     private String modelName;
 
     @Column(name="cylinder_capacity")
-    private String cylinderCapacity;
+    private int cylinderCapacity;
 
     @Column(name="fuel_type")
-    private Enum<FuelType> fuelType;
+    @Enumerated(EnumType.STRING)
+    private FuelType fuelType;
 
     @Column(name="fuel_consumption")
     private float fuelConsumption;
     @Column(name="model_type")
-    private Enum<ModelType> modelType;
+    @Enumerated(EnumType.STRING)
+    private ModelType modelType;
     @ManyToOne
     @JoinColumn(name="brand_id")
+    @JsonManagedReference
     private Brand brand;
     @OneToMany(mappedBy = "model",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Motorbike>motorbikeSet=new HashSet<>();
