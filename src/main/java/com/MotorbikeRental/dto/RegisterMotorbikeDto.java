@@ -13,7 +13,7 @@ public class RegisterMotorbikeDto {
 
     private String motorbikePlate;
 
-    private Long manufactureYear;
+    private Long yearOfManufacture;
 
     //private String motorbikeImage;
 
@@ -23,10 +23,6 @@ public class RegisterMotorbikeDto {
 
     private Long overtimeLimit;
 
-    private Long distanceLimitPerDay;
-
-    private Long outLimitFee;
-
     private boolean delivery;
 
     private Long freeshipDistance;
@@ -35,6 +31,10 @@ public class RegisterMotorbikeDto {
 
     private String constraintMotorbike;
 
-    private List<Feature> featureList;
+    private String province;
+    private String district;
+    private String ward;
+    private String addressDetail;
+
 
 }
