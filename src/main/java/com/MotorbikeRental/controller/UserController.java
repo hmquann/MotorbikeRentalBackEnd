@@ -19,7 +19,7 @@ public class UserController {
     private UserService userService;
 
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<String> sayHello(){
         return ResponseEntity.ok("Hi user");
     }

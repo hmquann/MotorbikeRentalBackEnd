@@ -83,6 +83,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Location> locationSet;
 
+
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Motorbike> motorbikes;
 
@@ -95,6 +96,7 @@ public class User implements UserDetails {
     public List<Location> getLocations(){
         return locationSet;
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,3 +1,4 @@
+
 package com.MotorbikeRental.service.impl;
 
 import com.MotorbikeRental.dto.RegisterMotorbikeDto;
@@ -55,12 +56,15 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         }
 
 
+
 //        Motorbike motorbike=new Motorbike();
 //        motorbike.setMotorbikePlate(registerMotorbikeDto.getMotorbikePlate());
 //        motorbike.setConstraintMotorbike(registerMotorbikeDto.getConstraintMotorbike());
 //        motorbike.setDelivery(registerMotorbikeDto.isDelivery());
 //        motorbike.setDeliveryFee(registerMotorbikeDto.getDeliveyFeePerKilometer());
 //        motorbike.setDistanceLimitPerDay(registerMotorbikeDto.getDistanceLimitPerDay());
+
+=======
 //        motorbike.setOutLimitFee(registerMotorbikeDto.getOutLimitFee());
 //        motorbike.setOverTimeFee(registerMotorbikeDto.getOvertimeFee());
 //        motorbike.setOverTimeLimit(registerMotorbikeDto.getOvertimeLimit());
@@ -117,3 +121,4 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
 }
+

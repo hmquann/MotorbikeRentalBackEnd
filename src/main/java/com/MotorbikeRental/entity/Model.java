@@ -40,6 +40,8 @@ public class Model {
     @JoinColumn(name="brand_id")
     @JsonBackReference
     private Brand brand;
+
     @OneToMany(mappedBy = "model",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Motorbike>motorbikeSet=new HashSet<>();
+
 }
