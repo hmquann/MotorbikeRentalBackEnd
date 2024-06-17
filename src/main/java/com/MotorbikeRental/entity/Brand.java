@@ -2,6 +2,7 @@ package com.MotorbikeRental.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -27,5 +28,6 @@ public class Brand {
     private String origin;
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Model>modelSet=new HashSet<>();
+    @JsonManagedReference
+    private List<Model>modelSet=new ArrayList<>();
 }

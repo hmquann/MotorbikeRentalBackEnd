@@ -1,6 +1,7 @@
 package com.MotorbikeRental.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -27,15 +28,20 @@ public class Model {
     private String cylinderCapacity;
 
     @Column(name="fuel_type")
-    private Enum<FuelType> fuelType;
+    @Enumerated(EnumType.STRING)
+    private FuelType fuelType;
 
     @Column(name="fuel_consumption")
     private float fuelConsumption;
     @Column(name="model_type")
-    private Enum<ModelType> modelType;
+    @Enumerated(EnumType.STRING)
+    private ModelType modelType;
     @ManyToOne
     @JoinColumn(name="brand_id")
+    @JsonBackReference
     private Brand brand;
-//    @OneToMany(mappedBy = "model",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private Set<Motorbike>motorbikeSet=new HashSet<>();
+
+    @OneToMany(mappedBy = "model",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Motorbike>motorbikeSet=new HashSet<>();
+
 }

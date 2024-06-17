@@ -14,7 +14,9 @@ import java.util.Optional;
 public interface MotorbikeRepository extends JpaRepository<Motorbike, Long>{
     @Override
     Optional<Motorbike> findById(Long id);
-    boolean existsByMotorbikePlate(String motorbikePlate);
+    @Query("SELECT m from Motorbike m where m.motorbikePlate=:motorbikePlate")
     Optional<Motorbike> findByMotorbikePlate(String motorbikePlate);
+
+    boolean existsByMotorbikePlate (String motorbikePlate);
 
 }

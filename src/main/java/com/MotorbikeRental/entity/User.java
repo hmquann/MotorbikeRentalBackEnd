@@ -1,6 +1,7 @@
 package com.MotorbikeRental.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     private String firstName;
@@ -31,9 +33,10 @@ public class User implements UserDetails {
     private String password;
     private boolean gender;
 
+    @Column(name = "status")
     private boolean isActive;
     @Column(name = "balance")
-    private double balance;
+    private Double balance;
 
     private String token;
 
@@ -61,6 +64,11 @@ public class User implements UserDetails {
         this.license = license;
     }
 
+    private double balance;
+
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    private Set<Transaction> transactions = new HashSet<>();
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles",
@@ -72,11 +80,22 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private License license;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Location> locations;
+    @OneToMany(mappedBy = "user")
+    private List<Location> locationSet;
 
-//    @OneToMany(mappedBy = "renter", cascade = CascadeType.ALL)
-//    private List<Booking> bookings;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Motorbike> motorbikes;
+
+    @JsonManagedReference
+    public List<Motorbike> getMotorbike(){
+        return motorbikes;
+    }
+
+    @JsonManagedReference
+    public List<Location> getLocations(){
+        return locationSet;
+    }
 
 
     @Override
