@@ -1,10 +1,7 @@
 package com.MotorbikeRental.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -41,7 +38,7 @@ public class Model {
     private ModelType modelType;
     @ManyToOne
     @JoinColumn(name="brand_id")
-    @JsonManagedReference
+//    @JsonBackReference
     private Brand brand;
     @OneToMany(mappedBy = "model",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Motorbike>motorbikeSet=new HashSet<>();

@@ -2,10 +2,7 @@ package com.MotorbikeRental.entity;
 
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -32,7 +29,8 @@ public class Brand {
     private String origin;
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonBackReference
+//    @JsonManagedReference
+    @JsonIgnore
     private List<Model>modelSet=new ArrayList<>();
 
     public void addModel(Model model) {
