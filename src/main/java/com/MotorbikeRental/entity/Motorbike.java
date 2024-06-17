@@ -29,16 +29,10 @@ public class Motorbike {
     private Long price;
 
     @Column(name="over_time_fee")
-    private Long overTimeFee;
+    private Long overtimeFee;
 
     @Column(name="over_time_limit")
-    private Long overTimeLimit;
-
-    @Column(name="distance_limit_per_day")
-    private Long distanceLimitPerDay;
-
-    @Column(name="out_limit_fee")
-    private Long outLimitFee;
+    private Long overtimeLimit;
 
     @Column(name="trip_count")
     private Long tripCount;
@@ -46,11 +40,11 @@ public class Motorbike {
     @Column(name = "delivery")
     boolean delivery;
 
-    @Column(name="free_ship_limit")
-    private Long freeShipLimit;
+    @Column(name="free_ship_distance")
+    private Long freeshipDistance;
 
     @Column(name="delivery_fee")
-    private Long deliveryFee;
+    private Long deliveryFeePerKilometer;
 
 
     @Column(name="status")
@@ -61,7 +55,7 @@ public class Motorbike {
     private String constraintMotorbike;
 
     @Column(name="year_of_manufacture")
-    private Long yearOfManuFacture;
+    private Long yearOfManufacture;
     @Column(name = "motorbike_plate",unique = true,length = 11)
     private String motorbikePlate;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -77,5 +71,4 @@ public class Motorbike {
     @JoinColumn(name="model_id")
 
     private Model model;
-
 }

@@ -1,6 +1,5 @@
 package com.MotorbikeRental.config;
 
-import com.MotorbikeRental.entity.Role;
 import com.MotorbikeRental.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
@@ -29,7 +27,9 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-        private final JwtAuthenticatioFilter jwtAuthenticatioFilter;
+        private static final String[] WHITE_LIST_URL = {"/api/auth/*"};
+
+        private final JwtAuthenticationFilter jwtAuthenticatioFilter;
 
         private final UserService userService;
 
@@ -37,25 +37,22 @@ public class SecurityConfig {
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
             http.csrf(AbstractHttpConfigurer::disable)
                     .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                    .authorizeHttpRequests(request -> {
-                                try {
-                                    request.requestMatchers("/api/auth/**")
-                                            .permitAll()
-                                            .requestMatchers("/api/admin").hasAnyAuthority("ADMIN")
-                                            .requestMatchers("/api/user").hasAnyAuthority("USER")
-                                            .anyRequest().permitAll()
-                                            .and()
-                                            .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                            .authenticationProvider(authenticationProvider()).addFilterBefore(
-                                                    jwtAuthenticatioFilter, UsernamePasswordAuthenticationFilter.class
-                                            );
-
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-
-                            }
+                    .authorizeHttpRequests(request ->
+                            request.requestMatchers(WHITE_LIST_URL)
+                                    .permitAll()
+                                    .requestMatchers("/api/admin").hasAnyAuthority("ADMIN")
+                                    .requestMatchers("/api/user").hasAnyAuthority("USER")
+                                    .anyRequest()
+                                    .authenticated()
+                    )
+                    .sessionManagement(manager ->
+                            manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    )
+                    .authenticationProvider(authenticationProvider())
+                    .addFilterBefore(
+                            jwtAuthenticatioFilter, UsernamePasswordAuthenticationFilter.class
                     );
+
             return http.build();
         }
     @Bean

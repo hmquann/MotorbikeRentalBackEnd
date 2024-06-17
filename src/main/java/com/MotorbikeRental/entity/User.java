@@ -105,6 +105,7 @@ public class User implements UserDetails {
     }
 
 
+
     @JsonManagedReference
     public List<Location> getLocations() {
         return locations;
