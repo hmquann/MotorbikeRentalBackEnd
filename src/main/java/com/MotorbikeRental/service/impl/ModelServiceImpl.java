@@ -1,60 +1,65 @@
 package com.MotorbikeRental.service.impl;
 
 
-import com.MotorbikeRental.dto.*;
+import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.Model;
-import com.MotorbikeRental.entity.Role;
-import com.MotorbikeRental.exception.DuplicateUserException;
-import com.MotorbikeRental.exception.InactiveUserException;
-import com.MotorbikeRental.exception.InvalidCredentialsException;
+import com.MotorbikeRental.exception.ValidationException;
 import com.MotorbikeRental.repository.ModelRepository;
-import com.MotorbikeRental.repository.RoleRepository;
-import com.MotorbikeRental.repository.UserRepository;
-import com.MotorbikeRental.service.AuthenticationService;
-import com.MotorbikeRental.service.JWTService;
+import com.MotorbikeRental.service.BrandService;
 import com.MotorbikeRental.service.ModelService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import com.MotorbikeRental.entity.User;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-
 public class ModelServiceImpl implements ModelService {
 
     @Autowired
     private final ModelRepository modelRepository;
-    @Override
-    public List<ModelService> getModelByBrandId() {
-        return null;
-    }
+
+
+    @Autowired
+    private final BrandService brandService;
 
     @Override
-    public void addNewModel(RegisterMotorbikeDto registerMotorbikeDto) {
-
-    }
-
-    @Override
-    public List<Model> getAllModel() {
+    public List<Model> getAllModels() {
         return modelRepository.findAll();
     }
 
+    @Override
+    public Model createModel(Model model) {
+        if (modelRepository.existsByModelName(model.getModelName())) {
+            throw new ValidationException("Model name already exists: " + model.getModelName());
+        }
+
+        if (model.getBrand() != null && model.getBrand().getBrandId() != null) {
+            Brand brand = brandService.getBrand(model.getBrand().getBrandId());
+            if (brand != null) {
+                brand.addModel(model); // Thêm model vào modelSet của brand
+            } else {
+                throw new RuntimeException("Brand not found with id: " + model.getBrand().getBrandId());
+            }
+        }
+        return modelRepository.save(model);
+    }
+
+    @Override
+    public Page<Model> getBrandWithPagination(int page, int pageSize) {
+        return modelRepository.findAll(PageRequest.of(page, pageSize));
+    }
+
+    @Override
+    public Model getModelById(Long id) {
+        Optional<Model> modelOptional = modelRepository.findById(id);
+        return modelOptional.orElseThrow(() -> new EntityNotFoundException("Model with ID " + id + " not found"));
+    }
 
 
-
-//    @Override
-//    public Model getModelIdByModelName(RegisterMotorbikeDto registerMotorbikeDto) {
-//           return modelRepository.getModelByModelName(registerMotorbikeDto.getModelId());
-//    }
 }

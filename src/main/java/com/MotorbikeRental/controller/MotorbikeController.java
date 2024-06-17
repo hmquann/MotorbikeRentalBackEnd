@@ -9,27 +9,48 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+
+import com.MotorbikeRental.entity.Motorbike;
+import com.MotorbikeRental.service.MotorbikeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/motorbike")
-@RequiredArgsConstructor
+@RequestMapping("/api/motorbike")
 public class MotorbikeController {
-   @Autowired
-    private final MotorbikeService motorbikeService;
 
     @Autowired
-    private  BrandService brandService;
-
-    @Autowired
-    private ModelService modelService;
+    private MotorbikeService motorbikeService;
 
     @Autowired
     private JWTService jwtService;
 
     @Autowired
     private UserRepository userRepository;
+
+    @GetMapping("/pending")
+    public List<Motorbike> getPendingMotorbikes(){
+        return motorbikeService.getPendingMotorbikes();
+    }
+
+    @PutMapping("/approve/{id}")
+    public ResponseEntity<Motorbike> approveMotorbike(@PathVariable Long id) {
+        Motorbike approvedMotorbike = motorbikeService.approveMotorbike(id);
+        return ResponseEntity.ok(approvedMotorbike);
+    }
+
+    @PostMapping("/reject/{id}")
+    public ResponseEntity<Motorbike> rejectMotorbike(@PathVariable Long id) {
+        Motorbike approvedMotorbike = motorbikeService.rejectMotorbike(id);
+        return ResponseEntity.ok(approvedMotorbike);
+    }
+
+
 
     @RequestMapping (value="/register",method =RequestMethod.POST)
     public ResponseEntity<Motorbike> registerMotorbike(@RequestHeader("Authorization") String accessToken, @RequestBody Motorbike motorbike){
@@ -45,20 +66,9 @@ public class MotorbikeController {
         Motorbike newMotor = motorbikeService.registerMotorbike(motorbike);
 
         return ResponseEntity.ok(newMotor);
+    }
+}
 
-    }
-    @GetMapping("/brandList")
-    public List<Brand>getAllBrand(){
-        return brandService.getAllBrand();
-    }
-    @GetMapping("/modelList")
-    public List<Model>getAllModel(){
-        return modelService.getAllModel();
-    }
-    @GetMapping("/motorbikeList")
-    public  List<Motorbike>getAllMotorbike(){
-        return motorbikeService.getAllMotorbike();
-    }
-    }
+
 
 

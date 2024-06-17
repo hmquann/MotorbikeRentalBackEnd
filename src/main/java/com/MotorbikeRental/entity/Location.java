@@ -28,6 +28,11 @@ public class Location {
         return user;
     }
 
+    @JsonBackReference
+    public User getUser(){
+        return user;
+    }
+
     private String province;
 
     private String district;
@@ -35,6 +40,7 @@ public class Location {
     private String ward;
 
     private String addressDetail;
+
 
 
 
