@@ -137,6 +137,7 @@ public class PaymentServiceImpl implements PaymentService {
                     .header("Location", redirectUrl)
                     .build();
         } else {
+            transaction.setProcessed(true);
             transaction.setVnpResponseCode(vnp_ResponseCode);
             transactionRepository.save(transaction);
 
