@@ -1,5 +1,6 @@
 package com.MotorbikeRental.service.impl;
 
+
 import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.Model;
 import com.MotorbikeRental.exception.ValidationException;
@@ -22,6 +23,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Autowired
     private final ModelRepository modelRepository;
+
 
     @Autowired
     private final BrandService brandService;

@@ -2,7 +2,9 @@ package com.MotorbikeRental.entity;
 
 
 
+
 import com.fasterxml.jackson.annotation.*;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -28,6 +30,7 @@ public class Brand {
     @Column(name="origin")
     private String origin;
 
+
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 //    @JsonManagedReference
     @JsonIgnore
@@ -37,4 +40,5 @@ public class Brand {
         modelSet.add(model);
         model.setBrand(this);
     }
+
 }

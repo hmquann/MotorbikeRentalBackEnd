@@ -52,6 +52,7 @@ public class Motorbike {
     @Column(name="delivery_fee")
     private Long deliveryFee;
 
+
     @Column(name="status")
     @Enumerated(EnumType.STRING)
     private MotorbikeStatus status;
@@ -60,7 +61,7 @@ public class Motorbike {
     private String constraintMotorbike;
 
     @Column(name="year_of_manufacture")
-    private int yearOfManuFacture;
+    private Long yearOfManuFacture;
     @Column(name = "motorbike_plate",unique = true,length = 11)
     private String motorbikePlate;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -69,13 +70,12 @@ public class Motorbike {
     private User user;
 
     @JsonBackReference
-    public User getUser() {
+    public User user(){
         return user;
     }
-
-
     @ManyToOne
-    @JoinColumn(name = "model_id")
+    @JoinColumn(name="model_id")
+
     private Model model;
 
 }

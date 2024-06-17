@@ -1,6 +1,7 @@
 package com.MotorbikeRental.service.impl;
 
 import com.MotorbikeRental.entity.Brand;
+
 import com.MotorbikeRental.entity.Discount;
 import com.MotorbikeRental.exception.ValidationException;
 import com.MotorbikeRental.repository.BrandRepository;
@@ -22,12 +23,14 @@ public class BrandServiceImpl implements BrandService {
     @Autowired
     private final BrandRepository brandRepository;
 
+
     @Override
     public List<Brand> getAllBrand() {
         return brandRepository.findAll();
     }
 
     @Override
+
     public Page<Brand> getBrandWithPagination(int page, int pageSize){
         return brandRepository.findAll(PageRequest.of(page,pageSize));
     }
@@ -71,5 +74,6 @@ public class BrandServiceImpl implements BrandService {
         Optional<Brand> brandOptional = brandRepository.findById(id);
         return brandOptional.orElseThrow(() -> new EntityNotFoundException("Brand with ID " + id + " not found"));
     }
+
 
 }
