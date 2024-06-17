@@ -58,6 +58,8 @@ public class Motorbike {
     private Long yearOfManufacture;
     @Column(name = "motorbike_plate",unique = true,length = 11)
     private String motorbikePlate;
+    @Column(unique = true)
+    private String motorbikeAddress;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
 //    @JsonBackReference

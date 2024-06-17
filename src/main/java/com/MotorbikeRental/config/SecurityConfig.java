@@ -27,9 +27,9 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-        private static final String[] WHITE_LIST_URL = {"/api/auth/*"};
+        private static final String[] WHITE_LIST_URL = {"/api/auth/**","/motorbike/**"};
 
-        private final JwtAuthenticationFilter jwtAuthenticatioFilter;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
         private final UserService userService;
 
@@ -50,7 +50,7 @@ public class SecurityConfig {
                     )
                     .authenticationProvider(authenticationProvider())
                     .addFilterBefore(
-                            jwtAuthenticatioFilter, UsernamePasswordAuthenticationFilter.class
+                            jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
                     );
 
             return http.build();
