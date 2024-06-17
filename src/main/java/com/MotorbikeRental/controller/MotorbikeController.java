@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequestMapping("/motorbike")
 @RequiredArgsConstructor
 public class MotorbikeController {
-
+   @Autowired
     private final MotorbikeService motorbikeService;
 
     @Autowired
@@ -54,6 +54,10 @@ public class MotorbikeController {
     @GetMapping("/modelList")
     public List<Model>getAllModel(){
         return modelService.getAllModel();
+    }
+    @GetMapping("/motorbikeList")
+    public  List<Motorbike>getAllMotorbike(){
+        return motorbikeService.getAllMotorbike();
     }
     }
 

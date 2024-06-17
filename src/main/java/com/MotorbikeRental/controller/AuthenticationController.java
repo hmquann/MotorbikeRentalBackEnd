@@ -37,9 +37,9 @@ public class AuthenticationController {
 
     @CrossOrigin
     @PostMapping("/signin")
-    public ResponseEntity<?> signin(@RequestHeader("Authorization") String accessToken, @Valid @RequestBody SigninRequest signinRequest){
+    public ResponseEntity<?> signin( @Valid @RequestBody SigninRequest signinRequest){
 //        try {
-        System.out.println(accessToken);
+//        System.out.println(accessToken);
 
             return ResponseEntity.ok(authenticationService.signin(signinRequest));
 

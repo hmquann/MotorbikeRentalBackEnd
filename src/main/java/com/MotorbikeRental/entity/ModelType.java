@@ -1,5 +1,5 @@
 package com.MotorbikeRental.entity;
 
 public enum ModelType {
-    XeSo,XeTayGa,XeConTay
+    XeSo,XeTayGa,XeConTay,XeDien
 }
