@@ -75,6 +75,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Location> locations;
 
+//    @OneToMany(mappedBy = "renter", cascade = CascadeType.ALL)
+//    private List<Booking> bookings;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
