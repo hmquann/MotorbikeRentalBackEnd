@@ -4,6 +4,7 @@ package com.MotorbikeRental.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -45,6 +46,8 @@ public class Motorbike {
     @Column(name="delivery_fee")
     private Long deliveryFeePerKilometer;
 
+
+    @Column(name="status")
     @Enumerated(EnumType.STRING)
     private MotorbikeStatus status;
 
@@ -57,6 +60,7 @@ public class Motorbike {
     private String motorbikePlate;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+//    @JsonBackReference
     private User user;
 
     @JsonBackReference
@@ -65,5 +69,6 @@ public class Motorbike {
     }
     @ManyToOne
     @JoinColumn(name="model_id")
+
     private Model model;
 }

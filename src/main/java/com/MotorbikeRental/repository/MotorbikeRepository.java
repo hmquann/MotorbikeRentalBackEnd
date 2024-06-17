@@ -2,6 +2,7 @@ package com.MotorbikeRental.repository;
 
 
 import com.MotorbikeRental.entity.Motorbike;
+import com.MotorbikeRental.entity.MotorbikeStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,6 +18,7 @@ public interface MotorbikeRepository extends JpaRepository<Motorbike, Long>{
     @Query("SELECT m from Motorbike m where m.motorbikePlate=:motorbikePlate")
     Optional<Motorbike> findByMotorbikePlate(String motorbikePlate);
 
-    boolean existsByMotorbikePlate (String motorbikePlate);
+    List<Motorbike> findByStatus(MotorbikeStatus status);
+
 
 }

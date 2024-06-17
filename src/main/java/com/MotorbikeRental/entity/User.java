@@ -40,33 +40,10 @@ public class User implements UserDetails {
 
     private String token;
 
-    public boolean isGender() {
-        return gender;
-    }
 
-    public void setGender(boolean gender) {
-        this.gender = gender;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String verificationCode) {
-        this.token = verificationCode;
-    }
-
-    public License getLicense() {
-        return license;
-    }
-
-    public void setLicense(License license) {
-        this.license = license;
-    }
-
-
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
-    private Set<Transaction> transactions = new HashSet<>();
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<Transaction> transactions;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -82,6 +59,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Location> locationSet;
 
+
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Motorbike> motorbikes;
 
@@ -94,6 +72,10 @@ public class User implements UserDetails {
     public List<Location> getLocations(){
         return locationSet;
     }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Motorbike> motorbikes;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -124,6 +106,19 @@ public class User implements UserDetails {
 
 
 
+    @JsonManagedReference
+    public List<Location> getLocations() {
+        return locations;
+    }
+
+    @JsonManagedReference
+    public List<Motorbike> getMotorbikes() {
+        return motorbikes;
+    }
+
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
+    }
 
     @Override
     public boolean isEnabled() {
