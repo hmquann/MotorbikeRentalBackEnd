@@ -29,8 +29,8 @@ public class Brand {
     private String origin;
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    @JsonManagedReference
-    @JsonIgnore
+    @JsonManagedReference
+//    @JsonIgnore
     private List<Model>modelSet=new ArrayList<>();
 
     public void addModel(Model model) {

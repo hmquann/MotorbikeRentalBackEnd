@@ -1,22 +1,14 @@
 package com.MotorbikeRental.service.impl;
 
-import com.MotorbikeRental.dto.RegisterMotorbikeDto;
 import com.MotorbikeRental.entity.Motorbike;
 import com.MotorbikeRental.entity.MotorbikeStatus;
-import com.MotorbikeRental.exception.ExistPlateException;
 import com.MotorbikeRental.repository.MotorbikeRepository;
 import com.MotorbikeRental.service.MotorbikeService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,18 +36,19 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
 
     @Override
-    public void registerMotorbike(RegisterMotorbikeDto registerMotorbikeDto) {
+    public Motorbike registerMotorbike(Motorbike motorbike) {
 //        if(motorbikeService.checkExistPlate(registerMotorbikeDto.getMotorbikePlate())){
 //            throw  new ExistPlateException("The plate is exist in the system");
 //        }
-        Motorbike motorbike=new Motorbike();
-        motorbike.setMotorbikePlate(registerMotorbikeDto.getMotorbikePlate());
-        motorbike.setConstraintMotorbike(registerMotorbikeDto.getConstraintMotorbike());
-        motorbike.setDelivery(registerMotorbikeDto.isDelivery());
-        motorbike.setDeliveryFee(registerMotorbikeDto.getDeliveyFeePerKilometer());
-        motorbike.setDistanceLimitPerDay(registerMotorbikeDto.getDistanceLimitPerDay());
+//        Motorbike motorbike=new Motorbike();
+//        motorbike.setMotorbikePlate(registerMotorbikeDto.getMotorbikePlate());
+//        motorbike.setConstraintMotorbike(registerMotorbikeDto.getConstraintMotorbike());
+//        motorbike.setDelivery(registerMotorbikeDto.isDelivery());
+//        motorbike.setDeliveryFee(registerMotorbikeDto.getDeliveyFeePerKilometer());
+//        motorbike.setDistanceLimitPerDay(registerMotorbikeDto.getDistanceLimitPerDay());
 //        motorbike.setModel(registerMotorbikeDto.getModelName());
 
+        return motorbike;
     }
 
     @Override
