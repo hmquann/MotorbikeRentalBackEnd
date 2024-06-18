@@ -62,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setGender(signupRequest.isGender());
         user.setBalance(0.00);
         user.setActive(false);
-
+        user.setBalance(Double.valueOf(0.0));
         Role defaultRole = roleRepository.findByName("USER");
         if (defaultRole == null) {
             defaultRole = new Role("USER");

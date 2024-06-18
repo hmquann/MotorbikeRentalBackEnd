@@ -27,30 +27,30 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticatioFilter;
 
-    private final UserService userService;
+        private static final String[] WHITE_LIST_URL = {"/api/auth/**","/motorbike/**"};
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(request -> {
-                            try {
-                                request.requestMatchers("/api/auth/**")
-                                        .permitAll()
-                                        .requestMatchers("/api/admin").hasAnyAuthority("ADMIN")
-                                        .requestMatchers("/api/user").hasAnyAuthority("USER")
-                                        .anyRequest().permitAll()
-                                        .and()
-                                        .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                        .authenticationProvider(authenticationProvider()).addFilterBefore(
-                                                jwtAuthenticatioFilter, UsernamePasswordAuthenticationFilter.class
-                                        );
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+            http.csrf(AbstractHttpConfigurer::disable)
+                    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                    .authorizeHttpRequests(request ->
+                            request.requestMatchers(WHITE_LIST_URL)
+                                    .permitAll()
+                                    .requestMatchers("/api/admin").hasAnyAuthority("ADMIN")
+                                    .requestMatchers("/api/user").hasAnyAuthority("USER")
+                                    .anyRequest()
+                                    .authenticated()
+                    )
+                    .sessionManagement(manager ->
+                            manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    )
+                    .authenticationProvider(authenticationProvider())
+                    .addFilterBefore(
+                            jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
+                    );
 
                         }
                 );

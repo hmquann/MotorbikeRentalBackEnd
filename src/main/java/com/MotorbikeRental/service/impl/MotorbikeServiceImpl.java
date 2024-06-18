@@ -39,7 +39,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
     @Override
     public List<Motorbike> getAllMotorbike() {
-        return null;
+        return motorbikeRepository.findAll();
     }
 
     @Override
@@ -48,7 +48,8 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public List<Motorbike> getAllMotorbikeByStatus(List<Motorbike> motorbikeList, String status) {
+    public List<Motorbike> getAllMotorbikeByStatus( String status) {
+
         return null;
     }
 
@@ -82,6 +83,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 //        motorbike.setStatus(MotorbikeStatus.PENDING);
 //        motorbike.setFeatures(registerMotorbikeDto.getFeatureList());
         motorbike.setStatus(MotorbikeStatus.PENDING);
+        motorbike.setTripCount(Long.valueOf(0));
         return motorbikeRepository.save(motorbike);
 
 
