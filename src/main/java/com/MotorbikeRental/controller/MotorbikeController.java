@@ -67,9 +67,9 @@ public class MotorbikeController {
 
         return ResponseEntity.ok(newMotor);
     }
-    @GetMapping("/motorbikeList")
-    public List<Motorbike> getAllMotorbikeWithStatus(){
-        return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.valueOf("PENDING"));
+    @GetMapping("/activeMotorbikeList")
+    public List<Motorbike> getAllActiveMotorbike(){
+        return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.valueOf("ACTIVE"));
     }
 }
 
