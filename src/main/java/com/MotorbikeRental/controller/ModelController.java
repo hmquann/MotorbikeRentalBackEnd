@@ -28,6 +28,11 @@ public class ModelController {
     public ResponseEntity<List<Model>> listModels() {
         return ResponseEntity.ok(modelService.getAllModels());
     }
+    @GetMapping("modelList")
+    public List<Model>getListModels(){
+        return modelService.getListModel();
+    }
+
 
     @GetMapping("/getAllModel/{page}/{pageSize}")
     public ResponseEntity<Page<Model>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {

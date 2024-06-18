@@ -50,8 +50,6 @@ public class MotorbikeController {
         return ResponseEntity.ok(approvedMotorbike);
     }
 
-
-
     @RequestMapping (value="/register",method =RequestMethod.POST)
     public ResponseEntity<Motorbike> registerMotorbike(@RequestHeader("Authorization") String accessToken, @RequestBody Motorbike motorbike){
         String token = accessToken.split(" ")[1];

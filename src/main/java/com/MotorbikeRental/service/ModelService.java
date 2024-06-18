@@ -14,6 +14,6 @@ public interface ModelService {
     Model createModel(Model model);
     Page<Model> getBrandWithPagination(int page, int pageSize);
     Model getModelById(Long id);
-
+    public List<Model> getListModel();
 }
 
