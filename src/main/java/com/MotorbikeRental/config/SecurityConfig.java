@@ -1,5 +1,6 @@
 package com.MotorbikeRental.config;
 
+import com.MotorbikeRental.entity.Role;
 import com.MotorbikeRental.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
@@ -27,10 +29,11 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-
         private static final String[] WHITE_LIST_URL = {"/api/auth/**","/motorbike/**"};
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+        private final UserService userService;
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,7 +45,8 @@ public class SecurityConfig {
                                     .requestMatchers("/api/admin").hasAnyAuthority("ADMIN")
                                     .requestMatchers("/api/user").hasAnyAuthority("USER")
                                     .anyRequest()
-                                    .authenticated()
+                                    .permitAll()
+                                    .and()
                     )
                     .sessionManagement(manager ->
                             manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -52,10 +56,8 @@ public class SecurityConfig {
                             jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
                     );
 
-                        }
-                );
-        return http.build();
-    }
+            return http.build();
+        }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

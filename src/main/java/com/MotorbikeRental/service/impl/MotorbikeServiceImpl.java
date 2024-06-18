@@ -39,7 +39,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
     @Override
     public List<Motorbike> getAllMotorbike() {
-        return motorbikeRepository.findAll();
+        return null;
     }
 
     @Override
@@ -48,8 +48,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public List<Motorbike> getAllMotorbikeByStatus( String status) {
-
+    public List<Motorbike> getAllMotorbikeByStatus(List<Motorbike> motorbikeList, String status) {
         return null;
     }
 
@@ -96,7 +95,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
     @Override
     public boolean checkExistPlate( String motorbikePlate) {
-        return motorbikeRepository.findByMotorbikePlate(motorbikePlate).isEmpty();
+        return false;
     }
 
     @Override
@@ -129,7 +128,6 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         return null;
     }
 
-
     @Override
     public List<Motorbike> getPendingMotorbikes() {
         return motorbikeRepository.findByStatus(MotorbikeStatus.PENDING);
@@ -157,6 +155,4 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
 
-
 }
-

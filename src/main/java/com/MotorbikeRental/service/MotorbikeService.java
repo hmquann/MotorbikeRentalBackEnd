@@ -1,6 +1,5 @@
 package com.MotorbikeRental.service;
 
-import com.MotorbikeRental.dto.RegisterMotorbikeDto;
 import com.MotorbikeRental.entity.Motorbike;
 
 import java.util.Date;
@@ -11,7 +10,7 @@ public interface MotorbikeService {
 
     public List<Motorbike>getMotorbikeByLessorId();
 
-    public List<Motorbike>getAllMotorbikeByStatus(String status);
+    public List<Motorbike> getAllMotorbikeByStatus(List<Motorbike> motorbikeList, String status);
 
     public Motorbike registerMotorbike(Motorbike motorbike);
 

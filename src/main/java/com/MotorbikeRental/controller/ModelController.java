@@ -1,6 +1,7 @@
 package com.MotorbikeRental.controller;
 
 
+import com.MotorbikeRental.dto.ModelDto;
 import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.FuelType;
 import com.MotorbikeRental.entity.Model;
@@ -25,19 +26,21 @@ public class ModelController {
     private final ModelService modelService;
 
     @GetMapping("/getAllModel")
-    public ResponseEntity<List<Model>> listModels() {
-        return ResponseEntity.ok(modelService.getAllModels());
+    public ResponseEntity<List<ModelDto>> listModels() {
+        List<ModelDto> modelDtos = modelService.getAllModels();
+        return ResponseEntity.ok(modelDtos);
     }
 
     @GetMapping("/getAllModel/{page}/{pageSize}")
-    public ResponseEntity<Page<Model>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {
-        Page<Model> modelPage = modelService.getBrandWithPagination(page,pageSize);
+    public ResponseEntity<Page<ModelDto>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {
+        Page<ModelDto> modelPage = modelService.getBrandWithPagination(page, pageSize);
         return ResponseEntity.ok(modelPage);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getModelById(@PathVariable Long id) {
-        return ResponseEntity.ok(modelService.getModelById(id));
+    public ResponseEntity<ModelDto> getModelById(@PathVariable Long id) {
+        ModelDto modelDto = modelService.getModelById(id);
+        return ResponseEntity.ok(modelDto);
     }
 
     @GetMapping("/fuelTypes")
@@ -52,10 +55,10 @@ public class ModelController {
     }
 
     @PostMapping("/addModel")
-    public ResponseEntity<?> createModel(@RequestBody Model model) {
+    public ResponseEntity<?> createModel(@RequestBody ModelDto modelDto) {
         try {
-            Model createdModel = modelService.createModel(model);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdModel);
+            ModelDto createdModelDto = modelService.createModel(modelDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdModelDto);
         } catch (ValidationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

@@ -1,17 +1,10 @@
 package com.MotorbikeRental.controller;
-import com.MotorbikeRental.dto.*;
-import com.MotorbikeRental.entity.*;
-import com.MotorbikeRental.repository.UserRepository;
-import com.MotorbikeRental.service.*;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 
 
 import com.MotorbikeRental.entity.Motorbike;
+import com.MotorbikeRental.entity.User;
+import com.MotorbikeRental.repository.UserRepository;
+import com.MotorbikeRental.service.JWTService;
 import com.MotorbikeRental.service.MotorbikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +21,7 @@ public class MotorbikeController {
     private MotorbikeService motorbikeService;
 
     @Autowired
-    private  JWTService jwtService;
+    private JWTService jwtService;
 
     @Autowired
     private UserRepository userRepository;
@@ -68,6 +61,10 @@ public class MotorbikeController {
         return ResponseEntity.ok(newMotor);
     }
 }
+
+
+
+
 
 
 

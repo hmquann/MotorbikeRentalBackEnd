@@ -19,7 +19,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+
     private Long id;
 
     private String firstName;
@@ -33,10 +33,10 @@ public class User implements UserDetails {
     private String password;
     private boolean gender;
 
-    @Column(name = "status")
+
     private boolean isActive;
     @Column(name = "balance")
-    private Double balance;
+    private double balance;
 
     private String token;
 
