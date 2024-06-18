@@ -48,9 +48,9 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public List<Motorbike> getAllMotorbikeByStatus( String status) {
+    public List<Motorbike> getAllMotorbikeByStatus(MotorbikeStatus status) {
 
-        return null;
+        return motorbikeRepository.getAllMotorbikeByStatus(status);
     }
 
 

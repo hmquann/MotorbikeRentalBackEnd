@@ -68,13 +68,7 @@ public class User implements UserDetails {
         return motorbikes;
     }
 
-    @JsonManagedReference
-    public List<Location> getLocations(){
-        return locationSet;
-    }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Motorbike> motorbikes;
 
 
     @Override
@@ -108,7 +102,7 @@ public class User implements UserDetails {
 
     @JsonManagedReference
     public List<Location> getLocations() {
-        return locations;
+        return locationSet;
     }
 
     @JsonManagedReference
@@ -116,9 +110,6 @@ public class User implements UserDetails {
         return motorbikes;
     }
 
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
-    }
 
     @Override
     public boolean isEnabled() {

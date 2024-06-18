@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Data
 @Entity
-@Table(name = "[ModelService]")
+@Table(name = "[Model]")
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Model {
     @Id
