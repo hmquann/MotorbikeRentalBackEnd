@@ -20,6 +20,8 @@ public interface UserService {
     void deleteUser(Long id);
     List<User> getAllUser();
     void toggleUserActiveStatus(Long id);
+
+    void activeUser(Long id);
     void updateUserBalance(Long id, double balance);
 
 

@@ -20,5 +20,6 @@ public interface MotorbikeRepository extends JpaRepository<Motorbike, Long>{
 
     List<Motorbike> findByStatus(MotorbikeStatus status);
 
+    boolean existsByMotorbikePlate(String plate);
 
 }

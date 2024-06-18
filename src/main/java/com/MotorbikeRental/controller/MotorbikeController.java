@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/motorbike")
@@ -27,7 +28,7 @@ public class MotorbikeController {
     private MotorbikeService motorbikeService;
   
     @Autowired
-    private JWTService jwtService;
+    private  JWTService jwtService;
 
     @Autowired
     private UserRepository userRepository;
@@ -48,7 +49,7 @@ public class MotorbikeController {
         Motorbike approvedMotorbike = motorbikeService.rejectMotorbike(id);
         return ResponseEntity.ok(approvedMotorbike);
     }
-}
+
 
 
     @RequestMapping (value="/register",method =RequestMethod.POST)
