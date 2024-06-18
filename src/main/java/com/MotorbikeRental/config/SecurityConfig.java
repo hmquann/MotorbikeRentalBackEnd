@@ -27,11 +27,10 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+
         private static final String[] WHITE_LIST_URL = {"/api/auth/**","/motorbike/**"};
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-        private final UserService userService;
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -53,8 +52,10 @@ public class SecurityConfig {
                             jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
                     );
 
-            return http.build();
-        }
+                        }
+                );
+        return http.build();
+    }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

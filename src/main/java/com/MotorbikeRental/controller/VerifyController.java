@@ -15,7 +15,7 @@ public class VerifyController {
     public ResponseEntity<?> verifyToken(@PathVariable String token) {
 
         User user = userService.getUserByToken(token);
-        userService.toggleUserActiveStatus(user.getId());
+        userService.activeUser(user.getId());
         return ResponseEntity.ok(user);
     }
 }
