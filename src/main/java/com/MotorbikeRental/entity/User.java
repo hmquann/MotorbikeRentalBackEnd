@@ -36,7 +36,7 @@ public class User implements UserDetails {
 
     private boolean isActive;
     @Column(name = "balance")
-    private Double balance;
+    private double balance;
 
     private String token;
 
@@ -56,11 +56,23 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private License license;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Location> locations;
+    @OneToMany(mappedBy = "user")
+    private List<Location> locationSet;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Motorbike> motorbikes;
+
+    @JsonManagedReference
+    public List<Motorbike> getMotorbike(){
+        return motorbikes;
+    }
+
+    @JsonManagedReference
+    public List<Location> getLocations(){
+        return locationSet;
+    }
+
 
 
     @Override
@@ -91,19 +103,14 @@ public class User implements UserDetails {
     }
 
 
-    @JsonManagedReference
-    public List<Location> getLocations() {
-        return locations;
-    }
+
+
 
     @JsonManagedReference
     public List<Motorbike> getMotorbikes() {
         return motorbikes;
     }
 
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
-    }
 
     @Override
     public boolean isEnabled() {

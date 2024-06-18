@@ -23,14 +23,12 @@ public class BrandServiceImpl implements BrandService {
     @Autowired
     private final BrandRepository brandRepository;
 
-
     @Override
     public List<Brand> getAllBrand() {
         return brandRepository.findAll();
     }
 
     @Override
-
     public Page<Brand> getBrandWithPagination(int page, int pageSize){
         return brandRepository.findAll(PageRequest.of(page,pageSize));
     }

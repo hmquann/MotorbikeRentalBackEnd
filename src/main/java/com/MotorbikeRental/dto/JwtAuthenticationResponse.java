@@ -1,6 +1,7 @@
 package com.MotorbikeRental.dto;
 
 import com.MotorbikeRental.entity.Role;
+import com.MotorbikeRental.entity.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class JwtAuthenticationResponse {
 
     private List<String> roles;
 
+
     private Long id;
 
     private double balance;
@@ -23,6 +25,8 @@ public class JwtAuthenticationResponse {
     private String firstName;
 
     private String lastName;
+
+    private User user;
 
 
 

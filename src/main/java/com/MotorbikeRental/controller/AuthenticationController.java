@@ -37,12 +37,8 @@ public class AuthenticationController {
 
     @CrossOrigin
     @PostMapping("/signin")
-    public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest){
-//        try {
+    public ResponseEntity<?> signin( @Valid @RequestBody SigninRequest signinRequest){
             return ResponseEntity.ok(authenticationService.signin(signinRequest));
-//        } catch (InvalidCredentialsException e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong password or email");
-//        }
     }
 
 

@@ -1,9 +1,7 @@
 package com.MotorbikeRental.entity;
 
 
-
 import com.fasterxml.jackson.annotation.*;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -46,5 +44,4 @@ public class Model {
 
     @OneToMany(mappedBy = "model",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Motorbike>motorbikeSet=new HashSet<>();
-
 }

@@ -29,7 +29,6 @@ public class ModelServiceImpl implements ModelService {
     @Autowired
     private final ModelRepository modelRepository;
 
-
     @Autowired
     private final BrandService brandService;
 
@@ -78,6 +77,7 @@ public class ModelServiceImpl implements ModelService {
         } else {
             throw new ValidationException("BrandId must not be null");
         }
+
     }
 
     @Override
