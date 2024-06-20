@@ -50,15 +50,14 @@ public class Motorbike {
     @Column(name="status")
     @Enumerated(EnumType.STRING)
     private MotorbikeStatus status;
-
-    @Column(name="constraint_motorbike")
+    @Column(columnDefinition = "nvarchar(255)")
     private String constraintMotorbike;
 
     @Column(name="year_of_manufacture")
     private Long yearOfManufacture;
     @Column(name = "motorbike_plate",unique = true,length = 11)
     private String motorbikePlate;
-    @Column(unique = true)
+    @Column(columnDefinition = "nvarchar(255)")
     private String motorbikeAddress;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

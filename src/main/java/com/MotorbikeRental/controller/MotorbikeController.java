@@ -1,17 +1,11 @@
 package com.MotorbikeRental.controller;
-import com.MotorbikeRental.dto.*;
-import com.MotorbikeRental.entity.*;
-import com.MotorbikeRental.repository.UserRepository;
-import com.MotorbikeRental.service.*;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 
 
 import com.MotorbikeRental.entity.Motorbike;
+import com.MotorbikeRental.entity.MotorbikeStatus;
+import com.MotorbikeRental.entity.User;
+import com.MotorbikeRental.repository.UserRepository;
+import com.MotorbikeRental.service.JWTService;
 import com.MotorbikeRental.service.MotorbikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +44,8 @@ public class MotorbikeController {
         return ResponseEntity.ok(approvedMotorbike);
     }
 
+
+
     @RequestMapping (value="/register",method =RequestMethod.POST)
     public ResponseEntity<Motorbike> registerMotorbike(@RequestHeader("Authorization") String accessToken, @RequestBody Motorbike motorbike){
         String token = accessToken.split(" ")[1];
@@ -67,9 +63,13 @@ public class MotorbikeController {
     }
     @GetMapping("/activeMotorbikeList")
     public List<Motorbike> getAllActiveMotorbike(){
-        return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.valueOf("ACTIVE"));
+        return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.ACTIVE);
     }
 }
+
+
+
+
 
 
 
