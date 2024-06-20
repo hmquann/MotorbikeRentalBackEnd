@@ -100,6 +100,13 @@ public class ModelServiceImpl implements ModelService {
         return convertToDto(model);
     }
 
+    @Override
+    public Page<ModelDto> searchModel(String searchTerm, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Model> modelPage = modelRepository.searchByModelNameOrBrandName(searchTerm, pageable);
+        return modelPage.map(this::convertToDto);
+    }
+
     private ModelDto convertToDto(Model model) {
         ModelDto modelDto = new ModelDto();
         modelDto.setModelId(model.getId());

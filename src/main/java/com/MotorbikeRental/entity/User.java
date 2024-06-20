@@ -1,6 +1,7 @@
 package com.MotorbikeRental.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
+    @Column(name = "user_id")
     private Long id;
 
     private String firstName;
@@ -33,7 +34,7 @@ public class User implements UserDetails {
     private String password;
     private boolean gender;
 
-
+    @Column(name = "status")
     private boolean isActive;
     @Column(name = "balance")
     private double balance;
@@ -59,14 +60,14 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Location> locationSet;
 
-
+    @JsonBackReference
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Motorbike> motorbikes;
 
-    @JsonManagedReference
-    public List<Motorbike> getMotorbike(){
-        return motorbikes;
-    }
+//    @JsonBackReference
+//    public List<Motorbike> getMotorbike(){
+//        return motorbikes;
+//    }
 
     @JsonManagedReference
     public List<Location> getLocations(){
@@ -106,10 +107,10 @@ public class User implements UserDetails {
 
 
 
-    @JsonManagedReference
-    public List<Motorbike> getMotorbikes() {
-        return motorbikes;
-    }
+//    @JsonManagedReference
+//    public List<Motorbike> getMotorbikes() {
+//        return motorbikes;
+//    }
 
 
     @Override

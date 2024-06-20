@@ -31,7 +31,7 @@ public class MotorbikeController {
         return motorbikeService.getPendingMotorbikes();
     }
 
-    @PutMapping("/approve/{id}")
+    @PostMapping("/approve/{id}")
     public ResponseEntity<Motorbike> approveMotorbike(@PathVariable Long id) {
         Motorbike approvedMotorbike = motorbikeService.approveMotorbike(id);
         return ResponseEntity.ok(approvedMotorbike);

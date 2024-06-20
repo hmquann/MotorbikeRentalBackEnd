@@ -63,4 +63,12 @@ public class ModelController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @GetMapping("/search")
+    public Page<ModelDto> searchModel(
+            @RequestParam String searchTerm,
+            @RequestParam int page,
+            @RequestParam int size) {
+        return modelService.searchModel(searchTerm, page, size);
+    }
 }
