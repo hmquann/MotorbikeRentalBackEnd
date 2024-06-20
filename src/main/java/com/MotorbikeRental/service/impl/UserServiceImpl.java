@@ -48,6 +48,11 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    public void activeUser(Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setActive(true);
+        userRepository.save(user);
+    }
     public void toggleUserActiveStatus(Long id){
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setActive(!user.isActive());

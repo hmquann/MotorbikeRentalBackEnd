@@ -1,8 +1,8 @@
 package com.MotorbikeRental.service.impl;
 
+import com.MotorbikeRental.dto.BrandDto;
 import com.MotorbikeRental.entity.Brand;
 
-import com.MotorbikeRental.entity.Discount;
 import com.MotorbikeRental.exception.ValidationException;
 import com.MotorbikeRental.repository.BrandRepository;
 import com.MotorbikeRental.service.BrandService;
@@ -23,14 +23,12 @@ public class BrandServiceImpl implements BrandService {
     @Autowired
     private final BrandRepository brandRepository;
 
-
     @Override
     public List<Brand> getAllBrand() {
         return brandRepository.findAll();
     }
 
     @Override
-
     public Page<Brand> getBrandWithPagination(int page, int pageSize){
         return brandRepository.findAll(PageRequest.of(page,pageSize));
     }
@@ -70,9 +68,20 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Brand getBrand(Long id) {
-        Optional<Brand> brandOptional = brandRepository.findById(id);
-        return brandOptional.orElseThrow(() -> new EntityNotFoundException("Brand with ID " + id + " not found"));
+    public BrandDto getBrand(Long id) {
+        Brand brand = brandRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Brand not found with id: " + id));
+
+        return convertToBrandDto(brand);
+    }
+
+    private BrandDto convertToBrandDto(Brand brand) {
+        BrandDto brandDto = new BrandDto();
+        brandDto.setBrandId(brand.getBrandId());
+        brandDto.setBrandName(brand.getBrandName());
+        brandDto.setBrandOrigin(brand.getOrigin());
+
+        return brandDto;
     }
 
 

@@ -100,12 +100,6 @@ public class ModelServiceImpl implements ModelService {
         return convertToDto(model);
     }
 
-    @Override
-    public List<Model> getListModel() {
-        return modelRepository.findAll();
-    }
-
-
     private ModelDto convertToDto(Model model) {
         ModelDto modelDto = new ModelDto();
         modelDto.setModelId(model.getId());

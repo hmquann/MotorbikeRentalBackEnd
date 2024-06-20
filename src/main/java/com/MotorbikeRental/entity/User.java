@@ -68,7 +68,7 @@ public class User implements UserDetails {
         return motorbikes;
     }
 
-
+    @JsonManagedReference
 
 
     @Override
@@ -110,6 +110,9 @@ public class User implements UserDetails {
         return motorbikes;
     }
 
+    public void setLocations(List<Location> locations) {
+        this.locationSet = locations;
+    }
 
     @Override
     public boolean isEnabled() {
