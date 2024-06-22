@@ -70,6 +70,5 @@ public class Motorbike {
     }
     @ManyToOne
     @JoinColumn(name="model_id")
-
     private Model model;
 }

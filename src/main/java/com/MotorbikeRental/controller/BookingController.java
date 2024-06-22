@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/booking")
 @RequiredArgsConstructor
@@ -25,6 +27,10 @@ public class BookingController {
 //        bookingService.saveBooking(booking,userId);
 //
         return null;
+    }
+    @GetMapping(value="/listSchedule/{id}")
+    public ResponseEntity<List<Booking>> getListBookingByMotorbike(@PathVariable Long id, @RequestBody Booking booking){
+        return bookingService.getBookingListByMotorbikeId(id);
     }
 
 }

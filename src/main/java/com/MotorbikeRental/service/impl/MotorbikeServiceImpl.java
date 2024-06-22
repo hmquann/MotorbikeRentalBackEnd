@@ -8,6 +8,7 @@ import com.MotorbikeRental.entity.MotorbikeStatus;
 
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.exception.ExistPlateException;
+import com.MotorbikeRental.repository.ModelRepository;
 import com.MotorbikeRental.repository.MotorbikeRepository;
 import com.MotorbikeRental.repository.UserRepository;
 
@@ -31,6 +32,8 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
     @Autowired
     private final MotorbikeRepository motorbikeRepository;
+
+    private final ModelRepository modelRepository;
 
 
     private final ModelServiceImpl modelService;
@@ -60,6 +63,15 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     public Motorbike registerMotorbike(Motorbike motorbike) {
         if(motorbikeRepository.existsByMotorbikePlate(motorbike.getMotorbikePlate())){
             throw  new ExistPlateException("The plate is exist in the system");
+        }
+        Model model = motorbike.getModel();
+
+        // Check if the model is transient (not yet persisted)
+        if (model != null && (model.getId() == null || !modelRepository.existsById(model.getId()))) {
+            // Save the model if it is new
+            model = modelRepository.save(model);
+            // Update the motorbike with the persisted model
+            motorbike.setModel(model);
         }
 
 

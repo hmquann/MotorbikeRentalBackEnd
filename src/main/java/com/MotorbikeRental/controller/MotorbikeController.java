@@ -57,6 +57,7 @@ public class MotorbikeController {
         String token = accessToken.split(" ")[1];
         String username = this.jwtService.extractUsername(token);
         System.out.println(username);
+        System.out.println(motorbike);
         Optional<User> user = userRepository.findByEmail(username);
         if(user.isPresent()){
             user.get().setBalance(0.0);

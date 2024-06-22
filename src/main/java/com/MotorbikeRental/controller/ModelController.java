@@ -30,10 +30,10 @@ public class ModelController {
         List<ModelDto> modelDtos = modelService.getAllModels();
         return ResponseEntity.ok(modelDtos);
     }
-    @GetMapping("modelList")
-    public List<Model>getListModels(){
-        return modelService.getListModel();
-    }
+//    @GetMapping("modelList")
+//    public List<Model>getListModels(){
+//        return modelService.getListModel();
+//    }
 
 
     @GetMapping("/getAllModel/{page}/{pageSize}")
@@ -68,4 +68,12 @@ public class ModelController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+//    @GetMapping("/search")
+//    public Page<ModelDto> searchModel(
+//            @RequestParam String searchTerm,
+//            @RequestParam int page,
+//            @RequestParam int size) {
+//        return modelService.searchModel(searchTerm, page, size);
+//    }
 }
