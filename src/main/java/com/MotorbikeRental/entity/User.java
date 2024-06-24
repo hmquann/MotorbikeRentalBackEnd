@@ -64,7 +64,6 @@ public class User implements UserDetails {
         this.license = license;
     }
 
-    private double balance;
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private Set<Transaction> transactions = new HashSet<>();
@@ -79,6 +78,7 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private License license;
+
 
     @OneToMany(mappedBy = "user")
     private List<Location> locationSet;
@@ -126,14 +126,6 @@ public class User implements UserDetails {
     }
 
 
-
-    public List<Location> getLocations() {
-        return locations;
-    }
-
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
-    }
 
     @Override
     public boolean isEnabled() {

@@ -18,6 +18,18 @@
         .body {
             margin: 20px 0;
         }
+        .green-button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
         .footer {
             text-align: center;
             font-size: 12px;
@@ -28,12 +40,12 @@
 <body>
 <div class="email-container">
     <div class="header">
-        <h1>Forgot Password</h1>
+        <h1>Change Email</h1>
     </div>
     <div class="body">
         <p th:utext="'Dear ' + '<strong>' + ${userName} + '</strong>'+','"></p>
-        <p th:utext="'Please click the link below to reset new password:'"></p>
-        <a class="green-button" th:href="@{${url}}" style="background-color: green; color: white; text-decoration: none; display: inline-block; padding: 10px 20px; font-size: 16px;">RESET NEW PASSWORD</a>
+        <p th:utext="'Please click the link below to change your email:'"></p>
+        <a class="green-button" th:href="@{${url}}" style="color: white;">CHANGE EMAIL</a>
         <p th:utext="'Thank you!'"></p>
     </div>
     <div class="footer">
@@ -41,4 +53,3 @@
     </div>
 </div>
 </body>
-</html>

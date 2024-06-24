@@ -7,15 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/verify")
+@RequestMapping("/updateEmail")
 @RequiredArgsConstructor
-public class VerifyController {
+public class EmailController {
     private final UserService userService;
-    @GetMapping("/{token}")
-    public ResponseEntity<?> verifyToken(@PathVariable String token) {
-
+    @PostMapping(value="/{token}/{newEmail}")
+    public ResponseEntity<User> updateEmail(@PathVariable String token, @PathVariable String newEmail){
         User user = userService.getUserByToken(token);
-        userService.activeUserStatus(user.getId());
+        userService.updateUserEmail(user.getId(), newEmail);
         return ResponseEntity.ok(user);
     }
+
 }

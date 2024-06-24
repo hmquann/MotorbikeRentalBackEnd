@@ -3,6 +3,7 @@ import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.Model;
 import lombok.Data;
 
+import java.awt.*;
 import java.util.List;
 
 @Data
@@ -35,6 +36,6 @@ public class RegisterMotorbikeDto {
 
     private String constraintMotorbike;
 
-    private List<Feature> featureList;
+    private List<Taskbar.Feature> featureList;
 
 }

@@ -21,6 +21,9 @@ public interface UserService {
     List<User> getAllUser();
     void toggleUserActiveStatus(Long id);
     void updateUserBalance(Long id, double balance);
+    void activeUserStatus(Long id);
+
+    void updateUserEmail(Long id, String email);
 
 
 }

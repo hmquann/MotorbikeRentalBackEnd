@@ -48,11 +48,13 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
     public void toggleUserActiveStatus(Long id){
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setActive(!user.isActive());
         userRepository.save(user);
     }
+
 
 
     @Override
@@ -136,5 +138,19 @@ public class UserServiceImpl implements UserService {
             System.out.println("User with ID " + userId + " not found.");
         }
 
+    }
+
+    @Override
+    public void activeUserStatus(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setActive(true);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserEmail(Long id, String email) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setEmail(email);
+        userRepository.save(user);
     }
 }

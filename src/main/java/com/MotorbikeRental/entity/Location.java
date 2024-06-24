@@ -37,7 +37,4 @@ public class Location {
     private String addressDetail;
 
 
-    @OneToOne(mappedBy = "location", cascade = CascadeType.ALL)
-    private Motorbike motorbike;
-
 }

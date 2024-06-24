@@ -63,8 +63,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 //        motorbike.setDelivery(registerMotorbikeDto.isDelivery());
 //        motorbike.setDeliveryFee(registerMotorbikeDto.getDeliveyFeePerKilometer());
 //        motorbike.setDistanceLimitPerDay(registerMotorbikeDto.getDistanceLimitPerDay());
-
-=======
+        
 //        motorbike.setOutLimitFee(registerMotorbikeDto.getOutLimitFee());
 //        motorbike.setOverTimeFee(registerMotorbikeDto.getOvertimeFee());
 //        motorbike.setOverTimeLimit(registerMotorbikeDto.getOvertimeLimit());
