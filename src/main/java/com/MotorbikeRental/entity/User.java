@@ -37,7 +37,7 @@ public class User implements UserDetails {
     @Column(name = "status")
     private boolean isActive;
     @Column(name = "balance")
-    private double balance;
+    private Double balance;
 
     private String token;
 
@@ -70,10 +70,6 @@ public class User implements UserDetails {
 //    }
 
     @JsonManagedReference
-    public List<Location> getLocations(){
-        return locationSet;
-    }
-
 
 
     @Override
@@ -105,13 +101,19 @@ public class User implements UserDetails {
 
 
 
-
+    @JsonManagedReference
+    public List<Location> getLocations() {
+        return locationSet;
+    }
 
 //    @JsonManagedReference
 //    public List<Motorbike> getMotorbikes() {
 //        return motorbikes;
 //    }
 
+    public void setLocations(List<Location> locations) {
+        this.locationSet = locations;
+    }
 
     @Override
     public boolean isEnabled() {

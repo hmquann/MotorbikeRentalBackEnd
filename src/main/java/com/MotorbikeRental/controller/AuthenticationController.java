@@ -35,7 +35,7 @@ public class AuthenticationController {
 
     }
 
-    @CrossOrigin
+    @CrossOrigin("*")
     @PostMapping("/signin")
     public ResponseEntity<?> signin( @Valid @RequestBody SigninRequest signinRequest){
             return ResponseEntity.ok(authenticationService.signin(signinRequest));
