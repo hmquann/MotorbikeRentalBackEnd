@@ -72,4 +72,6 @@ public class Motorbike {
     @JoinColumn(name="model_id")
     @JsonManagedReference
     private Model model;
+    @OneToMany(mappedBy = "motorbike")
+    private List<Booking> bookingList;
 }
