@@ -15,6 +15,7 @@ public interface ModelService {
     ModelDto createModel(ModelDto modelDto);
     Page<ModelDto> getBrandWithPagination(int page, int pageSize);
     ModelDto getModelById(Long id);
+    Page<ModelDto> searchModel(String searchTerm, int page, int size);
 
 }
 

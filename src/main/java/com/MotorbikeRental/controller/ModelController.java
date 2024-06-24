@@ -69,11 +69,12 @@ public class ModelController {
         }
     }
 
-//    @GetMapping("/search")
-//    public Page<ModelDto> searchModel(
-//            @RequestParam String searchTerm,
-//            @RequestParam int page,
-//            @RequestParam int size) {
-//        return modelService.searchModel(searchTerm, page, size);
-//    }
+    @GetMapping("/search")
+    public Page<ModelDto> searchModel(
+            @RequestParam String searchTerm,
+            @RequestParam int page,
+            @RequestParam int size) {
+        return modelService.searchModel(searchTerm, page, size);
+    }
+
 }

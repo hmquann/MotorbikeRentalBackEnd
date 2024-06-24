@@ -1,21 +1,23 @@
 
 package com.MotorbikeRental.service.impl;
 
+import com.MotorbikeRental.dto.ModelDto;
 import com.MotorbikeRental.dto.RegisterMotorbikeDto;
-import com.MotorbikeRental.entity.Model;
-import com.MotorbikeRental.entity.Motorbike;
-import com.MotorbikeRental.entity.MotorbikeStatus;
+import com.MotorbikeRental.entity.*;
 
-import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.exception.ExistPlateException;
 import com.MotorbikeRental.repository.ModelRepository;
 import com.MotorbikeRental.repository.MotorbikeRepository;
 import com.MotorbikeRental.repository.UserRepository;
 
 import com.MotorbikeRental.service.MotorbikeService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -44,6 +46,34 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     public List<Motorbike> getAllMotorbike() {
         return motorbikeRepository.findAll();
     }
+
+    @Override
+    public Page<Motorbike> getMotorbikeWithPagination(int page, int pageSize){
+        return motorbikeRepository.findAll(PageRequest.of(page,pageSize));
+    }
+
+    @Override
+    public Page<Motorbike> searchByPlate(String searchTerm, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Motorbike> motorbikePage = motorbikeRepository.searchByMotorbikePlate(searchTerm, pageable);
+        return motorbikePage;
+    }
+
+    @Override
+    public void toggleMotorbikeStatus(Long id) {
+        Motorbike motorbike = motorbikeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Motorbike not found with id: " + id));
+
+            if (motorbike.getStatus() == MotorbikeStatus.ACTIVE) {
+                motorbike.setStatus(MotorbikeStatus.DEACTIVE);
+            } else if (motorbike.getStatus() == MotorbikeStatus.DEACTIVE) {
+                motorbike.setStatus(MotorbikeStatus.ACTIVE);
+            }
+            motorbikeRepository.save(motorbike);
+
+        }
+
+
 
     @Override
     public List<Motorbike> getMotorbikeByLessorId() {

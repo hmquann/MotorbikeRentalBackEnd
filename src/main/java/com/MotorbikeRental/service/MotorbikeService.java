@@ -1,14 +1,26 @@
 package com.MotorbikeRental.service;
 
-import com.MotorbikeRental.dto.RegisterMotorbikeDto;
-import com.MotorbikeRental.entity.Motorbike;
+
+
+
 import com.MotorbikeRental.entity.MotorbikeStatus;
+import com.MotorbikeRental.entity.Model;
+import com.MotorbikeRental.entity.Motorbike;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 
 import java.util.Date;
 import java.util.List;
 
 public interface MotorbikeService {
     public List<Motorbike>getAllMotorbike();
+
+    Page<Motorbike> getMotorbikeWithPagination(int page, int pageSize);
+
+    Page<Motorbike> searchByPlate(String searchTerm, int page, int size);
+
+    void toggleMotorbikeStatus(Long id);
 
     public List<Motorbike>getMotorbikeByLessorId();
 

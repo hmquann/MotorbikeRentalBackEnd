@@ -59,16 +59,17 @@ public class Motorbike {
     private String motorbikePlate;
     @Column(columnDefinition = "nvarchar(255)")
     private String motorbikeAddress;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "user_id")
-//    @JsonBackReference
+    @JsonManagedReference
     private User user;
 
-    @JsonBackReference
-    public User user(){
-        return user;
-    }
+//    @JsonManagedReference
+//    public User user(){
+//        return user;
+//    }
     @ManyToOne
     @JoinColumn(name="model_id")
+    @JsonManagedReference
     private Model model;
 }

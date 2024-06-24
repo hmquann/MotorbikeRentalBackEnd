@@ -1,6 +1,7 @@
 package com.MotorbikeRental.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -59,14 +60,14 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Location> locationSet;
 
-
+    @JsonBackReference
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Motorbike> motorbikes;
 
-    @JsonManagedReference
-    public List<Motorbike> getMotorbike(){
-        return motorbikes;
-    }
+//    @JsonBackReference
+//    public List<Motorbike> getMotorbike(){
+//        return motorbikes;
+//    }
 
     @JsonManagedReference
 
@@ -105,10 +106,10 @@ public class User implements UserDetails {
         return locationSet;
     }
 
-    @JsonManagedReference
-    public List<Motorbike> getMotorbikes() {
-        return motorbikes;
-    }
+//    @JsonManagedReference
+//    public List<Motorbike> getMotorbikes() {
+//        return motorbikes;
+//    }
 
     public void setLocations(List<Location> locations) {
         this.locationSet = locations;
