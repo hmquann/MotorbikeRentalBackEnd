@@ -3,7 +3,6 @@ import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.Model;
 import lombok.Data;
 
-import java.awt.*;
 import java.util.List;
 
 @Data
@@ -14,7 +13,7 @@ public class RegisterMotorbikeDto {
 
     private String motorbikePlate;
 
-    private Long manufactureYear;
+    private Long yearOfManufacture;
 
     //private String motorbikeImage;
 
@@ -24,10 +23,6 @@ public class RegisterMotorbikeDto {
 
     private Long overtimeLimit;
 
-    private Long distanceLimitPerDay;
-
-    private Long outLimitFee;
-
     private boolean delivery;
 
     private Long freeshipDistance;
@@ -36,6 +31,10 @@ public class RegisterMotorbikeDto {
 
     private String constraintMotorbike;
 
-    private List<Taskbar.Feature> featureList;
+    private String province;
+    private String district;
+    private String ward;
+    private String addressDetail;
+
 
 }

@@ -2,7 +2,9 @@ package com.MotorbikeRental.entity;
 
 
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import com.fasterxml.jackson.annotation.*;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 @Data
 @Entity
 @Table(name = "[Brand]")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "brandId")
 public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +30,15 @@ public class Brand {
     @Column(name="origin")
     private String origin;
 
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//    @JsonManagedReference()
+    @JsonIgnore
     private List<Model>modelSet=new ArrayList<>();
+
+    public void addModel(Model model) {
+        modelSet.add(model);
+        model.setBrand(this);
+    }
+
 }

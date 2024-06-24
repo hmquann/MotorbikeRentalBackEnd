@@ -26,6 +26,7 @@ public class JwtAuthenticationResponse {
 
     private String lastName;
 
+    private User user;
 
     private User user;
 }

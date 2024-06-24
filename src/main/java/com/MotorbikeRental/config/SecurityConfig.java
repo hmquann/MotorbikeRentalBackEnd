@@ -1,5 +1,6 @@
 package com.MotorbikeRental.config;
 
+import com.MotorbikeRental.entity.Role;
 import com.MotorbikeRental.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,70 +20,74 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-
 public class SecurityConfig {
 
+        private static final String[] WHITE_LIST_URL = {"/api/auth/**","api/motorbike/**,/booking/**","/password/**","updateEmail/**"};
 
-    private static final String[] WHITE_LIST_URL = {"/api/auth/**","/motorbike/**","/password/**","updateEmail/**"};
-    private final UserService userService;
-    private final JwtAuthenticatioFilter jwtAuthenticatioFilter;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+        private final UserService userService;
+
+
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+            http.csrf(AbstractHttpConfigurer::disable)
+                    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                    .authorizeHttpRequests(request ->
+                            request.requestMatchers(WHITE_LIST_URL)
+                                    .permitAll()
+                                    .requestMatchers("/api/admin").hasAnyAuthority("ADMIN")
+                                    .requestMatchers("/api/user").hasAnyAuthority("USER")
+                                    .anyRequest()
+                                    .permitAll()
+                                    .and()
+                    )
+                    .sessionManagement(manager ->
+                            manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    )
+                    .authenticationProvider(authenticationProvider())
+                    .addFilterBefore(
+                            jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
+                    );
+
+            return http.build();
+        }
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers(WHITE_LIST_URL)
-                                .permitAll()
-                                .requestMatchers("/api/admin").hasAnyAuthority("ADMIN")
-                                .requestMatchers("/api/user").hasAnyAuthority("USER")
-                                .anyRequest()
-                                .authenticated()
-                )
-                .sessionManagement(manager ->
-                        manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(
-                        jwtAuthenticatioFilter, UsernamePasswordAuthenticationFilter.class
-                );
-        return http.build();
-}
-@Bean
-public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.addAllowedOrigin("http://localhost:3000/"); // Thay * bằng origin của trang web của bạn
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // Cho phép các phương thức yêu cầu
-    configuration.addAllowedHeader("*");
-    configuration.setAllowCredentials(true);
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
-}
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:3000/"); // Thay * bằng origin của trang web của bạn
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // Cho phép các phương thức yêu cầu
+        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
-@Bean
-public AuthenticationProvider authenticationProvider(){
-    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-    authenticationProvider.setUserDetailsService(userService.userDetailsService());
-    authenticationProvider.setPasswordEncoder(passwordEncoder());
-    return authenticationProvider;
-}
+        @Bean
+        public AuthenticationProvider authenticationProvider(){
+            DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+            authenticationProvider.setUserDetailsService(userService.userDetailsService());
+            authenticationProvider.setPasswordEncoder(passwordEncoder());
+            return authenticationProvider;
+        }
 
-@Bean
-public PasswordEncoder passwordEncoder(){
-    return new BCryptPasswordEncoder();
-}
+        @Bean
+        public PasswordEncoder passwordEncoder(){
+            return new BCryptPasswordEncoder();
+        }
 
-@Bean
-public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
-    return configuration.getAuthenticationManager();
-}
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
+            return configuration.getAuthenticationManager();
+        }
 
 
 
