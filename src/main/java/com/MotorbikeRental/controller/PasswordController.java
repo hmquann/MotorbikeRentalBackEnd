@@ -1,5 +1,6 @@
 package com.MotorbikeRental.controller;
 
+import com.MotorbikeRental.dto.ChangePasswordRequest;
 import com.MotorbikeRental.dto.ResetPasswordRequest;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.service.EmailService;
@@ -36,5 +37,11 @@ public class PasswordController {
         String password = passwordEncoder.encode(resetPasswordRequest.getPassword());
         passwordService.forgotPassword(user,password);
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping(value = "/change")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest){
+        passwordService.changePassword(changePasswordRequest);
+        return ResponseEntity.ok("done");
     }
 }

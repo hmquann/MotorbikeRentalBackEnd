@@ -29,11 +29,12 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-        private static final String[] WHITE_LIST_URL = {"/api/auth/**","api/motorbike/**,/booking/**"};
+        private static final String[] WHITE_LIST_URL = {"/api/auth/**","api/motorbike/**,/booking/**","/password/**","updateEmail/**"};
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
         private final UserService userService;
+
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

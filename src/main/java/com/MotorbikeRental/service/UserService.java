@@ -23,6 +23,9 @@ public interface UserService {
 
     void activeUser(Long id);
     void updateUserBalance(Long id, double balance);
+    void activeUserStatus(Long id);
+
+    void updateUserEmail(Long id, String email);
 
 
 }
