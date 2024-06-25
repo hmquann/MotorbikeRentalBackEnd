@@ -6,6 +6,7 @@ import com.MotorbikeRental.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,18 +88,12 @@ public class MotorbikeController {
 
 
 
-    @RequestMapping (value="/register",method =RequestMethod.POST)
+    @RequestMapping (value="/register",method =RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Motorbike> registerMotorbike(@RequestHeader("Authorization") String accessToken, @RequestBody Motorbike motorbike){
         String token = accessToken.split(" ")[1];
         String username = this.jwtService.extractUsername(token);
-        System.out.println(username);
-        System.out.println(motorbike);
         Optional<User> user = userRepository.findByEmail(username);
-        if(user.isPresent()){
-            user.get().setBalance(0.0);
-            motorbike.setUser(user.get());
-        }
-
+        motorbike.setUser(user.get());
         Motorbike newMotor = motorbikeService.registerMotorbike(motorbike);
 
         return ResponseEntity.ok(newMotor);

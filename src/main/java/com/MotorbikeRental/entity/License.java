@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,11 +19,12 @@ import java.util.stream.Collectors;
 
 public class License {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="license_id")
-    private Long id;
+    @Column(name="license_number")
+    private String licenseNumber;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
-
+    private LocalDate birthOfDate;
+    private String licenseImageUrl;
+    private boolean status;
 }
