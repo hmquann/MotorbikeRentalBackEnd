@@ -1,6 +1,7 @@
 package com.MotorbikeRental.controller;
 import com.MotorbikeRental.dto.*;
 import com.MotorbikeRental.entity.*;
+import com.MotorbikeRental.repository.ModelRepository;
 import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.*;
 import jakarta.validation.Valid;
@@ -36,6 +37,9 @@ public class MotorbikeController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ModelRepository modelRepository;
 
     @GetMapping("/allMotorbike")
     public List<Motorbike> getAllMotorbike(){
@@ -92,11 +96,18 @@ public class MotorbikeController {
         String token = accessToken.split(" ")[1];
         String username = this.jwtService.extractUsername(token);
         System.out.println(username);
-        System.out.println(motorbike);
         Optional<User> user = userRepository.findByEmail(username);
         if(user.isPresent()){
             user.get().setBalance(0.0);
             motorbike.setUser(user.get());
+        }
+
+        System.out.println("THIS IS MODEL ID: " + motorbike.getModel().getId());
+
+        Optional<Model> optionalModel =  modelRepository.findById(motorbike.getModel().getId());
+
+        if (optionalModel.isPresent()) {
+            motorbike.setModel(optionalModel.get());
         }
 
         Motorbike newMotor = motorbikeService.registerMotorbike(motorbike);

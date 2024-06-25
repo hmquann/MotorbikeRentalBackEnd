@@ -61,17 +61,20 @@ public class Motorbike {
     private String motorbikeAddress;
     @ManyToOne()
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
+    //thang ngu doc di
+//    @JsonManagedReference
     private User user;
 
 //    @JsonManagedReference
 //    public User user(){
 //        return user;
 //    }
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="model_id")
-    @JsonManagedReference
+//    @JsonManagedReference
     private Model model;
+
+
     @OneToMany(mappedBy = "motorbike")
     private List<Booking> bookingList;
 }
