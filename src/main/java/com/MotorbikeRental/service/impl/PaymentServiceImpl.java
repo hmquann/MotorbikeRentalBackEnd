@@ -4,6 +4,8 @@ package com.MotorbikeRental.service.impl;
 import com.MotorbikeRental.config.VNPayConfig;
 import com.MotorbikeRental.dto.PaymentDto;
 import com.MotorbikeRental.entity.Transaction;
+import com.MotorbikeRental.entity.TransactionStatus;
+import com.MotorbikeRental.entity.TransactionType;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.exception.UserNotFoundException;
 import com.MotorbikeRental.repository.TransactionRepository;
@@ -15,8 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -30,14 +34,14 @@ public class PaymentServiceImpl implements PaymentService {
     private TransactionRepository transactionRepository;
 
     @Override
-    public ResponseEntity<?> createPayment(Long id, double amount) throws UnsupportedEncodingException {
+    public ResponseEntity<?> createPayment(Long id, BigDecimal amount) throws UnsupportedEncodingException {
         Optional<User> optionalUser = Optional.ofNullable(userService.getUserById(id));
         if (!optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
         User user = optionalUser.get();
-        long amountInVND = (long) (amount * 100);
+
 
         String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
         String vnp_TmnCode = VNPayConfig.vnp_TmnCode;
@@ -46,7 +50,7 @@ public class PaymentServiceImpl implements PaymentService {
         vnp_Params.put("vnp_Version", VNPayConfig.vnp_Version);
         vnp_Params.put("vnp_Command", VNPayConfig.vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-        vnp_Params.put("vnp_Amount", String.valueOf(amountInVND));
+        vnp_Params.put("vnp_Amount", amount.multiply(BigDecimal.valueOf(100)).toString());
         vnp_Params.put("vnp_CurrCode", "VND");
         vnp_Params.put("vnp_BankCode", "NCB");
         vnp_Params.put("vnp_Locale", "vn");
@@ -92,10 +96,11 @@ public class PaymentServiceImpl implements PaymentService {
 
         Transaction transaction =  new Transaction();
         transaction.setUsers(user);
-        transaction.setAmount(amountInVND);
+        transaction.setAmount(amount);
         transaction.setVnpTxnRef(vnp_TxnRef);
         transaction.setProcessed(false);
         transaction.setTransactionDate(new Date());
+        transaction.setType(TransactionType.TOP_UP);
         transactionRepository.save(transaction);
 
 
@@ -107,8 +112,9 @@ public class PaymentServiceImpl implements PaymentService {
         return ResponseEntity.status(HttpStatus.OK).body(paymentDto);
     }
 
+
     @Override
-    public ResponseEntity<Void> returnPayment(String vnp_ResponseCode, double amount, Long id, String vnp_TxnRef) {
+    public ResponseEntity<Void> returnPayment(String vnp_ResponseCode, BigDecimal amount, Long id, String vnp_TxnRef) {
         Optional<Transaction> optionalTransaction = transactionRepository.findByVnpTxnRef(vnp_TxnRef);
         if (!optionalTransaction.isPresent()) {
             String redirectUrl = "http://localhost:3000/payment-failed";
@@ -127,9 +133,11 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         if ("00".equals(vnp_ResponseCode)) {
+//            BigDecimal amountInVND = amount.multiply(BigDecimal.valueOf(100));
             userService.updateUserBalance(id, amount);
             transaction.setProcessed(true);
             transaction.setVnpResponseCode(vnp_ResponseCode);
+            transaction.setStatus(TransactionStatus.SUCCESS);
             transactionRepository.save(transaction);
 
             String redirectUrl = "http://localhost:3000/payment-success";
@@ -139,6 +147,7 @@ public class PaymentServiceImpl implements PaymentService {
         } else {
             transaction.setProcessed(true);
             transaction.setVnpResponseCode(vnp_ResponseCode);
+            transaction.setStatus(TransactionStatus.FAILED);
             transactionRepository.save(transaction);
 
             String redirectUrl = "http://localhost:3000/payment-failed";
