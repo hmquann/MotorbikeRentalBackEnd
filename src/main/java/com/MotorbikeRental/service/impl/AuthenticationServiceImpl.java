@@ -24,6 +24,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -61,9 +62,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPhone(signupRequest.getPhone());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setGender(signupRequest.isGender());
-        user.setBalance(0.00);
+
+        user.setBalance(BigDecimal.valueOf(0.00));
         user.setActive(false);
-        user.setBalance(Double.valueOf(0.0));
+
         Role defaultRole = roleRepository.findByName("USER");
         if (defaultRole == null) {
             defaultRole = new Role("USER");
@@ -118,7 +120,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
         jwtAuthenticationResponse.setRoles(roleNames);
         jwtAuthenticationResponse.setUser(user);
-
         jwtAuthenticationResponse.setId(user.getId());
         jwtAuthenticationResponse.setBalance(0.00);
         jwtAuthenticationResponse.setFirstName(user.getFirstName());
@@ -144,6 +145,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return jwtAuthenticationResponse;
         }
         return null;
+    }
+
+    @Override
+    public String checkEmail(String email) {
+        if(userRepository.existsByEmail(email)){
+            throw new DuplicateUserException("Email existed");
+        }
+        return email;
     }
 
 

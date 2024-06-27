@@ -94,36 +94,11 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         if(motorbikeRepository.existsByMotorbikePlate(motorbike.getMotorbikePlate())){
             throw  new ExistPlateException("The plate is exist in the system");
         }
-        Model model = motorbike.getModel();
-
-        // Check if the model is transient (not yet persisted)
-        if (model != null && (model.getId() == null || !modelRepository.existsById(model.getId()))) {
-            // Save the model if it is new
-            model = modelRepository.save(model);
-            // Update the motorbike with the persisted model
-            motorbike.setModel(model);
-        }
 
 
 
-//        Motorbike motorbike=new Motorbike();
-//        motorbike.setMotorbikePlate(registerMotorbikeDto.getMotorbikePlate());
-//        motorbike.setConstraintMotorbike(registerMotorbikeDto.getConstraintMotorbike());
-//        motorbike.setDelivery(registerMotorbikeDto.isDelivery());
-//        motorbike.setDeliveryFee(registerMotorbikeDto.getDeliveyFeePerKilometer());
-//        motorbike.setDistanceLimitPerDay(registerMotorbikeDto.getDistanceLimitPerDay());
 
 
-//        motorbike.setOutLimitFee(registerMotorbikeDto.getOutLimitFee());
-//        motorbike.setOverTimeFee(registerMotorbikeDto.getOvertimeFee());
-//        motorbike.setOverTimeLimit(registerMotorbikeDto.getOvertimeLimit());
-//        motorbike.setPrice(registerMotorbikeDto.getPrice());
-//           motorbike.setUser(.findByEmail("kiencbn2017@gmail.com"));
-//        motorbike.setTripCount(Long.valueOf(0));
-//        motorbike.setYearOfManuFacture(registerMotorbikeDto.getManufactureYear());
-//        motorbike.setModel(registerMotorbikeDto.getModel());
-//        motorbike.setStatus(MotorbikeStatus.PENDING);
-//        motorbike.setFeatures(registerMotorbikeDto.getFeatureList());
         motorbike.setStatus(MotorbikeStatus.PENDING);
         motorbike.setTripCount(Long.valueOf(0));
         return motorbikeRepository.save(motorbike);

@@ -28,6 +28,4 @@ public class JwtAuthenticationResponse {
 
     private User user;
 
-
-
 }

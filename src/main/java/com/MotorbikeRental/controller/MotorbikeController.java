@@ -1,12 +1,12 @@
 package com.MotorbikeRental.controller;
 import com.MotorbikeRental.dto.*;
 import com.MotorbikeRental.entity.*;
+import com.MotorbikeRental.repository.ModelRepository;
 import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,9 @@ public class MotorbikeController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ModelRepository modelRepository;
 
     @GetMapping("/allMotorbike")
     public List<Motorbike> getAllMotorbike(){
@@ -88,13 +92,25 @@ public class MotorbikeController {
 
 
 
-    @RequestMapping (value="/register",method =RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping (value="/register",method =RequestMethod.POST)
     public ResponseEntity<Motorbike> registerMotorbike(@RequestHeader("Authorization") String accessToken, @RequestBody Motorbike motorbike){
-        System.out.println(accessToken);
         String token = accessToken.split(" ")[1];
         String username = this.jwtService.extractUsername(token);
+        System.out.println(username);
         Optional<User> user = userRepository.findByEmail(username);
-        motorbike.setUser(user.get());
+        if(user.isPresent()){
+            user.get().setBalance(BigDecimal.valueOf(0.0));
+            motorbike.setUser(user.get());
+        }
+
+        System.out.println("THIS IS MODEL ID: " + motorbike.getModel().getId());
+
+        Optional<Model> optionalModel =  modelRepository.findById(motorbike.getModel().getId());
+
+        if (optionalModel.isPresent()) {
+            motorbike.setModel(optionalModel.get());
+        }
+
         Motorbike newMotor = motorbikeService.registerMotorbike(motorbike);
 
         return ResponseEntity.ok(newMotor);
