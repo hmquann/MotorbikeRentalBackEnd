@@ -2,6 +2,8 @@ package com.MotorbikeRental.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -19,12 +21,11 @@ import java.util.stream.Collectors;
 
 public class License {
     @Id
-    @Column(name="license_number")
     private String licenseNumber;
-    @OneToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne(mappedBy = "license", cascade = CascadeType.ALL)
     private User user;
     private LocalDate birthOfDate;
     private String licenseImageUrl;
     private boolean status;
+
 }

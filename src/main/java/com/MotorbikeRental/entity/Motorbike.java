@@ -59,19 +59,17 @@ public class Motorbike {
     private String motorbikePlate;
     @Column(columnDefinition = "nvarchar(255)")
     private String motorbikeAddress;
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
+//    @JsonManagedReference
     private User user;
 
-//    @JsonManagedReference
-//    public User user(){
-//        return user;
-//    }
+
     @ManyToOne
     @JoinColumn(name="model_id")
-    @JsonManagedReference
+//    @JsonManagedReference
     private Model model;
     @OneToMany(mappedBy = "motorbike")
+//    @JsonBackReference
     private List<Booking> bookingList;
 }

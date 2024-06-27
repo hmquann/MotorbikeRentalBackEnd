@@ -13,7 +13,7 @@ public interface LicenseRepository extends JpaRepository<License,String> {
     @Override
     Optional<License> findById(String s);
     @Query("Select l from License  l where l.user.id=:userId")
-    Optional<License>getLicenseByuserId(Long userId);
+    License getLicenseByuserId(Long userId);
     @Query("update License l set l.status = true where l.licenseNumber = :licenseNumber")
     void approveLicense(@Param("licenseNumber") String licenseNumber);
 

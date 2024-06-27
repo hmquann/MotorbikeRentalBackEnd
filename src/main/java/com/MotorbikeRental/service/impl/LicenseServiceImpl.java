@@ -15,6 +15,6 @@ public class LicenseServiceImpl implements LicenseService {
 
     @Override
     public Optional<License> getLicenseByUserId(Long userId) {
-           return licenseRepository.getLicenseByuserId(userId);
+           return Optional.ofNullable(licenseRepository.getLicenseByuserId(userId));
     }
 }

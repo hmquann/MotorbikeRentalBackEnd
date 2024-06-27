@@ -90,6 +90,7 @@ public class MotorbikeController {
 
     @RequestMapping (value="/register",method =RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Motorbike> registerMotorbike(@RequestHeader("Authorization") String accessToken, @RequestBody Motorbike motorbike){
+        System.out.println(accessToken);
         String token = accessToken.split(" ")[1];
         String username = this.jwtService.extractUsername(token);
         Optional<User> user = userRepository.findByEmail(username);
