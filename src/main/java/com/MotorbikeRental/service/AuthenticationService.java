@@ -12,4 +12,6 @@ public interface AuthenticationService {
      JwtAuthenticationResponse signin(SigninRequest signinRequest);
 
      JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
+
+     String checkEmail(String email);
 }

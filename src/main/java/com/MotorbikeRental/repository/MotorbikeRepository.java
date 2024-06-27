@@ -26,8 +26,8 @@ public interface MotorbikeRepository extends JpaRepository<Motorbike, Long>{
 
     List<Motorbike> findByStatus(MotorbikeStatus status);
 
-
     boolean existsByMotorbikePlate (String motorbikePlate);
     @Query("SELECT m from Motorbike m where m.status=:status")
-    List<Motorbike>getAllMotorbikeByStatus(String status);
+    List<Motorbike>getAllMotorbikeByStatus(MotorbikeStatus status);
+
 }

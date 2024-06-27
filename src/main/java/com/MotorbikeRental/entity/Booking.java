@@ -15,20 +15,14 @@ public class Booking {
 
     private Long renter_id;
 
-
     private Long motorbikeId;
-
 
     private LocalDateTime startDate;
 
-
     private LocalDateTime endDate;
 
-
-
     private double totalPrice;
-
-
+    @Column(columnDefinition = "nvarchar(255)")
     private String receiveLocation;
 
 //    @Column(name = "payment_id")

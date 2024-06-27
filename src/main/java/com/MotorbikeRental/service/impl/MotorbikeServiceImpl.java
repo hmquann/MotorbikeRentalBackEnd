@@ -6,6 +6,7 @@ import com.MotorbikeRental.dto.RegisterMotorbikeDto;
 import com.MotorbikeRental.entity.*;
 
 import com.MotorbikeRental.exception.ExistPlateException;
+import com.MotorbikeRental.repository.ModelRepository;
 import com.MotorbikeRental.repository.MotorbikeRepository;
 import com.MotorbikeRental.repository.UserRepository;
 
@@ -33,6 +34,8 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
     @Autowired
     private final MotorbikeRepository motorbikeRepository;
+
+    private final ModelRepository modelRepository;
 
 
     private final ModelServiceImpl modelService;
@@ -78,8 +81,9 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public List<Motorbike> getAllMotorbikeByStatus(List<Motorbike> motorbikeList, String status) {
-        return null;
+    public List<Motorbike> getAllMotorbikeByStatus(MotorbikeStatus status) {
+
+        return motorbikeRepository.getAllMotorbikeByStatus(status);
     }
 
 
@@ -89,6 +93,15 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     public Motorbike registerMotorbike(Motorbike motorbike) {
         if(motorbikeRepository.existsByMotorbikePlate(motorbike.getMotorbikePlate())){
             throw  new ExistPlateException("The plate is exist in the system");
+        }
+        Model model = motorbike.getModel();
+
+        // Check if the model is transient (not yet persisted)
+        if (model != null && (model.getId() == null || !modelRepository.existsById(model.getId()))) {
+            // Save the model if it is new
+            model = modelRepository.save(model);
+            // Update the motorbike with the persisted model
+            motorbike.setModel(model);
         }
 
 
@@ -125,7 +138,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
     @Override
     public boolean checkExistPlate( String motorbikePlate) {
-        return false;
+        return motorbikeRepository.findByMotorbikePlate(motorbikePlate).isEmpty();
     }
 
     @Override
@@ -158,6 +171,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         return null;
     }
 
+
     @Override
     public List<Motorbike> getPendingMotorbikes() {
         return motorbikeRepository.findByStatus(MotorbikeStatus.PENDING);
@@ -185,4 +199,6 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
 
+
 }
+

@@ -30,6 +30,11 @@ public class ModelController {
         List<ModelDto> modelDtos = modelService.getAllModels();
         return ResponseEntity.ok(modelDtos);
     }
+//    @GetMapping("modelList")
+//    public List<Model>getListModels(){
+//        return modelService.getListModel();
+//    }
+
 
     @GetMapping("/getAllModel/{page}/{pageSize}")
     public ResponseEntity<Page<ModelDto>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {
@@ -71,4 +76,5 @@ public class ModelController {
             @RequestParam int size) {
         return modelService.searchModel(searchTerm, page, size);
     }
+
 }

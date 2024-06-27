@@ -23,8 +23,13 @@ public interface UserService {
     void toggleUserActiveStatus(Long id);
 
     void activeUser(Long id);
+
     void updateUserBalance(Long id, BigDecimal balance);
     void withdrawMoney(Long userId, BigDecimal amount) throws Exception;
+    void activeUserStatus(Long id);
+
+    void updateUserEmail(Long id, String email);
+
 
 
 }

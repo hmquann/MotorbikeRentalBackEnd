@@ -3,11 +3,15 @@ package com.MotorbikeRental.service.impl;
 import com.MotorbikeRental.dto.BookingRequest;
 import com.MotorbikeRental.entity.Booking;
 import com.MotorbikeRental.entity.BookingStatus;
+import com.MotorbikeRental.entity.Motorbike;
 import com.MotorbikeRental.repository.BookingRepository;
 import com.MotorbikeRental.service.BookingService;
 import com.MotorbikeRental.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.MotorbikeRental.entity.BookingStatus.PENDING;
 
@@ -34,5 +38,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public boolean changeStatusBooking() {
         return false;
+    }
+
+    @Override
+    public ResponseEntity<List<Booking>> getBookingListByMotorbikeId(Long motorbikeId) {
+        return  bookingRepository.getBookingByMotorbikeId(motorbikeId);
     }
 }

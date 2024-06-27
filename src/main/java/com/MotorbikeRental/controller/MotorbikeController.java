@@ -1,12 +1,19 @@
 package com.MotorbikeRental.controller;
+import com.MotorbikeRental.dto.*;
+import com.MotorbikeRental.entity.*;
+import com.MotorbikeRental.repository.UserRepository;
+import com.MotorbikeRental.service.*;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 
 
 import com.MotorbikeRental.dto.ModelDto;
 import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.Motorbike;
-import com.MotorbikeRental.entity.User;
-import com.MotorbikeRental.repository.UserRepository;
-import com.MotorbikeRental.service.JWTService;
 import com.MotorbikeRental.service.MotorbikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -86,6 +93,7 @@ public class MotorbikeController {
         String token = accessToken.split(" ")[1];
         String username = this.jwtService.extractUsername(token);
         System.out.println(username);
+        System.out.println(motorbike);
         Optional<User> user = userRepository.findByEmail(username);
         if(user.isPresent()){
             user.get().setBalance(BigDecimal.valueOf(0.0));
@@ -96,11 +104,11 @@ public class MotorbikeController {
 
         return ResponseEntity.ok(newMotor);
     }
+    @GetMapping("/activeMotorbikeList")
+    public List<Motorbike> getAllActiveMotorbike(){
+        return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.ACTIVE);
+    }
 }
-
-
-
-
 
 
 

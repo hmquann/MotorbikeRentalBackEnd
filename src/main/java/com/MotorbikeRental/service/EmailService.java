@@ -16,4 +16,6 @@ public interface EmailService {
 
     String sendForgotPasswordEmail(User user,String url);
 
+    String sendChangeEmail(User user, String url,String newEmail);
+
 }

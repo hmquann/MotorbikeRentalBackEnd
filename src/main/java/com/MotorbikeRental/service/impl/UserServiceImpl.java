@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
     public void activeUser(Long id){
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setActive(true);
@@ -63,6 +64,7 @@ public class UserServiceImpl implements UserService {
         user.setActive(!user.isActive());
         userRepository.save(user);
     }
+
 
 
     @Override
@@ -149,6 +151,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+
     public void withdrawMoney(Long userId, BigDecimal amount) throws Exception {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
@@ -170,5 +173,17 @@ public class UserServiceImpl implements UserService {
             transaction.setStatus(TransactionStatus.SUCCESS);
             transactionRepository.save(transaction);
         }
+
+    public void activeUserStatus(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setActive(true);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserEmail(Long id, String email) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setEmail(email);
+        userRepository.save(user);
     }
 }
