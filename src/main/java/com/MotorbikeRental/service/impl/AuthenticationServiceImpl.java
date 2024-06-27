@@ -23,6 +23,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -60,6 +61,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPhone(signupRequest.getPhone());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setGender(signupRequest.isGender());
+
+        user.setBalance(BigDecimal.valueOf(0.00));
         user.setActive(false);
 
         Role defaultRole = roleRepository.findByName("USER");

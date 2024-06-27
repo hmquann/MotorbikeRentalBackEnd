@@ -5,6 +5,7 @@ import com.MotorbikeRental.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -22,10 +23,13 @@ public interface UserService {
     void toggleUserActiveStatus(Long id);
 
     void activeUser(Long id);
-    void updateUserBalance(Long id, double balance);
+
+    void updateUserBalance(Long id, BigDecimal balance);
+    void withdrawMoney(Long userId, BigDecimal amount) throws Exception;
     void activeUserStatus(Long id);
 
     void updateUserEmail(Long id, String email);
+
 
 
 }

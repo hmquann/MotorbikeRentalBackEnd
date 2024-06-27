@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -95,7 +96,7 @@ public class MotorbikeController {
         System.out.println(motorbike);
         Optional<User> user = userRepository.findByEmail(username);
         if(user.isPresent()){
-            user.get().setBalance(0.0);
+            user.get().setBalance(BigDecimal.valueOf(0.0));
             motorbike.setUser(user.get());
         }
 
