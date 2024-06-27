@@ -66,14 +66,21 @@ public class Motorbike {
     private String motorbikePlate;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
+    //thang ngu doc di
+//    @JsonManagedReference
     private User user;
-    @JsonBackReference
-    public User user(){
-        return user;
-    }
+
+//    @JsonManagedReference
+//    public User user(){
+//        return user;
+//    }
+
     @ManyToOne
     @JoinColumn(name="model_id")
-    @JsonManagedReference
+//    @JsonManagedReference
     private Model model;
+
+
+    @OneToMany(mappedBy = "motorbike")
+    private List<Booking> bookingList;
 }

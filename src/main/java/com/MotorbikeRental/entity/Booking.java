@@ -30,7 +30,8 @@ public class Booking {
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
-
-
+    @ManyToOne
+    @JoinColumn(name="id")
+    private Motorbike motorbike;
 
 }
