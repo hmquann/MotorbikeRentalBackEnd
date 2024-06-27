@@ -1,13 +1,11 @@
 package com.MotorbikeRental.controller;
 
 
-import com.MotorbikeRental.dto.JwtAuthenticationResponse;
-import com.MotorbikeRental.dto.RefreshTokenRequest;
-import com.MotorbikeRental.dto.SigninRequest;
-import com.MotorbikeRental.dto.SignupRequest;
+import com.MotorbikeRental.dto.*;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.service.AuthenticationService;
 import com.MotorbikeRental.service.EmailService;
+import com.MotorbikeRental.service.UserService;
 import com.MotorbikeRental.service.impl.EmailServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -23,6 +21,7 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
     private final EmailService emailService;
+    private final UserService userService;
 
 
     @RequestMapping (value="/signup",method =RequestMethod.POST)
@@ -35,9 +34,22 @@ public class AuthenticationController {
 
     }
 
-    @CrossOrigin("*")
+    @RequestMapping (value="/changeEmail",method =RequestMethod.POST)
+    public ResponseEntity<User> changeEmail(@RequestBody ChangeEmailRequest changeEmailRequest, HttpServletRequest httpServletRequest){
+        User user = userService.getUserById(changeEmailRequest.getUserId());
+        String newEmail = changeEmailRequest.getNewEmail();
+        authenticationService.checkEmail(newEmail);
+        String url = httpServletRequest.getRequestURL().toString()+"/updateEmail/"+user.getToken()+"/"+newEmail;
+        String newUrl = url.replace("localhost:8080", "localhost:3000");
+        emailService.sendChangeEmail(user, newUrl.replace(httpServletRequest.getServletPath(),""), newEmail);
+        return ResponseEntity.ok(user);
+
+    }
+
+    @CrossOrigin
     @PostMapping("/signin")
-    public ResponseEntity<?> signin( @Valid @RequestBody SigninRequest signinRequest){
+    public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest){
+
             return ResponseEntity.ok(authenticationService.signin(signinRequest));
     }
 

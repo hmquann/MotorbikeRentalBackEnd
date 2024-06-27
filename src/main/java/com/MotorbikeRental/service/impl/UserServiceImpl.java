@@ -3,10 +3,10 @@ package com.MotorbikeRental.service.impl;
 
 import com.MotorbikeRental.config.VNPayConfig;
 import com.MotorbikeRental.dto.PaymentDto;
-import com.MotorbikeRental.entity.Role;
-import com.MotorbikeRental.entity.User;
+import com.MotorbikeRental.entity.*;
 import com.MotorbikeRental.exception.UserNotFoundException;
 import com.MotorbikeRental.repository.RoleRepository;
+import com.MotorbikeRental.repository.TransactionRepository;
 import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +19,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +32,9 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     @Autowired
     private final VNPayConfig vnpayConfig;
+
+    @Autowired
+    private final TransactionRepository transactionRepository;
 
     @Override
     public UserDetailsService userDetailsService() {
@@ -48,6 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
     public void activeUser(Long id){
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setActive(true);
@@ -58,6 +64,7 @@ public class UserServiceImpl implements UserService {
         user.setActive(!user.isActive());
         userRepository.save(user);
     }
+
 
 
     @Override
@@ -121,15 +128,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
-    public void updateUserBalance(Long userId, double amount) {
+    public void updateUserBalance(Long userId, BigDecimal amount) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
-            Double currentBalance = user.getBalance();
+            BigDecimal currentBalance = user.getBalance();
             if (currentBalance != null) {
 
-                double newBalance = currentBalance + amount;
+                BigDecimal newBalance = currentBalance.add(amount);
                 user.setBalance(newBalance);
                 userRepository.save(user);
             } else {
@@ -141,5 +148,42 @@ public class UserServiceImpl implements UserService {
             System.out.println("User with ID " + userId + " not found.");
         }
 
+    }
+
+    @Override
+
+    public void withdrawMoney(Long userId, BigDecimal amount) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            BigDecimal currentBalance = user.getBalance();
+            if(currentBalance.compareTo(amount) < 0) {
+                throw new Exception("Insufficient money");
+            }
+                BigDecimal newBalance = currentBalance.subtract(amount);
+                user.setBalance(newBalance);
+                userRepository.save(user);
+
+            Transaction transaction = new Transaction();
+            transaction.setUsers(user);
+            transaction.setAmount(amount);
+            transaction.setProcessed(true);
+            transaction.setTransactionDate(new Date());
+            transaction.setType(TransactionType.WITHDRAW);
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            transactionRepository.save(transaction);
+        }
+
+    public void activeUserStatus(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setActive(true);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserEmail(Long id, String email) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setEmail(email);
+        userRepository.save(user);
     }
 }
