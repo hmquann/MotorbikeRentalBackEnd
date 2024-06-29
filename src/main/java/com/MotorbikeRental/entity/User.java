@@ -60,6 +60,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Location> locationSet;
 
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Message> messages;
+
     @JsonBackReference
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Motorbike> motorbikes;
@@ -70,8 +74,6 @@ public class User implements UserDetails {
 //    }
 
     @JsonManagedReference
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()

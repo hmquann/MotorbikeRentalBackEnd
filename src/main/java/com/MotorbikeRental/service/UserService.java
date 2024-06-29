@@ -27,5 +27,7 @@ public interface UserService {
 
     void updateUserEmail(Long id, String email);
 
+    String getUserNameByEmail(String email);
+
 
 }
