@@ -12,6 +12,8 @@ import com.MotorbikeRental.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -128,6 +130,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
+    @Override
+    public Page<User> getUserByPagination(int page, int pageSize) {
+        return userRepository.findAll(PageRequest.of(page,pageSize));
+    }
+
     public void updateUserBalance(Long userId, BigDecimal amount) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
@@ -157,12 +164,12 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             BigDecimal currentBalance = user.getBalance();
-            if(currentBalance.compareTo(amount) < 0) {
+            if (currentBalance.compareTo(amount) < 0) {
                 throw new Exception("Insufficient money");
             }
-                BigDecimal newBalance = currentBalance.subtract(amount);
-                user.setBalance(newBalance);
-                userRepository.save(user);
+            BigDecimal newBalance = currentBalance.subtract(amount);
+            user.setBalance(newBalance);
+            userRepository.save(user);
 
             Transaction transaction = new Transaction();
             transaction.setUsers(user);
@@ -173,6 +180,7 @@ public class UserServiceImpl implements UserService {
             transaction.setStatus(TransactionStatus.SUCCESS);
             transactionRepository.save(transaction);
         }
+    }
 
     public void activeUserStatus(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));

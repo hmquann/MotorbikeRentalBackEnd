@@ -28,5 +28,5 @@ public class JwtAuthenticationResponse {
 
     private User user;
 
-    private User user;
+
 }

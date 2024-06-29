@@ -1,10 +1,12 @@
 package com.MotorbikeRental.controller;
 
+import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.exception.UserNotFoundException;
 import com.MotorbikeRental.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,12 @@ public class UserController {
     @GetMapping("/allUser")
     public List<User> getAllUser(){
         return userService.getAllUser();
+    }
+
+    @GetMapping("/allUser/{page}/{pageSize}")
+    public ResponseEntity<Page<User>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {
+        Page<User> userPage = userService.getUserByPagination(page,pageSize);
+        return ResponseEntity.ok(userPage);
     }
 
     @GetMapping("/{id}")

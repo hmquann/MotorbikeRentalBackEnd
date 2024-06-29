@@ -64,7 +64,7 @@ public class Motorbike {
     private Long yearOfManuFacture;
     @Column(name = "motorbike_plate",unique = true,length = 11)
     private String motorbikePlate;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "user_id")
     //thang ngu doc di
 //    @JsonManagedReference

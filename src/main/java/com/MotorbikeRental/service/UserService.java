@@ -1,7 +1,9 @@
 package com.MotorbikeRental.service;
 
 
+import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ public interface UserService {
     User updateUser(Long id, User user);
     void deleteUser(Long id);
     List<User> getAllUser();
+    Page<User> getUserByPagination(int page, int pageSize);
     void toggleUserActiveStatus(Long id);
 
     void activeUser(Long id);
