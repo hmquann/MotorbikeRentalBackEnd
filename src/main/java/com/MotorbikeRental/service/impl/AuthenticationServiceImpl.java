@@ -113,19 +113,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Set<Role> roles = user.getRoles();
         List<String> roleNames = roles.stream().map(Role::getName).collect(Collectors.toList());
 
-
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
         jwtAuthenticationResponse.setToken(jwt);
         user.setLicense(licenseRepository.getLicenseByuserId(user.getId()));
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
         jwtAuthenticationResponse.setRoles(roleNames);
-        jwtAuthenticationResponse.setUser(user);
         jwtAuthenticationResponse.setId(user.getId());
         jwtAuthenticationResponse.setBalance(0.00);
         jwtAuthenticationResponse.setFirstName(user.getFirstName());
         jwtAuthenticationResponse.setLastName(user.getLastName());
-
-
+        jwtAuthenticationResponse.setGender(user.isGender());
+        jwtAuthenticationResponse.setEmail(user.getEmail());
+        jwtAuthenticationResponse.setPhone(user.getPhone());
         return jwtAuthenticationResponse;
     }
 

@@ -14,9 +14,11 @@ public class JwtAuthenticationResponse {
     private String token;
 
     private String refreshToken;
+    private String email;
+
+    private String phone;
 
     private List<String> roles;
-
 
     private Long id;
 
@@ -26,6 +28,5 @@ public class JwtAuthenticationResponse {
 
     private String lastName;
 
-    private User user;
-
+    private boolean isGender;
 }

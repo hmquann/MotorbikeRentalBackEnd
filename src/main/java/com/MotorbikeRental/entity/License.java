@@ -3,6 +3,7 @@ package com.MotorbikeRental.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,7 +23,10 @@ import java.util.stream.Collectors;
 public class License {
     @Id
     private String licenseNumber;
-    @OneToOne(mappedBy = "license", cascade = CascadeType.ALL)
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
     private LocalDate birthOfDate;
     private String licenseImageUrl;

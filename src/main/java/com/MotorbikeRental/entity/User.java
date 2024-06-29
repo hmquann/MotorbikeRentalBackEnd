@@ -46,7 +46,7 @@ public class User implements UserDetails {
     private String token;
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonBackReference
     private List<Transaction> transactions;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -57,25 +57,21 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToOne
-    @JoinColumn(name="license_number")
-    @JsonBackReference
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private License license;
 
     @OneToMany(mappedBy = "user")
+
     private List<Location> locationSet;
 
 
-    @OneToMany(mappedBy = "user")
-    @JsonBackReference
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Motorbike> motorbikes;
 
-//    @JsonBackReference
-//    public List<Motorbike> getMotorbike(){
-//        return motorbikes;
-//    }
 
-    @JsonManagedReference
+
 
 
     @Override
