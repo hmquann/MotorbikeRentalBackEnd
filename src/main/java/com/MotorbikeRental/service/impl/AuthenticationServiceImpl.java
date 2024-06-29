@@ -9,6 +9,7 @@ import com.MotorbikeRental.entity.Role;
 import com.MotorbikeRental.exception.DuplicateUserException;
 import com.MotorbikeRental.exception.InactiveUserException;
 import com.MotorbikeRental.exception.InvalidCredentialsException;
+import com.MotorbikeRental.repository.LicenseRepository;
 import com.MotorbikeRental.repository.RoleRepository;
 import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.AuthenticationService;
@@ -41,7 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JWTService jwtService;
     private final RoleRepository roleRepository;
-
+    private final LicenseRepository licenseRepository;
     @Override
     public User signUp(SignupRequest signupRequest){
         if(userRepository.existsByEmail(signupRequest.getEmail())){
@@ -112,18 +113,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Set<Role> roles = user.getRoles();
         List<String> roleNames = roles.stream().map(Role::getName).collect(Collectors.toList());
 
-
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
         jwtAuthenticationResponse.setToken(jwt);
+        user.setLicense(licenseRepository.getLicenseByuserId(user.getId()));
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
         jwtAuthenticationResponse.setRoles(roleNames);
-        jwtAuthenticationResponse.setUser(user);
         jwtAuthenticationResponse.setId(user.getId());
         jwtAuthenticationResponse.setBalance(0.00);
         jwtAuthenticationResponse.setFirstName(user.getFirstName());
         jwtAuthenticationResponse.setLastName(user.getLastName());
-
-
+        jwtAuthenticationResponse.setGender(user.isGender());
+        jwtAuthenticationResponse.setEmail(user.getEmail());
+        jwtAuthenticationResponse.setPhone(user.getPhone());
         return jwtAuthenticationResponse;
     }
 

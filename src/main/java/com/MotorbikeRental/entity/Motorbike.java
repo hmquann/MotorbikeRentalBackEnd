@@ -64,10 +64,10 @@ public class Motorbike {
     private Long yearOfManuFacture;
     @Column(name = "motorbike_plate",unique = true,length = 11)
     private String motorbikePlate;
-    @ManyToOne(fetch = FetchType.LAZY)
+    private String motorbikeAddress;
+    @ManyToOne
     @JoinColumn(name = "user_id")
-    //thang ngu doc di
-//    @JsonManagedReference
+    @JsonBackReference
     private User user;
 
 //    @JsonManagedReference
@@ -77,10 +77,10 @@ public class Motorbike {
 
     @ManyToOne
     @JoinColumn(name="model_id")
-//    @JsonManagedReference
     private Model model;
 
 
     @OneToMany(mappedBy = "motorbike")
+    @JsonBackReference
     private List<Booking> bookingList;
 }

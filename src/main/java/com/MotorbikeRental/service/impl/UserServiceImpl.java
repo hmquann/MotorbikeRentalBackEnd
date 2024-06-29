@@ -157,12 +157,12 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             BigDecimal currentBalance = user.getBalance();
-            if(currentBalance.compareTo(amount) < 0) {
+            if (currentBalance.compareTo(amount) < 0) {
                 throw new Exception("Insufficient money");
             }
-                BigDecimal newBalance = currentBalance.subtract(amount);
-                user.setBalance(newBalance);
-                userRepository.save(user);
+            BigDecimal newBalance = currentBalance.subtract(amount);
+            user.setBalance(newBalance);
+            userRepository.save(user);
 
             Transaction transaction = new Transaction();
             transaction.setUsers(user);
@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
             transaction.setStatus(TransactionStatus.SUCCESS);
             transactionRepository.save(transaction);
         }
-
+    }
     public void activeUserStatus(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setActive(true);

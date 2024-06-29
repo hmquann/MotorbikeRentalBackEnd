@@ -29,7 +29,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-        private static final String[] WHITE_LIST_URL = {"/api/auth/**","api/motorbike/**,/booking/**","/password/**","updateEmail/**"};
+        private static final String[] WHITE_LIST_URL = {"/api/auth/**","api/motorbike/**,/booking/**","/password/**","updateEmail/**","api/licence/**"};
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
