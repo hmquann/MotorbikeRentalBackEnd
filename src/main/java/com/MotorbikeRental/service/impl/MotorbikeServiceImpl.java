@@ -1,6 +1,7 @@
 
 package com.MotorbikeRental.service.impl;
 
+import com.MotorbikeRental.dto.ListActiveMotorbikeDto;
 import com.MotorbikeRental.dto.ModelDto;
 import com.MotorbikeRental.dto.RegisterMotorbikeDto;
 import com.MotorbikeRental.entity.*;
@@ -13,9 +14,12 @@ import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.MotorbikeService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.mapper.Mapper;
 import org.hibernate.Hibernate;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,7 +35,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MotorbikeServiceImpl  implements MotorbikeService {
 
-
+    @Autowired
+    private final ModelMapper mapper;
     @Autowired
     private final MotorbikeRepository motorbikeRepository;
 
@@ -43,8 +48,13 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
 
     @Override
-    public List<Motorbike> getAllMotorbike() {
-        return motorbikeRepository.findAll();
+    public Page<RegisterMotorbikeDto> getAllMotorbike(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        List<Motorbike> motorbikeList = motorbikeRepository.findAll();
+        List<RegisterMotorbikeDto> dtoList = motorbikeList.stream()
+                .map(motorbike -> mapper.map(motorbike, RegisterMotorbikeDto.class))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtoList, pageable, dtoList.size());
     }
 
     @Override
@@ -81,28 +91,24 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public List<Motorbike> getAllMotorbikeByStatus(MotorbikeStatus status) {
-
-        return motorbikeRepository.getAllMotorbikeByStatus(status);
+    public Page<ListActiveMotorbikeDto> getAllMotorbikeByStatus(MotorbikeStatus status, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        List<Motorbike> motorbikeList = motorbikeRepository.getAllMotorbikeByStatus(status);
+        List<ListActiveMotorbikeDto> dtoList = motorbikeList.stream()
+                .map(motorbike -> mapper.map(motorbike, ListActiveMotorbikeDto.class))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtoList, pageable, dtoList.size());
     }
-
-
-
     @Override
 
-    public Motorbike registerMotorbike(Motorbike motorbike) {
-        if(motorbikeRepository.existsByMotorbikePlate(motorbike.getMotorbikePlate())){
+    public Motorbike registerMotorbike(RegisterMotorbikeDto registerMotorbikeDto) {
+        if(motorbikeRepository.existsByMotorbikePlate(registerMotorbikeDto.getMotorbikePlate())){
             throw  new ExistPlateException("The plate is exist in the system");
         }
-
-
-
-
-
+        Motorbike motorbike=mapper.map(registerMotorbikeDto,Motorbike.class);
         motorbike.setStatus(MotorbikeStatus.PENDING);
         motorbike.setTripCount(Long.valueOf(0));
         return motorbikeRepository.save(motorbike);
-
 
     }
 
@@ -148,8 +154,13 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
 
     @Override
-    public List<Motorbike> getPendingMotorbikes() {
-        return motorbikeRepository.findByStatus(MotorbikeStatus.PENDING);
+    public Page<RegisterMotorbikeDto> getPendingMotorbikes(MotorbikeStatus status,int page,int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        List<Motorbike> motorbikeList = motorbikeRepository.getAllMotorbikeByStatus(status);
+        List<RegisterMotorbikeDto> dtoList = motorbikeList.stream()
+                .map(motorbike -> mapper.map(motorbike, RegisterMotorbikeDto.class))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtoList, pageable, dtoList.size());
     }
 
     @Override

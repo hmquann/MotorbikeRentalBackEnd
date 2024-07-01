@@ -1,16 +1,25 @@
 package com.MotorbikeRental.service.impl;
 
+import com.MotorbikeRental.dto.LicenseDto;
+import com.MotorbikeRental.dto.RegisterLicenseDto;
 import com.MotorbikeRental.entity.License;
 import com.MotorbikeRental.repository.LicenseRepository;
 import com.MotorbikeRental.service.LicenseService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class LicenseServiceImpl implements LicenseService {
+    @Autowired
+    private ModelMapper mapper;
     @Autowired
     private LicenseRepository licenseRepository;
     @Override
@@ -20,12 +29,19 @@ public class LicenseServiceImpl implements LicenseService {
     }
 
     @Override
-    public Optional<License> getLicenseByUserId(Long userId) {
-           return Optional.ofNullable(licenseRepository.getLicenseByuserId(userId));
+    public LicenseDto getLicenseByUserId(Long userId) {
+           License license= licenseRepository.getLicenseByuserId(userId);
+           return mapper.map(license, LicenseDto.class);
     }
 
     @Override
-    public Page<License> getLicenseWithPagination(int page, int pageSize) {
-        return licenseRepository.findAll(PageRequest.of(page,pageSize));
+    public Page<LicenseDto> getNotApproveLicenseWithPagination(int page, int pageSize) {
+
+        Pageable pageable = PageRequest.of(page, pageSize);
+        List<License> licenseList=licenseRepository.getNotApproveLicenseList();
+        List<LicenseDto> dtoList = licenseList.stream()
+                .map(license -> mapper.map(license, LicenseDto.class))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtoList, pageable, dtoList.size());
     }
 }
