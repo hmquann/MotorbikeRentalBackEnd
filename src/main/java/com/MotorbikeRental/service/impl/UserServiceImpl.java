@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -135,6 +136,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(PageRequest.of(page,pageSize));
     }
 
+    @Override
+    public Page<User> searchUserByEmailOrPhone(String searchTerm, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage = userRepository.findByEmailOrPhone(searchTerm, pageable);
+        return userPage;
+    }
+
     public void updateUserBalance(Long userId, BigDecimal amount) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
@@ -181,7 +189,6 @@ public class UserServiceImpl implements UserService {
             transactionRepository.save(transaction);
         }
     }
-
     public void activeUserStatus(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setActive(true);

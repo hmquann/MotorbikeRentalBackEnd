@@ -3,6 +3,8 @@ package com.MotorbikeRental.repository;
 import com.MotorbikeRental.entity.Role;
 import com.MotorbikeRental.entity.User;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +16,8 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    @Query("SELECT u FROM User u WHERE u.email LIKE %:searchTerm% OR u.phone LIKE %:searchTerm%")
+    Page<User> findByEmailOrPhone(String searchTerm, Pageable pageable);
 
     Optional<User> findByEmail(String email);
 

@@ -1,6 +1,7 @@
 package com.MotorbikeRental.service;
 
 
+import com.MotorbikeRental.dto.ModelDto;
 import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.User;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,7 @@ public interface UserService {
     void activeUserStatus(Long id);
 
     void updateUserEmail(Long id, String email);
+    Page<User> searchUserByEmailOrPhone(String searchTerm, int page, int size);
 
 
 

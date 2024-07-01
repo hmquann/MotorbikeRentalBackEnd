@@ -1,5 +1,6 @@
 package com.MotorbikeRental.controller;
 
+import com.MotorbikeRental.dto.ModelDto;
 import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.exception.UserNotFoundException;
@@ -35,6 +36,14 @@ public class UserController {
     public ResponseEntity<Page<User>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {
         Page<User> userPage = userService.getUserByPagination(page,pageSize);
         return ResponseEntity.ok(userPage);
+    }
+
+    @GetMapping("/search")
+    public Page<User> searchModel(
+            @RequestParam String searchTerm,
+            @RequestParam int page,
+            @RequestParam int size) {
+        return userService.searchUserByEmailOrPhone(searchTerm, page, size);
     }
 
     @GetMapping("/{id}")

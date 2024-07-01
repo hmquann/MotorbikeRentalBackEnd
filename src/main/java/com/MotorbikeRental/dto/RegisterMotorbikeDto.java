@@ -1,6 +1,7 @@
 package com.MotorbikeRental.dto;
 import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.Model;
+import com.MotorbikeRental.entity.MotorbikeImage;
 import lombok.Data;
 
 import java.util.List;
@@ -36,5 +37,5 @@ public class RegisterMotorbikeDto {
     private String ward;
     private String addressDetail;
 
-
+    private List<MotorbikeImage>motorbikeImages;
 }
