@@ -10,5 +10,9 @@ public interface MessageService {
     Message saveMessage(Message message);
     List<Message> getAllMessagesByUser(String room);
 
+    List<Message> getListMessagesByUniqueRoom(String room);
+
     Message getLastMessageByUniqueRoom(String uniqueRoom);
+
+    Message getLastMessageAllRoom(String room);
 }

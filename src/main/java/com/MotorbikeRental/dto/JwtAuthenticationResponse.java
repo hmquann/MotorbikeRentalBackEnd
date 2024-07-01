@@ -26,6 +26,10 @@ public class JwtAuthenticationResponse {
 
     private String lastName;
 
-    private User user;
+    private String userToken;
+
+    private String email;
+
+    private String phone;
 
 }

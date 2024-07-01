@@ -30,9 +30,26 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    public List<Message> getListMessagesByUniqueRoom(String room) {
+        return messageRepository.getListMessageByUniqueRoom(room);
+    }
+
+    @Override
     public Message getLastMessageByUniqueRoom(String uniqueRoom) {
         Pageable pageable = PageRequest.of(0, 1); // Lấy page đầu tiên với kích thước 1 (lấy top 1 record)
         List<Message> messages = messageRepository.getLastMessageByUniqueRoom(uniqueRoom,pageable);
+
+        if (!messages.isEmpty()) {
+            return messages.get(0); // Trả về phần tử đầu tiên trong danh sách, tức là top 1 record
+        }
+
+        return null;
+    }
+
+    @Override
+    public Message getLastMessageAllRoom(String room) {
+        Pageable pageable = PageRequest.of(0, 1); // Lấy page đầu tiên với kích thước 1 (lấy top 1 record)
+        List<Message> messages = messageRepository.getLastMessageAllRoom(room,pageable);
 
         if (!messages.isEmpty()) {
             return messages.get(0); // Trả về phần tử đầu tiên trong danh sách, tức là top 1 record

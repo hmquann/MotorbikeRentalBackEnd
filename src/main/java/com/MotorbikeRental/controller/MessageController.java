@@ -38,6 +38,17 @@ public class MessageController {
     public Message getLastMessageByUniqueRoom(@PathVariable String uniqueRoom) {
         return ResponseEntity.ok(messageService.getLastMessageByUniqueRoom(uniqueRoom)).getBody();
     }
+
+    @GetMapping("/getLastMessageAllRoom/{room}")
+    public Message getLastMessageAllRoom(@PathVariable String room) {
+        String roomPattern = "%"+room+"%";
+        return ResponseEntity.ok(messageService.getLastMessageAllRoom(roomPattern)).getBody();
+    }
+
+    @GetMapping("/getListMessageByUniqueRoom/{uniqueRoom}")
+    public ResponseEntity<List<Message>> getListMessageByUniqueRoom(@PathVariable String uniqueRoom) {
+        return ResponseEntity.ok(messageService.getListMessagesByUniqueRoom(uniqueRoom));
+    }
     @PostMapping
     public ResponseEntity<Message> sendMessage(@RequestBody Message message) {
         return ResponseEntity.ok(messageService.saveMessage(message));

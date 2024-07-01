@@ -16,6 +16,12 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     @Query("SELECT m FROM Message m WHERE m.room LIKE :roomPattern")
     List<Message> getAllMessageByUser(@Param("roomPattern") String roomPattern);
 
+    @Query("SELECT m FROM Message m WHERE m.room LIKE :roomPattern")
+    List<Message> getListMessageByUniqueRoom(@Param("roomPattern") String roomPattern);
+
     @Query("SELECT m FROM Message m WHERE m.room = :roomPattern ORDER BY m.timestamp DESC")
     List<Message> getLastMessageByUniqueRoom(@Param("roomPattern") String roomPattern, Pageable pageable);
+
+    @Query("SELECT m FROM Message m WHERE m.room LIKE :roomPattern ORDER BY m.timestamp DESC")
+    List<Message> getLastMessageAllRoom(@Param("roomPattern") String roomPattern, Pageable pageable);
 }
