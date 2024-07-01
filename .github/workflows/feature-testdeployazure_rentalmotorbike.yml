@@ -44,12 +44,12 @@ jobs:
           path: '${{ github.workspace }}/target'
 
       - name: Login to Azure
-        uses: azure/login@v1
+        uses: azure/CLI@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_71980B292B174B9EBFD749BDBEC0D2AA }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_367BF9A3B9894DC986D4EE1BD88C83CB }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_6852DD5BA5114BACBD5739B72626BEC4 }}
-          client-secret: ${{ secrets.CLIENT_SECRET }}
+          azcliversion: latest
+          inlineScript: |
+            az login --service-principal -u ${{ secrets.AZUREAPPSERVICE_CLIENTID_71980B292B174B9EBFD749BDBEC0D2AA }} -p ${{ secrets.CLIENT_SECRET }} --tenant ${{ secrets.AZUREAPPSERVICE_TENANTID_367BF9A3B9894DC986D4EE1BD88C83CB }}
+            az account set --subscription ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_6852DD5BA5114BACBD5739B72626BEC4 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
