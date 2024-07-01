@@ -11,10 +11,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v2
 
       - name: Set up Java version
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
           java-version: '17'
 
@@ -44,12 +44,9 @@ jobs:
           path: '${{ github.workspace }}/target'
 
       - name: Login to Azure
-        uses: azure/CLI@v1
+        uses: azure/login@v1
         with:
-          azcliversion: latest
-          inlineScript: |
-            az login --service-principal -u ${{ secrets.AZUREAPPSERVICE_CLIENTID_71980B292B174B9EBFD749BDBEC0D2AA }} -p ${{ secrets.CLIENT_SECRET }} --tenant ${{ secrets.AZUREAPPSERVICE_TENANTID_367BF9A3B9894DC986D4EE1BD88C83CB }}
-            az account set --subscription ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_6852DD5BA5114BACBD5739B72626BEC4 }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
