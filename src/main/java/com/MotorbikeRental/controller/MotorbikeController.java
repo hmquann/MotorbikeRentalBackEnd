@@ -42,16 +42,16 @@ public class MotorbikeController {
     @Autowired
     private ModelRepository modelRepository;
 
-    @GetMapping("/allMotorbike")
-    public List<Motorbike> getAllMotorbike(){
-        return motorbikeService.getAllMotorbike();
+    @GetMapping("/allMotorbike/{page}/{pageSize}")
+    public Page<RegisterMotorbikeDto> getAllMotorbike(@PathVariable int page,@PathVariable int pageSize) {
+        return motorbikeService.getAllMotorbike(page,pageSize);
     }
 
-    @GetMapping("/allMotorbike/{page}/{pageSize}")
-    public ResponseEntity<Page<Motorbike>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {
-        Page<Motorbike> motorbikePage = motorbikeService.getMotorbikeWithPagination(page,pageSize);
-        return ResponseEntity.ok(motorbikePage);
-    }
+//    @GetMapping("/allMotorbike/{page}/{pageSize}")
+//    public ResponseEntity<Page<Motorbike>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {
+//        Page<Motorbike> motorbikePage = motorbikeService.getMotorbikeWithPagination(page,pageSize);
+//        return ResponseEntity.ok(motorbikePage);
+//    }
 
     @GetMapping("/search")
     public Page<Motorbike> searchByPlate(
@@ -73,9 +73,9 @@ public class MotorbikeController {
         }
     }
 
-    @GetMapping("/pending")
-    public List<Motorbike> getPendingMotorbikes(){
-        return motorbikeService.getPendingMotorbikes();
+    @GetMapping("/pending/{page}/{pageSize}")
+    public Page<RegisterMotorbikeDto> getPendingMotorbikes(@PathVariable int page,@PathVariable int pageSize){
+        return motorbikeService.getPendingMotorbikes(MotorbikeStatus.PENDING,page,pageSize);
     }
 
     @PutMapping("/approve/{id}")
@@ -93,31 +93,14 @@ public class MotorbikeController {
 
 
     @RequestMapping (value="/register",method =RequestMethod.POST)
-    public ResponseEntity<Motorbike> registerMotorbike(@RequestHeader("Authorization") String accessToken, @RequestBody Motorbike motorbike){
-        String token = accessToken.split(" ")[1];
-        String username = this.jwtService.extractUsername(token);
-        System.out.println(username);
-        Optional<User> user = userRepository.findByEmail(username);
-        if(user.isPresent()){
-            user.get().setBalance(BigDecimal.valueOf(0.0));
-            motorbike.setUser(user.get());
-        }
-
-        System.out.println("THIS IS MODEL ID: " + motorbike.getModel().getId());
-
-        Optional<Model> optionalModel =  modelRepository.findById(motorbike.getModel().getId());
-
-        if (optionalModel.isPresent()) {
-            motorbike.setModel(optionalModel.get());
-        }
-
-        Motorbike newMotor = motorbikeService.registerMotorbike(motorbike);
-
-        return ResponseEntity.ok(newMotor);
+    public ResponseEntity<Motorbike> registerMotorbike( @RequestBody RegisterMotorbikeDto registerMotorbikeDto){
+        Motorbike motorbike=new Motorbike();
+        motorbikeService.registerMotorbike(registerMotorbikeDto);
+        return ResponseEntity.ok(motorbike);
     }
-    @GetMapping("/activeMotorbikeList")
-    public List<Motorbike> getAllActiveMotorbike(){
-        return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.ACTIVE);
+    @GetMapping("/activeMotorbikeList/{page}/{pageSize}")
+    public Page<ListActiveMotorbikeDto> getAllActiveMotorbike(@PathVariable int page,@PathVariable int pageSize){
+        return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.ACTIVE,page,pageSize);
     }
 }
 

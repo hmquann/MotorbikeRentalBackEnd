@@ -3,6 +3,8 @@ package com.MotorbikeRental.service.impl;
 
 import com.MotorbikeRental.config.VNPayConfig;
 import com.MotorbikeRental.dto.PaymentDto;
+import com.MotorbikeRental.dto.RegisterMotorbikeDto;
+import com.MotorbikeRental.dto.UserDto;
 import com.MotorbikeRental.entity.*;
 import com.MotorbikeRental.exception.UserNotFoundException;
 import com.MotorbikeRental.repository.RoleRepository;
@@ -11,7 +13,12 @@ import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +43,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private final TransactionRepository transactionRepository;
-
+    @Autowired
+    private final ModelMapper mapper;
     @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -68,21 +77,43 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
+    public UserDto getUserDtoById(Long id) {
+        User user= userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+        return mapper.map(user,UserDto.class);
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return null;
+    }
+
+    @Override
+    public UserDto getUserDtoByEmail(String email) {
+         User user=userRepository.getUserByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+      return mapper.map(user,UserDto.class);
     }
 
     @Override
     public User getUserByEmail(String email) {
-        return userRepository.getUserByEmail(email)
+        User user=userRepository.getUserByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+        return user;
+    }
+
+    @Override
+    public UserDto getUserDtoByToken(String token) {
+        User user = userRepository.findByToken(token)
+                .orElseThrow(() -> new UserNotFoundException("User with token " + token + " not found"));
+        return mapper.map(user, UserDto.class);
     }
 
     @Override
     public User getUserByToken(String token) {
-        return userRepository.findByToken(token)
+        User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new UserNotFoundException("User with token " + token + " not found"));
+        return user;
     }
 
     @Override
@@ -124,8 +155,13 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-    public List<User> getAllUser() {
-        return userRepository.findAll();
+    public Page<UserDto> getAllUser(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        List<User> userList = userRepository.findAll();
+        List<UserDto> dtoList = userList.stream()
+                .map(user -> mapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtoList, pageable, dtoList.size());
     }
 
     public void updateUserBalance(Long userId, BigDecimal amount) {

@@ -8,9 +8,11 @@ import java.util.List;
 
 @Data
 public class RegisterMotorbikeDto {
-    private Brand brand;
 
-    private Model model;
+
+    private ModelDto modelDto;
+
+    private Long userId;
 
     private String motorbikePlate;
 
@@ -26,16 +28,12 @@ public class RegisterMotorbikeDto {
 
     private boolean delivery;
 
-    private Long freeshipDistance;
+    private Long freeShipLimit;
 
-    private Long deliveyFeePerKilometer;
+    private Long deliveryFee;
 
     private String constraintMotorbike;
 
-    private String province;
-    private String district;
-    private String ward;
-    private String addressDetail;
+    private String motorbikeAddress;
 
-    private List<MotorbikeImage>motorbikeImages;
 }
