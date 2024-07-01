@@ -128,6 +128,16 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>azure-webapp-maven-plugin</artifactId>
+                <version>1.13.0</version> <!-- Thay đổi phiên bản theo ý bạn -->
+                <configuration>
+                    <schemaVersion>v2</schemaVersion>
+                    <resourceGroup>MotorRentalService</resourceGroup>
+                    <appName>rentalmotorbike</appName>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
