@@ -42,7 +42,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JWTService jwtService;
     private final RoleRepository roleRepository;
-    private final LicenseRepository licenseRepository;
     @Override
     public User signUp(SignupRequest signupRequest){
         if(userRepository.existsByEmail(signupRequest.getEmail())){
@@ -115,7 +114,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
         jwtAuthenticationResponse.setToken(jwt);
-        user.setLicense(licenseRepository.getLicenseByuserId(user.getId()));
+
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
         jwtAuthenticationResponse.setRoles(roleNames);
         jwtAuthenticationResponse.setId(user.getId());

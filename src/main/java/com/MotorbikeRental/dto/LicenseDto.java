@@ -1,17 +1,17 @@
 package com.MotorbikeRental.dto;
 
-import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
 import com.MotorbikeRental.entity.User;
-import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import lombok.Data;
 
+import java.time.LocalDate;
 @Data
 public class LicenseDto {
     private String licenseNumber;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Long userId;
     private LocalDate birthOfDate;
-
-    private MultipartFile licenseImageFile;
+    private String licenseImageUrl;
+    private boolean status;
 }

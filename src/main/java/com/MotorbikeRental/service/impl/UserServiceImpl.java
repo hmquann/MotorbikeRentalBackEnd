@@ -3,6 +3,8 @@ package com.MotorbikeRental.service.impl;
 
 import com.MotorbikeRental.config.VNPayConfig;
 import com.MotorbikeRental.dto.PaymentDto;
+import com.MotorbikeRental.dto.RegisterMotorbikeDto;
+import com.MotorbikeRental.dto.UserDto;
 import com.MotorbikeRental.entity.*;
 import com.MotorbikeRental.exception.UserNotFoundException;
 import com.MotorbikeRental.repository.RoleRepository;
@@ -11,8 +13,10 @@ import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.LockedException;
@@ -23,10 +27,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +40,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private final TransactionRepository transactionRepository;
-
+    @Autowired
+    private final ModelMapper mapper;
     @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -71,15 +74,35 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
+    public UserDto getUserDtoById(Long id) {
+        User user= userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+        return convertToDto(user);
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.getUserById(id);
+    }
+
+    @Override
+    public UserDto getUserDtoByEmail(String email) {
+         User user=userRepository.getUserByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+      return mapper.map(user,UserDto.class);
     }
 
     @Override
     public User getUserByEmail(String email) {
         return userRepository.getUserByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+    }
+
+    @Override
+    public UserDto getUserDtoByToken(String token) {
+        User user = userRepository.findByToken(token)
+                .orElseThrow(() -> new UserNotFoundException("User with token " + token + " not found"));
+        return mapper.map(user, UserDto.class);
     }
 
     @Override
@@ -127,8 +150,26 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    @Override
     public List<User> getAllUser() {
-        return userRepository.findAll();
+        return List.of();
+    }
+
+    public Page<UserDto> getAllUser(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<User> userPage = userRepository.findAllUsersWithRoles(pageable);
+        List<UserDto> dtoList = userPage.getContent().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtoList, pageable, userPage.getTotalElements());
+    }
+    public UserDto convertToDto(User user) {
+        UserDto userDto = mapper.map(user, UserDto.class);
+        Set<String> roleNames = user.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toSet());
+        userDto.setRole(roleNames);
+        return userDto;
     }
 
     @Override
@@ -137,10 +178,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> searchUserByEmailOrPhone(String searchTerm, int page, int size) {
+    public Page<UserDto> searchUserByEmailOrPhone(String searchTerm, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> userPage = userRepository.findByEmailOrPhone(searchTerm, pageable);
-        return userPage;
+        List<UserDto> dtoList = userPage.getContent().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtoList, pageable, userPage.getTotalElements());
     }
 
     public void updateUserBalance(Long userId, BigDecimal amount) {

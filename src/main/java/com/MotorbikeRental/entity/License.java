@@ -26,7 +26,7 @@ public class License {
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JsonManagedReference
     private User user;
     private LocalDate birthOfDate;
     private String licenseImageUrl;

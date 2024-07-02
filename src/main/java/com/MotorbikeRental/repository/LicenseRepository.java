@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,6 +17,8 @@ public interface LicenseRepository extends JpaRepository<License,String> {
     Optional<License> findById(String s);
     @Query("Select l from License  l where l.user.id=:userId")
     License getLicenseByuserId(Long userId);
+    @Query("Select l from License l where l.status= false")
+    List<License> getNotApproveLicenseList();
     @Modifying
     @Transactional
     @Query("update License l set l.status = true where l.licenseNumber = :licenseNumber")

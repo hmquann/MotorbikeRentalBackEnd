@@ -25,8 +25,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByPhone(String phone);
 
-    @Query("SELECT u FROM User u JOIN u.roles r WHERE r = :role")
-    List<User> findByRole(@Param("role") Role role);
+    @Query("SELECT DISTINCT u FROM User u JOIN u.roles r WHERE r.name IN ('USER', 'LESSOR')")
+    Page<User> findAllUsersWithRoles(Pageable pageable);
 
     User getUserById(Long id);
 

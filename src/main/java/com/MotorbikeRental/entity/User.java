@@ -58,11 +58,11 @@ public class User implements UserDetails {
     private Set<Role> roles = new HashSet<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonBackReference
     private License license;
 
     @OneToMany(mappedBy = "user")
-
+    @JsonBackReference
     private List<Location> locationSet;
 
 

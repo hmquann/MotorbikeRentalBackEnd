@@ -64,6 +64,7 @@ public class Motorbike {
     private Long yearOfManuFacture;
     @Column(name = "motorbike_plate",unique = true,length = 11)
     private String motorbikePlate;
+    @Column(columnDefinition = "nvarchar(255)")
     private String motorbikeAddress;
     @ManyToOne
     @JoinColumn(name = "user_id")

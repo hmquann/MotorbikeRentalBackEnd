@@ -1,7 +1,7 @@
 package com.MotorbikeRental.controller;
 
 import com.MotorbikeRental.dto.LicenseDto;
-import com.MotorbikeRental.entity.Brand;
+import com.MotorbikeRental.dto.RegisterLicenseDto;
 import com.MotorbikeRental.entity.License;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.repository.LicenseRepository;
@@ -11,14 +11,11 @@ import com.MotorbikeRental.service.LicenseService;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +38,7 @@ public class LicenseController {
     @PostMapping("/uploadLicense")
     public ResponseEntity<License> createLicense(
             @RequestHeader("Authorization") String accessToken,
-            @ModelAttribute LicenseDto licenseDto) {
+            @ModelAttribute RegisterLicenseDto licenseDto) {
 
         String token = accessToken.split(" ")[1];
         String username = jwtService.extractUsername(token);
@@ -73,13 +70,13 @@ public class LicenseController {
         }
     }
   @GetMapping("getLicenseByUserId/{id}")
-    public Optional<License> getLicenseByUserId(@PathVariable Long id){
-        Optional<License> license=licenseService.getLicenseByUserId(id);
+    public LicenseDto getLicenseByUserId(@PathVariable Long id){
+        LicenseDto license=licenseService.getLicenseByUserId(id);
         return license;
   }
     @GetMapping("/getAllLicense/{page}/{pageSize}")
-    public ResponseEntity<Page<License>> listLicenseWithPagination(@PathVariable int page, @PathVariable int pageSize) {
-        Page<License> licensePage = licenseService.getLicenseWithPagination(page,pageSize);
+    public ResponseEntity<Page<LicenseDto>> listLicenseWithPagination(@PathVariable int page, @PathVariable int pageSize) {
+        Page<LicenseDto> licensePage = licenseService.getNotApproveLicenseWithPagination(page,pageSize);
         return ResponseEntity.ok(licensePage);
     }
     @PostMapping("/approveLicense/{licenseNumber}")

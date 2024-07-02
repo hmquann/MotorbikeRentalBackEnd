@@ -1,7 +1,6 @@
 package com.MotorbikeRental.controller;
 
-import com.MotorbikeRental.dto.ModelDto;
-import com.MotorbikeRental.entity.Brand;
+import com.MotorbikeRental.dto.UserDto;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.exception.UserNotFoundException;
 import com.MotorbikeRental.service.UserService;
@@ -27,19 +26,19 @@ public class UserController {
         return ResponseEntity.ok("Hi user");
     }
 
-    @GetMapping("/allUser")
-    public List<User> getAllUser(){
-        return userService.getAllUser();
+    @GetMapping("/allUser/{page}/{pageSize}")
+    public Page<UserDto> getAllUser(@PathVariable int page, @PathVariable int pageSize){
+        return userService.getAllUser(page,pageSize);
     }
 
-    @GetMapping("/allUser/{page}/{pageSize}")
-    public ResponseEntity<Page<User>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {
-        Page<User> userPage = userService.getUserByPagination(page,pageSize);
-        return ResponseEntity.ok(userPage);
-    }
+//    @GetMapping("/allUser/{page}/{pageSize}")
+//    public ResponseEntity<Page<User>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {
+//        Page<User> userPage = userService.getUserByPagination(page,pageSize);
+//        return ResponseEntity.ok(userPage);
+//    }
 
     @GetMapping("/search")
-    public Page<User> searchModel(
+    public Page<UserDto> searchUser(
             @RequestParam String searchTerm,
             @RequestParam int page,
             @RequestParam int size) {
@@ -48,9 +47,9 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id){
-        User user = userService.getUserById(id);
-        if(user == null) throw new UserNotFoundException("User not found");
-        return ResponseEntity.ok(user);
+        UserDto userDto = userService.getUserDtoById(id);
+        if(userDto == null) throw new UserNotFoundException("User not found");
+        return ResponseEntity.ok(userDto);
     }
 
     @PatchMapping("/{id}")
@@ -77,7 +76,7 @@ public class UserController {
         try {
             userService.toggleUserActiveStatus(id);
             // Return success message based on user's new status
-            String message = userService.getUserById(id).isActive() ? "User activated successfully" : "User deactivated successfully";
+            String message = userService.getUserDtoById(id).isActive() ? "User activated successfully" : "User deactivated successfully";
             return new ResponseEntity<>(message, HttpStatus.OK);
         } catch (UserNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
