@@ -20,7 +20,7 @@ public interface MotorbikeService {
 
     Page<Motorbike> getMotorbikeWithPagination(int page, int pageSize);
 
-    Page<Motorbike> searchByPlate(String searchTerm, int page, int size);
+    Page<RegisterMotorbikeDto> searchByPlate(String searchTerm, int page, int size);
 
     void toggleMotorbikeStatus(Long id);
 

@@ -21,6 +21,8 @@ public interface UserService {
     User getUserByToken(String token);
     User updateUser(Long id, User user);
     void deleteUser(Long id);
+    List<User> getAllUser();
+    Page<User> getUserByPagination(int page, int pageSize);
     Page<UserDto> getAllUser(int page, int pageSize);
     void toggleUserActiveStatus(Long id);
 
@@ -31,6 +33,8 @@ public interface UserService {
     void activeUserStatus(Long id);
 
     void updateUserEmail(Long id, String email);
+    Page<UserDto> searchUserByEmailOrPhone(String searchTerm, int page, int size);
+    UserDto convertToDto(User user);
 
 
 

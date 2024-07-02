@@ -43,7 +43,7 @@ public class SecurityConfig {
                     .authorizeHttpRequests(request ->
                             request.requestMatchers(WHITE_LIST_URL)
                                     .permitAll()
-                                    .requestMatchers("/api/admin").hasAnyAuthority("ADMIN")
+                                    .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
                                     .requestMatchers("/api/user").hasAnyAuthority("USER")
                                     .anyRequest()
                                     .permitAll()

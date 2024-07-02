@@ -54,7 +54,7 @@ public class MotorbikeController {
 //    }
 
     @GetMapping("/search")
-    public Page<Motorbike> searchByPlate(
+    public Page<RegisterMotorbikeDto> searchByPlate(
             @RequestParam String searchTerm,
             @RequestParam int page,
             @RequestParam int size) {
