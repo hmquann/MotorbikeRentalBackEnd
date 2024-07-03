@@ -26,10 +26,9 @@ public class License {
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
     private User user;
     private LocalDate birthOfDate;
     private String licenseImageUrl;
-    private boolean status;
+    private LicenseStatus status;
 
 }
