@@ -47,4 +47,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.email = :emailOrPhone OR u.phone = :emailOrPhone")
     Optional<User> findByEmailOrPhone(@Param("emailOrPhone") String emailOrPhone);
+    @Query("SELECT CONCAT(u.lastName,' ',u.firstName) FROM User u WHERE u.email = :email")
+    String getUserNameByEmail(@Param("email") String email);
 }

@@ -29,5 +29,8 @@ public class JwtAuthenticationResponse {
 
     private String lastName;
 
+    private String userToken;
+
     private boolean isGender;
+
 }

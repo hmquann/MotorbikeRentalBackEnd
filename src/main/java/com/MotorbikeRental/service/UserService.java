@@ -37,5 +37,7 @@ public interface UserService {
     UserDto convertToDto(User user);
 
 
+    String getUserNameByEmail(String email);
+
 
 }
