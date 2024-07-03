@@ -70,6 +70,8 @@ public class Motorbike {
     @JoinColumn(name = "user_id")
     @JsonManagedReference
     private User user;
+    @OneToMany(mappedBy = "motorbike")
+    private List<MotorbikeImage>motorbikeImages;
 
 //    @JsonManagedReference
 //    public User user(){

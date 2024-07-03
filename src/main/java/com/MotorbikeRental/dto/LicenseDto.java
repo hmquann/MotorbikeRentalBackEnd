@@ -1,5 +1,6 @@
 package com.MotorbikeRental.dto;
 
+import com.MotorbikeRental.entity.LicenseStatus;
 import com.MotorbikeRental.entity.User;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.JoinColumn;
@@ -13,5 +14,5 @@ public class LicenseDto {
     private Long userId;
     private LocalDate birthOfDate;
     private String licenseImageUrl;
-    private boolean status;
+    private LicenseStatus status;
 }

@@ -3,6 +3,7 @@ package com.MotorbikeRental.service.impl;
 import com.MotorbikeRental.dto.LicenseDto;
 import com.MotorbikeRental.dto.RegisterLicenseDto;
 import com.MotorbikeRental.entity.License;
+import com.MotorbikeRental.entity.LicenseStatus;
 import com.MotorbikeRental.repository.LicenseRepository;
 import com.MotorbikeRental.service.LicenseService;
 import org.modelmapper.ModelMapper;
@@ -24,8 +25,12 @@ public class LicenseServiceImpl implements LicenseService {
     private LicenseRepository licenseRepository;
     @Override
     public void approveLicense(String licenseNumber) {
+        licenseRepository.changeLicense(licenseNumber,LicenseStatus.APPROVED);
+    }
 
-        licenseRepository.approveLicense(licenseNumber);
+    @Override
+    public void rejectLicense(String licenseNumber) {
+        licenseRepository.changeLicense(licenseNumber,LicenseStatus.REJECTED);
     }
 
     @Override
@@ -35,10 +40,10 @@ public class LicenseServiceImpl implements LicenseService {
     }
 
     @Override
-    public Page<LicenseDto> getNotApproveLicenseWithPagination(int page, int pageSize) {
+    public Page<LicenseDto> getPendingLicenseWithPagination(int page, int pageSize, LicenseStatus status) {
 
         Pageable pageable = PageRequest.of(page, pageSize);
-        List<License> licenseList=licenseRepository.getNotApproveLicenseList();
+        List<License> licenseList=licenseRepository.getPendingLicenseList(status);
         List<LicenseDto> dtoList = licenseList.stream()
                 .map(license -> mapper.map(license, LicenseDto.class))
                 .collect(Collectors.toList());
