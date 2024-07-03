@@ -98,9 +98,9 @@ public class MotorbikeController {
         motorbikeService.registerMotorbike(registerMotorbikeDto);
         return ResponseEntity.ok(motorbike);
     }
-    @GetMapping("/activeMotorbikeList/{page}/{pageSize}")
-    public Page<ListActiveMotorbikeDto> getAllActiveMotorbike(@PathVariable int page,@PathVariable int pageSize){
-        return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.ACTIVE,page,pageSize);
+    @GetMapping("/activeMotorbikeList")
+    public List<RegisterMotorbikeDto> getAllActiveMotorbike(){
+        return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.ACTIVE);
     }
 }
 

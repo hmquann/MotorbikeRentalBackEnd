@@ -3,13 +3,10 @@ package com.MotorbikeRental.service;
 
 
 
-import com.MotorbikeRental.dto.ListActiveMotorbikeDto;
 import com.MotorbikeRental.dto.RegisterMotorbikeDto;
 import com.MotorbikeRental.entity.MotorbikeStatus;
-import com.MotorbikeRental.entity.Model;
 import com.MotorbikeRental.entity.Motorbike;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 
 import java.util.Date;
@@ -26,13 +23,13 @@ public interface MotorbikeService {
 
     public List<Motorbike>getMotorbikeByLessorId();
 
-    public Page<ListActiveMotorbikeDto>getAllMotorbikeByStatus(MotorbikeStatus status,int pgae,int pageSize);
+    public List<RegisterMotorbikeDto>getAllMotorbikeByStatus(MotorbikeStatus status);
 
     public Motorbike registerMotorbike(RegisterMotorbikeDto registerMotorbikeDto);
 
     public void approveMotorbike(int motorbikeId);
 
-    public boolean checkExistPlate(String motorbikePlate);
+    public Motorbike checkExistPlate(String motorbikePlate);
 
     public void getMotorbikeByAddress(String address);
 

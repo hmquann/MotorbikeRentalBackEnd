@@ -3,6 +3,7 @@ package com.MotorbikeRental.controller;
 import com.MotorbikeRental.dto.LicenseDto;
 import com.MotorbikeRental.dto.RegisterLicenseDto;
 import com.MotorbikeRental.entity.License;
+import com.MotorbikeRental.entity.LicenseStatus;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.repository.LicenseRepository;
 import com.MotorbikeRental.repository.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -59,7 +61,7 @@ public class LicenseController {
             license.setBirthOfDate(licenseDto.getBirthOfDate());
             license.setLicenseImageUrl(imageUrl);
             license.setUser(user.get());
-            license.setStatus(false);
+            license.setStatus(LicenseStatus.PENDING);
             // Save the license to the database
             License savedLicense = licenseRepository.save(license);
 
@@ -76,11 +78,19 @@ public class LicenseController {
   }
     @GetMapping("/getAllLicense/{page}/{pageSize}")
     public ResponseEntity<Page<LicenseDto>> listLicenseWithPagination(@PathVariable int page, @PathVariable int pageSize) {
-        Page<LicenseDto> licensePage = licenseService.getNotApproveLicenseWithPagination(page,pageSize);
+        Page<LicenseDto> licensePage = licenseService.getPendingLicenseWithPagination(page,pageSize,LicenseStatus.PENDING);
         return ResponseEntity.ok(licensePage);
     }
-    @PostMapping("/approveLicense/{licenseNumber}")
-    public void  approveLicense(@PathVariable String licenseNumber){
-         licenseService.approveLicense(licenseNumber);
+    @PostMapping(value="/approve", consumes = "application/json")
+    public void approveLicense(@RequestBody Map<String, String> payload,
+                              @RequestHeader("Authorization") String accessToken) {
+        String licenseNumber = payload.get("licenseNumber");
+        licenseService.approveLicense(licenseNumber);
+    }
+    @PostMapping(value = "/reject", consumes = "application/json")
+    public void rejectLicense(@RequestBody Map<String, String> payload,
+                              @RequestHeader("Authorization") String accessToken) {
+        String licenseNumber = payload.get("licenseNumber");
+        licenseService.rejectLicense(licenseNumber);
     }
 }

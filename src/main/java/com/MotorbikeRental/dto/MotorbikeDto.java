@@ -1,15 +1,12 @@
 package com.MotorbikeRental.dto;
-import com.MotorbikeRental.entity.Brand;
-import com.MotorbikeRental.entity.Model;
-import com.MotorbikeRental.entity.MotorbikeImage;
+
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Data
-public class RegisterMotorbikeDto {
-
+public class MotorbikeDto {
+    private Long id;
 
     private ModelDto model;
 
@@ -19,7 +16,6 @@ public class RegisterMotorbikeDto {
 
     private Long yearOfManufacture;
 
-    //private String motorbikeImage;
 
     private Long price;
 
@@ -37,6 +33,5 @@ public class RegisterMotorbikeDto {
 
     private String motorbikeAddress;
 
-    private List<MultipartFile> motorbikeImages;
-
+    private List<String>motorbikeImages;
 }
