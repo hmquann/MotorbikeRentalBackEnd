@@ -52,9 +52,14 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
 
     @Override
-    public Page<RegisterMotorbikeDto> getAllMotorbike(int page, int pageSize) {
+    public Page<RegisterMotorbikeDto> getAllMotorbike(int page, int pageSize, Long userId, List<String> roles) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Motorbike> motorbikeList = motorbikeRepository.findAll(pageable);
+        Page<Motorbike> motorbikeList;
+        if(roles.contains("ADMIN")){
+            motorbikeList = motorbikeRepository.findAll(pageable);
+        }else{
+            motorbikeList = motorbikeRepository.findAllByOwner(roles, userId, pageable);
+        }
         List<RegisterMotorbikeDto> dtoList = motorbikeList.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -76,9 +81,14 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public Page<RegisterMotorbikeDto> searchByPlate(String searchTerm, int page, int size) {
+    public Page<RegisterMotorbikeDto> searchByPlate(String searchTerm,Long userId,List<String> roles, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Motorbike> motorbikePage = motorbikeRepository.searchByMotorbikePlate(searchTerm, pageable);
+        Page<Motorbike> motorbikePage;
+        if (roles.contains("ADMIN")) {
+            motorbikePage = motorbikeRepository.searchAllMotorbikePlate(searchTerm, pageable);
+        } else {
+            motorbikePage = motorbikeRepository.searchMotorbikePlateByLessor(searchTerm, userId, pageable);
+        }
         List<RegisterMotorbikeDto> dtoList = motorbikePage.getContent().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());

@@ -43,8 +43,11 @@ public class MotorbikeController {
     private ModelRepository modelRepository;
 
     @GetMapping("/allMotorbike/{page}/{pageSize}")
-    public Page<RegisterMotorbikeDto> getAllMotorbike(@PathVariable int page,@PathVariable int pageSize) {
-        return motorbikeService.getAllMotorbike(page,pageSize);
+    public Page<RegisterMotorbikeDto> getAllMotorbike(@PathVariable int page,
+                                                      @PathVariable int pageSize,
+                                                      @RequestParam(required = false) Long userId,
+                                                      @RequestParam(required = false) List<String> role) {
+        return motorbikeService.getAllMotorbike(page,pageSize,userId,role);
     }
 
 //    @GetMapping("/allMotorbike/{page}/{pageSize}")
@@ -56,9 +59,11 @@ public class MotorbikeController {
     @GetMapping("/search")
     public Page<RegisterMotorbikeDto> searchByPlate(
             @RequestParam String searchTerm,
+            @RequestParam Long userId,
+            @RequestParam List<String> role,
             @RequestParam int page,
             @RequestParam int size) {
-        return motorbikeService.searchByPlate(searchTerm, page, size);
+        return motorbikeService.searchByPlate(searchTerm,userId,role, page, size);
     }
 
     @PutMapping("/toggleStatus/{id}")
