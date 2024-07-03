@@ -63,7 +63,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://delightful-plant-068eb7d00.5.azurestaticapps.net")); // Thay * bằng origin của trang web của bạn
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Thay * bằng origin của trang web của bạn
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // Cho phép các phương thức yêu cầu
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
