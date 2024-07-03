@@ -29,7 +29,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-        private static final String[] WHITE_LIST_URL = {"/api/auth/**","api/motorbike/**,/booking/**","/password/**","updateEmail/**","api/licence/**"};
+        private static final String[] WHITE_LIST_URL = {"/api/auth/**","api/motorbike/**,/booking/**","/password/**","updateEmail/**","api/licence/**","/message/**"};
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -43,7 +43,7 @@ public class SecurityConfig {
                     .authorizeHttpRequests(request ->
                             request.requestMatchers(WHITE_LIST_URL)
                                     .permitAll()
-                                    .requestMatchers("/api/admin").hasAnyAuthority("ADMIN")
+                                    .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
                                     .requestMatchers("/api/user").hasAnyAuthority("USER")
                                     .anyRequest()
                                     .permitAll()
@@ -62,7 +62,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:3000/"); // Thay * bằng origin của trang web của bạn
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Thay * bằng origin của trang web của bạn
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // Cho phép các phương thức yêu cầu
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);

@@ -3,6 +3,8 @@ package com.MotorbikeRental.repository;
 import com.MotorbikeRental.entity.Role;
 import com.MotorbikeRental.entity.User;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +16,8 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    @Query("SELECT u FROM User u WHERE u.email LIKE %:searchTerm% OR u.phone LIKE %:searchTerm%")
+    Page<User> findByEmailOrPhone(String searchTerm, Pageable pageable);
 
     Optional<User> findByEmail(String email);
 
@@ -21,8 +25,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByPhone(String phone);
 
-    @Query("SELECT u FROM User u JOIN u.roles r WHERE r = :role")
-    List<User> findByRole(@Param("role") Role role);
+    @Query("SELECT DISTINCT u FROM User u JOIN u.roles r WHERE r.name IN ('USER', 'LESSOR')")
+    Page<User> findAllUsersWithRoles(Pageable pageable);
 
     User getUserById(Long id);
 
@@ -43,4 +47,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.email = :emailOrPhone OR u.phone = :emailOrPhone")
     Optional<User> findByEmailOrPhone(@Param("emailOrPhone") String emailOrPhone);
+    @Query("SELECT CONCAT(u.lastName,' ',u.firstName) FROM User u WHERE u.email = :email")
+    String getUserNameByEmail(@Param("email") String email);
 }

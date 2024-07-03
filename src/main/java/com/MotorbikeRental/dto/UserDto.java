@@ -1,8 +1,11 @@
 package com.MotorbikeRental.dto;
 
+import com.MotorbikeRental.entity.Role;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 
 @Data
 public class UserDto {
@@ -21,4 +24,8 @@ public class UserDto {
     private BigDecimal balance;
 
     private boolean isActive;
+
+    private Set<String> role;
+
+    private String token;
 }

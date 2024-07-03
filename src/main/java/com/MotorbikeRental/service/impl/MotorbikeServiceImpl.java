@@ -2,6 +2,7 @@
 package com.MotorbikeRental.service.impl;
 
 import com.MotorbikeRental.dto.RegisterMotorbikeDto;
+import com.MotorbikeRental.dto.UserDto;
 import com.MotorbikeRental.entity.*;
 
 import com.MotorbikeRental.exception.ExistPlateException;
@@ -10,6 +11,7 @@ import com.MotorbikeRental.repository.MotorbikeRepository;
 import com.MotorbikeRental.repository.UserRepository;
 
 import com.MotorbikeRental.service.MotorbikeService;
+import com.MotorbikeRental.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -38,16 +40,32 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     private final ModelServiceImpl modelService;
     private final UserRepository userRepository;
 
+    private final UserService userService;
+
 
     @Override
-    public Page<RegisterMotorbikeDto> getAllMotorbike(int page, int pageSize) {
+    public Page<RegisterMotorbikeDto> getAllMotorbike(int page, int pageSize, Long userId, List<String> roles) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        List<Motorbike> motorbikeList = motorbikeRepository.findAll();
+        Page<Motorbike> motorbikeList;
+        if(roles.contains("ADMIN")){
+            motorbikeList = motorbikeRepository.findAll(pageable);
+        }else{
+            motorbikeList = motorbikeRepository.findAllByOwner(roles, userId, pageable);
+        }
         List<RegisterMotorbikeDto> dtoList = motorbikeList.stream()
-                .map(motorbike -> mapper.map(motorbike, RegisterMotorbikeDto.class))
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
-        return new PageImpl<>(dtoList, pageable, dtoList.size());
+        return new PageImpl<>(dtoList, pageable, motorbikeList.getTotalElements());
     }
+
+        private RegisterMotorbikeDto convertToDto(Motorbike motorbike) {
+            RegisterMotorbikeDto dto = mapper.map(motorbike, RegisterMotorbikeDto.class);
+            ModelDto modelDto = mapper.map(motorbike.getModel(), ModelDto.class);
+            UserDto userDto = userService.convertToDto(motorbike.getUser());
+            dto.setModel(modelDto);
+            dto.setUser(userDto);
+            return dto;
+        }
 
     @Override
     public Page<Motorbike> getMotorbikeWithPagination(int page, int pageSize){
@@ -55,10 +73,18 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public Page<Motorbike> searchByPlate(String searchTerm, int page, int size) {
+    public Page<RegisterMotorbikeDto> searchByPlate(String searchTerm,Long userId,List<String> roles, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Motorbike> motorbikePage = motorbikeRepository.searchByMotorbikePlate(searchTerm, pageable);
-        return motorbikePage;
+        Page<Motorbike> motorbikePage;
+        if (roles.contains("ADMIN")) {
+            motorbikePage = motorbikeRepository.searchAllMotorbikePlate(searchTerm, pageable);
+        } else {
+            motorbikePage = motorbikeRepository.searchMotorbikePlateByLessor(searchTerm, userId, pageable);
+        }
+        List<RegisterMotorbikeDto> dtoList = motorbikePage.getContent().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtoList, pageable, motorbikePage.getTotalElements());
     }
 
     @Override

@@ -27,10 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,12 +77,12 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserDtoById(Long id) {
         User user= userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
-        return mapper.map(user,UserDto.class);
+        return convertToDto(user);
     }
 
     @Override
     public User getUserById(Long id) {
-        return null;
+        return userRepository.getUserById(id);
     }
 
     @Override
@@ -97,9 +94,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByEmail(String email) {
-        User user=userRepository.getUserByEmail(email)
+        return userRepository.getUserByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
-        return user;
     }
 
     @Override
@@ -111,9 +107,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByToken(String token) {
-        User user = userRepository.findByToken(token)
+        return userRepository.findByToken(token)
                 .orElseThrow(() -> new UserNotFoundException("User with token " + token + " not found"));
-        return user;
     }
 
     @Override
@@ -155,13 +150,41 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    @Override
+    public List<User> getAllUser() {
+        return List.of();
+    }
+
     public Page<UserDto> getAllUser(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        List<User> userList = userRepository.findAll();
-        List<UserDto> dtoList = userList.stream()
-                .map(user -> mapper.map(user, UserDto.class))
+        Page<User> userPage = userRepository.findAllUsersWithRoles(pageable);
+        List<UserDto> dtoList = userPage.getContent().stream()
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
-        return new PageImpl<>(dtoList, pageable, dtoList.size());
+        return new PageImpl<>(dtoList, pageable, userPage.getTotalElements());
+    }
+    public UserDto convertToDto(User user) {
+        UserDto userDto = mapper.map(user, UserDto.class);
+        Set<String> roleNames = user.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toSet());
+        userDto.setRole(roleNames);
+        return userDto;
+    }
+
+    @Override
+    public Page<User> getUserByPagination(int page, int pageSize) {
+        return userRepository.findAll(PageRequest.of(page,pageSize));
+    }
+
+    @Override
+    public Page<UserDto> searchUserByEmailOrPhone(String searchTerm, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage = userRepository.findByEmailOrPhone(searchTerm, pageable);
+        List<UserDto> dtoList = userPage.getContent().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtoList, pageable, userPage.getTotalElements());
     }
 
     public void updateUserBalance(Long userId, BigDecimal amount) {
@@ -221,5 +244,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setEmail(email);
         userRepository.save(user);
+    }
+
+    @Override
+    public String getUserNameByEmail(String email) {
+        return userRepository.getUserNameByEmail(email);
     }
 }

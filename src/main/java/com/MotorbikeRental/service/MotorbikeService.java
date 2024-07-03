@@ -13,11 +13,11 @@ import java.util.Date;
 import java.util.List;
 
 public interface MotorbikeService {
-    public Page<RegisterMotorbikeDto>getAllMotorbike(int page,int pageSize);
+    public Page<RegisterMotorbikeDto> getAllMotorbike(int page,int pageSize,Long userId,List<String> roles);
 
     Page<Motorbike> getMotorbikeWithPagination(int page, int pageSize);
 
-    Page<Motorbike> searchByPlate(String searchTerm, int page, int size);
+    Page<RegisterMotorbikeDto> searchByPlate(String searchTerm,Long userId,List<String> roles, int page, int size);
 
     void toggleMotorbikeStatus(Long id);
 
