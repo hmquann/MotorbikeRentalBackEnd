@@ -1,15 +1,18 @@
 package com.MotorbikeRental.dto;
 import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.Model;
+import com.MotorbikeRental.entity.MotorbikeImage;
+import com.MotorbikeRental.entity.MotorbikeStatus;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class RegisterMotorbikeDto {
-    private Brand brand;
 
-    private Model model;
+    private Long id;
+
+    private Long userId;
 
     private String motorbikePlate;
 
@@ -25,16 +28,19 @@ public class RegisterMotorbikeDto {
 
     private boolean delivery;
 
-    private Long freeshipDistance;
+    private Long freeShipLimit;
 
-    private Long deliveyFeePerKilometer;
+    private Long deliveryFee;
 
     private String constraintMotorbike;
 
-    private String province;
-    private String district;
-    private String ward;
-    private String addressDetail;
+    private String motorbikeAddress;
+
+    private MotorbikeStatus motorbikeStatus;
+
+    private ModelDto model;
+
+    private UserDto user;
 
 
 }

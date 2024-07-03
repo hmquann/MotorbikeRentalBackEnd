@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -15,13 +16,17 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double amount;
+    private BigDecimal amount;
 
     private String vnpTxnRef;
 
     private String vnpResponseCode;
 
-    private boolean isProcessed = false;
+    private boolean isProcessed;
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus status;
+    @Enumerated(EnumType.STRING)
+    private TransactionType type;
 
     @Column(name = "transaction_date")
     private Date transactionDate;
@@ -30,4 +35,5 @@ public class Transaction {
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User users;
+
 }

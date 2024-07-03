@@ -64,16 +64,24 @@ public class Motorbike {
     private Long yearOfManuFacture;
     @Column(name = "motorbike_plate",unique = true,length = 11)
     private String motorbikePlate;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(columnDefinition = "nvarchar(255)")
+    private String motorbikeAddress;
+    @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonManagedReference
     private User user;
-    @JsonBackReference
-    public User user(){
-        return user;
-    }
+
+//    @JsonManagedReference
+//    public User user(){
+//        return user;
+//    }
+
     @ManyToOne
     @JoinColumn(name="model_id")
-    @JsonManagedReference
     private Model model;
+
+
+    @OneToMany(mappedBy = "motorbike")
+    @JsonBackReference
+    private List<Booking> bookingList;
 }

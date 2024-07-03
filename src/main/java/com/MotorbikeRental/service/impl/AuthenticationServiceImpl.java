@@ -9,6 +9,7 @@ import com.MotorbikeRental.entity.Role;
 import com.MotorbikeRental.exception.DuplicateUserException;
 import com.MotorbikeRental.exception.InactiveUserException;
 import com.MotorbikeRental.exception.InvalidCredentialsException;
+import com.MotorbikeRental.repository.LicenseRepository;
 import com.MotorbikeRental.repository.RoleRepository;
 import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.AuthenticationService;
@@ -23,6 +24,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +42,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JWTService jwtService;
     private final RoleRepository roleRepository;
-
     @Override
     public User signUp(SignupRequest signupRequest){
         if(userRepository.existsByEmail(signupRequest.getEmail())){
@@ -60,6 +61,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPhone(signupRequest.getPhone());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setGender(signupRequest.isGender());
+
+        user.setBalance(BigDecimal.valueOf(0.00));
         user.setActive(false);
 
         Role defaultRole = roleRepository.findByName("USER");
@@ -109,20 +112,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Set<Role> roles = user.getRoles();
         List<String> roleNames = roles.stream().map(Role::getName).collect(Collectors.toList());
 
-
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
         jwtAuthenticationResponse.setToken(jwt);
+
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
         jwtAuthenticationResponse.setRoles(roleNames);
-        jwtAuthenticationResponse.setEmail(user.getEmail());
-        jwtAuthenticationResponse.setPhone(user.getPhone());
-        jwtAuthenticationResponse.setId(user.getId());
-        jwtAuthenticationResponse.setBalance(0.00);
         jwtAuthenticationResponse.setUserToken(user.getToken());
+        jwtAuthenticationResponse.setId(user.getId());
+        jwtAuthenticationResponse.setBalance(user.getBalance());
         jwtAuthenticationResponse.setFirstName(user.getFirstName());
         jwtAuthenticationResponse.setLastName(user.getLastName());
-
-
+        jwtAuthenticationResponse.setGender(user.isGender());
+        jwtAuthenticationResponse.setEmail(user.getEmail());
+        jwtAuthenticationResponse.setPhone(user.getPhone());
         return jwtAuthenticationResponse;
     }
 

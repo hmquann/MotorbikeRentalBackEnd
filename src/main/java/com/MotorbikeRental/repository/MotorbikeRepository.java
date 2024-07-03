@@ -1,6 +1,7 @@
 package com.MotorbikeRental.repository;
 
 
+import com.MotorbikeRental.dto.ListActiveMotorbikeDto;
 import com.MotorbikeRental.entity.Model;
 import com.MotorbikeRental.entity.Motorbike;
 import com.MotorbikeRental.entity.MotorbikeStatus;

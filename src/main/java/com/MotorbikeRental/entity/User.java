@@ -2,6 +2,7 @@ package com.MotorbikeRental.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,13 +39,14 @@ public class User implements UserDetails {
     @Column(name = "status")
     private boolean isActive;
     @Column(name = "balance")
-    private Double balance;
+
+    private BigDecimal balance;
+
 
     private String token;
 
-
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonBackReference
     private List<Transaction> transactions;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -54,24 +57,22 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference
     private License license;
 
     @OneToMany(mappedBy = "user")
+    @JsonBackReference
     private List<Location> locationSet;
 
     @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Message> messages;
 
-    @JsonBackReference
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Motorbike> motorbikes;
 
-//    @JsonBackReference
-//    public List<Motorbike> getMotorbike(){
-//        return motorbikes;
-//    }
 
     @JsonManagedReference
     @Override

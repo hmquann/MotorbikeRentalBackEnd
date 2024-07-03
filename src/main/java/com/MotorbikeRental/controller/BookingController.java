@@ -14,6 +14,7 @@ import java.util.List;
 @RequestMapping("/booking")
 @RequiredArgsConstructor
 public class BookingController {
+
     private final BookingService bookingService;
     private final UserService userService;
 
@@ -29,7 +30,7 @@ public class BookingController {
         return null;
     }
     @GetMapping(value="/listSchedule/{id}")
-    public ResponseEntity<List<Booking>> getListBookingByMotorbike(@PathVariable Long id, @RequestBody Booking booking){
+    public ResponseEntity<List<Booking>> getListBookingByMotorbike(@PathVariable Long id){
         return bookingService.getBookingListByMotorbikeId(id);
     }
 

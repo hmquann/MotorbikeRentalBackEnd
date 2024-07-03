@@ -29,8 +29,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-        private static final String[] WHITE_LIST_URL = {"/api/auth/**","api/motorbike/**,/booking/**","/password/**","updateEmail/**","/message/**"};
-
+        private static final String[] WHITE_LIST_URL = {"/api/auth/**","api/motorbike/**,/booking/**","/password/**","updateEmail/**","api/licence/**","/message/**"};
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -44,7 +43,7 @@ public class SecurityConfig {
                     .authorizeHttpRequests(request ->
                             request.requestMatchers(WHITE_LIST_URL)
                                     .permitAll()
-                                    .requestMatchers("/api/admin").hasAnyAuthority("ADMIN")
+                                    .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
                                     .requestMatchers("/api/user").hasAnyAuthority("USER")
                                     .anyRequest()
                                     .permitAll()

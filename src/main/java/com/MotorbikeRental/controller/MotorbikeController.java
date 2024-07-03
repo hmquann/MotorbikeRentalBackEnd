@@ -1,6 +1,7 @@
 package com.MotorbikeRental.controller;
 import com.MotorbikeRental.dto.*;
 import com.MotorbikeRental.entity.*;
+import com.MotorbikeRental.repository.ModelRepository;
 import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.*;
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,19 +39,22 @@ public class MotorbikeController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/allMotorbike")
-    public List<Motorbike> getAllMotorbike(){
-        return motorbikeService.getAllMotorbike();
-    }
+    @Autowired
+    private ModelRepository modelRepository;
 
     @GetMapping("/allMotorbike/{page}/{pageSize}")
-    public ResponseEntity<Page<Motorbike>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {
-        Page<Motorbike> motorbikePage = motorbikeService.getMotorbikeWithPagination(page,pageSize);
-        return ResponseEntity.ok(motorbikePage);
+    public Page<RegisterMotorbikeDto> getAllMotorbike(@PathVariable int page,@PathVariable int pageSize) {
+        return motorbikeService.getAllMotorbike(page,pageSize);
     }
 
+//    @GetMapping("/allMotorbike/{page}/{pageSize}")
+//    public ResponseEntity<Page<Motorbike>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {
+//        Page<Motorbike> motorbikePage = motorbikeService.getMotorbikeWithPagination(page,pageSize);
+//        return ResponseEntity.ok(motorbikePage);
+//    }
+
     @GetMapping("/search")
-    public Page<Motorbike> searchByPlate(
+    public Page<RegisterMotorbikeDto> searchByPlate(
             @RequestParam String searchTerm,
             @RequestParam int page,
             @RequestParam int size) {
@@ -68,9 +73,9 @@ public class MotorbikeController {
         }
     }
 
-    @GetMapping("/pending")
-    public List<Motorbike> getPendingMotorbikes(){
-        return motorbikeService.getPendingMotorbikes();
+    @GetMapping("/pending/{page}/{pageSize}")
+    public Page<RegisterMotorbikeDto> getPendingMotorbikes(@PathVariable int page,@PathVariable int pageSize){
+        return motorbikeService.getPendingMotorbikes(MotorbikeStatus.PENDING,page,pageSize);
     }
 
     @PutMapping("/approve/{id}")
@@ -88,24 +93,14 @@ public class MotorbikeController {
 
 
     @RequestMapping (value="/register",method =RequestMethod.POST)
-    public ResponseEntity<Motorbike> registerMotorbike(@RequestHeader("Authorization") String accessToken, @RequestBody Motorbike motorbike){
-        String token = accessToken.split(" ")[1];
-        String username = this.jwtService.extractUsername(token);
-        System.out.println(username);
-        System.out.println(motorbike);
-        Optional<User> user = userRepository.findByEmail(username);
-        if(user.isPresent()){
-            user.get().setBalance(0.0);
-            motorbike.setUser(user.get());
-        }
-
-        Motorbike newMotor = motorbikeService.registerMotorbike(motorbike);
-
-        return ResponseEntity.ok(newMotor);
+    public ResponseEntity<Motorbike> registerMotorbike( @RequestBody RegisterMotorbikeDto registerMotorbikeDto){
+        Motorbike motorbike=new Motorbike();
+        motorbikeService.registerMotorbike(registerMotorbikeDto);
+        return ResponseEntity.ok(motorbike);
     }
-    @GetMapping("/activeMotorbikeList")
-    public List<Motorbike> getAllActiveMotorbike(){
-        return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.ACTIVE);
+    @GetMapping("/activeMotorbikeList/{page}/{pageSize}")
+    public Page<ListActiveMotorbikeDto> getAllActiveMotorbike(@PathVariable int page,@PathVariable int pageSize){
+        return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.ACTIVE,page,pageSize);
     }
 }
 
