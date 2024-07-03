@@ -28,7 +28,7 @@ public class AuthenticationController {
     public ResponseEntity<User> signUp(@RequestBody SignupRequest signupRequest, HttpServletRequest httpServletRequest){
         User user = authenticationService.signUp(signupRequest);
         String url = httpServletRequest.getRequestURL().toString()+"/verify/"+user.getToken();
-        String newUrl = url.replace("rentalmotorbike.azurewebsites.net", "delightful-plant-068eb7d00.5.azurestaticapps.net");
+        String newUrl = url.replace("localhost:8080", "localhost:3000");
         emailService.sendVerificationEmail(user, newUrl.replace(httpServletRequest.getServletPath(),""));
         return ResponseEntity.ok(user);
 
