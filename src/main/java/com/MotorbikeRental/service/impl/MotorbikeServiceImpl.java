@@ -1,6 +1,7 @@
 
 package com.MotorbikeRental.service.impl;
 
+import com.MotorbikeRental.dto.ModelDto;
 import com.MotorbikeRental.dto.RegisterMotorbikeDto;
 import com.MotorbikeRental.dto.UserDto;
 import com.MotorbikeRental.entity.*;
