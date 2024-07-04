@@ -22,6 +22,12 @@ public interface MotorbikeRepository extends JpaRepository<Motorbike, Long>{
     @Query("SELECT m FROM Motorbike m WHERE m.motorbikePlate LIKE %:searchTerm% AND m.user.id = :userId")
     Page<Motorbike> searchMotorbikePlateByLessor(String searchTerm,Long userId, Pageable pageable);
 
+    @Query("SELECT m FROM Motorbike m WHERE m.motorbikePlate LIKE %:searchTerm% AND m.user.id = :userId AND m.status = :status")
+    Page<Motorbike> searchMotorbikePlateAndStatusByLessor(String searchTerm,MotorbikeStatus status,Long userId, Pageable pageable);
+
+    @Query("SELECT m FROM Motorbike m WHERE m.motorbikePlate LIKE %:searchTerm% AND m.status = :status")
+    Page<Motorbike> searchMotorbikePlateAndStatus(String searchTerm,MotorbikeStatus status,Pageable pageable);
+
     @Query("SELECT m FROM Motorbike m WHERE m.motorbikePlate LIKE %:searchTerm%")
     Page<Motorbike> searchAllMotorbikePlate(String searchTerm,Pageable pageable);
 
@@ -33,5 +39,11 @@ public interface MotorbikeRepository extends JpaRepository<Motorbike, Long>{
 
     @Query("SELECT DISTINCT m FROM Motorbike m JOIN m.user.roles r WHERE r.name IN :roles AND m.user.id = :userId")
     Page<Motorbike> findAllByOwner(@Param("roles") List<String> roles,@Param("userId") Long userId, Pageable pageable);
+
+    @Query("SELECT m FROM Motorbike m WHERE m.status = :status AND m.user.id = :userId")
+    Page<Motorbike> findAllByStatusByLessor(@Param("status") MotorbikeStatus status,Long userId, Pageable pageable);
+
+    @Query("SELECT m FROM Motorbike m WHERE m.status = :status ")
+    Page<Motorbike> findAllByStatus(@Param("status") MotorbikeStatus status, Pageable pageable);
 
 }

@@ -44,13 +44,19 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
 
     @Override
-    public Page<RegisterMotorbikeDto> getAllMotorbike(int page, int pageSize, Long userId, List<String> roles) {
+    public Page<RegisterMotorbikeDto> getAllMotorbike(int page, int pageSize, Long userId, List<String> roles, String status) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Motorbike> motorbikeList;
-        if(roles.contains("ADMIN")){
-            motorbikeList = motorbikeRepository.findAll(pageable);
-        }else{
-            motorbikeList = motorbikeRepository.findAllByOwner(roles, userId, pageable);
+        if ("All".equalsIgnoreCase(status)) {
+            if (roles.contains("ADMIN")) {
+                motorbikeList = motorbikeRepository.findAll(pageable);
+            } else {
+                motorbikeList = motorbikeRepository.findAllByOwner(roles, userId, pageable);
+            }
+        } else if (roles.contains("ADMIN"))  {
+            motorbikeList = motorbikeRepository.findAllByStatus(MotorbikeStatus.valueOf(status), pageable);
+        } else{
+            motorbikeList = motorbikeRepository.findAllByStatusByLessor(MotorbikeStatus.valueOf(status),userId, pageable);
         }
         List<RegisterMotorbikeDto> dtoList = motorbikeList.stream()
                 .map(this::convertToDto)
@@ -73,14 +79,21 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public Page<RegisterMotorbikeDto> searchByPlate(String searchTerm,Long userId,List<String> roles, int page, int size) {
+    public Page<RegisterMotorbikeDto> searchByPlate(String searchTerm,String status, Long userId,List<String> roles, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Motorbike> motorbikePage;
-        if (roles.contains("ADMIN")) {
-            motorbikePage = motorbikeRepository.searchAllMotorbikePlate(searchTerm, pageable);
+        if("All".equalsIgnoreCase(status)) {
+            if (roles.contains("ADMIN")) {
+                motorbikePage = motorbikeRepository.searchAllMotorbikePlate(searchTerm, pageable);
+            } else {
+                motorbikePage = motorbikeRepository.searchMotorbikePlateByLessor(searchTerm, userId, pageable);
+            }
+        } else if (roles.contains("ADMIN")) {
+               motorbikePage = motorbikeRepository.searchMotorbikePlateAndStatus(searchTerm,MotorbikeStatus.valueOf(status),pageable);
         } else {
-            motorbikePage = motorbikeRepository.searchMotorbikePlateByLessor(searchTerm, userId, pageable);
+            motorbikePage = motorbikeRepository.searchMotorbikePlateAndStatusByLessor(searchTerm,MotorbikeStatus.valueOf(status),userId,pageable);
         }
+
         List<RegisterMotorbikeDto> dtoList = motorbikePage.getContent().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());

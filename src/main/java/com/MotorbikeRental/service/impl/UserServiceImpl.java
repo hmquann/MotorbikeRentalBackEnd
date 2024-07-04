@@ -169,6 +169,13 @@ public class UserServiceImpl implements UserService {
                 .map(Role::getName)
                 .collect(Collectors.toSet());
         userDto.setRole(roleNames);
+
+        List<RegisterMotorbikeDto> motorbikeDtos = user.getMotorbikes().stream()
+                .map(motorbike -> mapper.map(motorbike, RegisterMotorbikeDto.class))
+                .collect(Collectors.toList());
+
+        // Set the motorbikes list in UserDto
+        userDto.setMotorbikes(motorbikeDtos);
         return userDto;
     }
 
