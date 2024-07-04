@@ -24,7 +24,7 @@ public class AuthenticationController {
     private final EmailService emailService;
     private final UserService userService;
 
-
+    @CrossOrigin(origins = "https://proud-rock-0ffde1d0f.5.azurestaticapps.net", methods = {RequestMethod.POST, RequestMethod.OPTIONS})
     @RequestMapping (value="/signup",method =RequestMethod.POST)
     public ResponseEntity<User> signUp(@RequestBody SignupRequest signupRequest, HttpServletRequest httpServletRequest){
         User user = authenticationService.signUp(signupRequest);
