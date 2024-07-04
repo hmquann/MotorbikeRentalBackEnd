@@ -21,6 +21,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
@@ -39,7 +41,7 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
             http.csrf(AbstractHttpConfigurer::disable)
-                    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//                    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                     .authorizeHttpRequests(request ->
                             request.requestMatchers(WHITE_LIST_URL)
                                     .permitAll()
@@ -47,7 +49,7 @@ public class SecurityConfig {
                                     .requestMatchers("/api/user").hasAnyAuthority("USER")
                                     .anyRequest()
                                     .permitAll()
-                                    .and()
+//                                    .and()
                     )
                     .sessionManagement(manager ->
                             manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -59,17 +61,30 @@ public class SecurityConfig {
 
             return http.build();
         }
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://proud-rock-0ffde1d0f.5.azurestaticapps.net")); // Thay * bằng origin của trang web của bạn
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // Cho phép các phương thức yêu cầu
-        configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+
+        @Bean
+        public WebMvcConfigurer corsConfigurer() {
+            return new WebMvcConfigurer() {
+                @Override
+                public void addCorsMappings(CorsRegistry registry) {
+                    registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                            .allowedOrigins("https://proud-rock-0ffde1d0f.5.azurestaticapps.net")
+                            .allowedHeaders("*");
+                }
+            };
+        }
+
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(Arrays.asList("https://proud-rock-0ffde1d0f.5.azurestaticapps.net")); // Thay * bằng origin của trang web của bạn
+//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // Cho phép các phương thức yêu cầu
+//        configuration.addAllowedHeader("*");
+//        configuration.setAllowCredentials(true);
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 
         @Bean
         public AuthenticationProvider authenticationProvider(){
