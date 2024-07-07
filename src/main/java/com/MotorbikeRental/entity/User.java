@@ -49,6 +49,9 @@ public class User implements UserDetails {
     @JsonBackReference
     private List<Transaction> transactions;
 
+    @OneToMany(mappedBy = "createdBy")
+    private List<Discount> createdDiscounts;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles",
@@ -56,6 +59,12 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", firstName='" + firstName + "', lastName='" + lastName + "', email='" + email + "'}";
+    }
+
 
     @OneToMany(mappedBy = "user")
     @JsonBackReference

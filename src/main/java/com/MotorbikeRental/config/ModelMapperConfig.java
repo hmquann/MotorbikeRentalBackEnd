@@ -16,7 +16,8 @@ public class ModelMapperConfig {
             // Tạo object và cấu hình
             ModelMapper modelMapper = new ModelMapper();
             modelMapper.getConfiguration()
-                    .setMatchingStrategy(MatchingStrategies.STANDARD);
+                    .setMatchingStrategy(MatchingStrategies.STANDARD)
+                    .setAmbiguityIgnored(true);
 
 
 

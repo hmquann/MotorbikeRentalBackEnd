@@ -7,7 +7,9 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @Data
-public class DiscountDto {
+public class DiscountDtoResponse {
+
+    private Long id;
 
     private String name;
 
@@ -27,8 +29,15 @@ public class DiscountDto {
 
     private LocalDate expirationDate;
 
+    private boolean expired;
+
     private Integer quantity;
 
     private boolean assignToAllUser;
+
+    private Long createdByUserId;
+
+    private String createdByUserName;
+
 
 }
