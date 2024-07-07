@@ -69,6 +69,7 @@ public class SecurityConfig {
                 public void addCorsMappings(CorsRegistry registry) {
                     registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                             .allowedOrigins("https://proud-rock-0ffde1d0f.5.azurestaticapps.net")
+//                            .allowedOrigins("http://localhost:3000")
                             .allowedHeaders("*");
                 }
             };

@@ -41,7 +41,7 @@ public class AuthenticationController {
         String newEmail = changeEmailRequest.getNewEmail();
         authenticationService.checkEmail(newEmail);
         String url = httpServletRequest.getRequestURL().toString()+"/updateEmail/"+user.getToken()+"/"+newEmail;
-        String newUrl = url.replace("localhost:8080", "localhost:3000");
+        String newUrl = url.replace("rentalmotorbikebe.azurewebsites.net", "proud-rock-0ffde1d0f.5.azurestaticapps.net");
         emailService.sendChangeEmail(user, newUrl.replace(httpServletRequest.getServletPath(),""), newEmail);
         return ResponseEntity.ok(user);
 
