@@ -52,6 +52,14 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "createdBy")
     private List<Discount> createdDiscounts;
 
+    @ManyToMany
+    @JoinTable(
+            name = "User_Discount",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "discount_id")
+    )
+    private Set<Discount> discounts = new HashSet<>();
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles",
@@ -85,6 +93,16 @@ public class User implements UserDetails {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
+    }
+
+    public void addDiscount(Discount discount) {
+        this.discounts.add(discount);
+        discount.getUsers().add(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, email, phone, isActive, balance, token);
     }
 
     @Override

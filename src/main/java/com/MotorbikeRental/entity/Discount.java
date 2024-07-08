@@ -6,6 +6,9 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Data
@@ -39,11 +42,17 @@ public class Discount {
 
     private Integer quantity;
 
-    private boolean assignToAllUser;
-
     @ManyToOne
     @JoinColumn(name = "created_by_userId")
     private User createdBy;
+
+    @ManyToMany(mappedBy = "discounts")
+    private Set<User> users = new HashSet<>();
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, code, name, description, voucherType, discountPercent, maxDiscountMoney, discountMoney, startDate, expirationDate, expired, quantity);
+    }
 
 
 }

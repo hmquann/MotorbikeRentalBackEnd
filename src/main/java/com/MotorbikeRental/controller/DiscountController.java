@@ -2,6 +2,7 @@ package com.MotorbikeRental.controller;
 
 import com.MotorbikeRental.dto.DiscountDto;
 import com.MotorbikeRental.dto.DiscountDtoResponse;
+import com.MotorbikeRental.dto.ModelDto;
 import com.MotorbikeRental.entity.Discount;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.exception.ValidationException;
@@ -61,19 +62,28 @@ public class DiscountController {
         }
     }
     @GetMapping("/getAllDiscount/{page}/{pageSize}")
-    public ResponseEntity<Page<DiscountDtoResponse>> listDiscounts(@PathVariable int page, @PathVariable int pageSize) {
-        Page<DiscountDtoResponse> discount = discountService.getAllDiscounts(page,pageSize);
+    public ResponseEntity<Page<DiscountDtoResponse>> listDiscounts(@PathVariable int page, @PathVariable int pageSize,
+                                                                   @RequestParam(required = false) List<String> roles,
+                                                                   @RequestParam(required = false) Long userId
+                                                                   ) {
+        Page<DiscountDtoResponse> discount = discountService.getAllDiscounts(page,pageSize,roles, userId);
         return ResponseEntity.ok(discount);
     }
 
-    @GetMapping()
-    public ResponseEntity<Discount> getDiscountByCode(@RequestParam ("code") String code) {
-        Discount discount = discountService.getDiscountByCode(code);
+//    @GetMapping("{code}")
+//    public ResponseEntity<Discount> getDiscountByCode(@PathVariable String code) {
+//        Discount discount = discountService.getDiscountByCode(code);
+//
+//        if(discount == null) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        }
+//        return ResponseEntity.ok(discount);
+//    }
 
-        if(discount == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(discount);
+    @GetMapping("/{id}")
+    public ResponseEntity<DiscountDtoResponse> getDiscountById(@PathVariable Long id) {
+        DiscountDtoResponse discountDto = discountService.getDiscountById(id);
+        return ResponseEntity.ok(discountDto);
     }
 
     @DeleteMapping("/delete")
@@ -83,6 +93,12 @@ public class DiscountController {
             return new ResponseEntity<>("Discount with code " + code+ " not found",HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>("Discount is deleted", HttpStatus.OK);
+    }
+
+    @GetMapping("/updateExpired")
+    public String updateExpiredDiscounts() {
+        discountService.updateExpiredDiscounts();
+        return "Expired discounts updated.";
     }
 
 

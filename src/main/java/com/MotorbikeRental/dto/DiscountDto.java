@@ -29,6 +29,4 @@ public class DiscountDto {
 
     private Integer quantity;
 
-    private boolean assignToAllUser;
-
 }

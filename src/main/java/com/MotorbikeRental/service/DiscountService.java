@@ -12,10 +12,13 @@ public interface DiscountService {
 
     DiscountDtoResponse createDiscount(DiscountDto discountDto, User createdBy);
 
-    Page<DiscountDtoResponse> getAllDiscounts(int page, int pageSize);
+    Page<DiscountDtoResponse> getAllDiscounts(int page, int pageSize, List<String> roles, Long userId);
 
     Discount getDiscountByCode(String code);
 
     boolean deleteDiscountByCode(String code);
+    public void updateExpiredDiscounts();
+
+    DiscountDtoResponse getDiscountById(Long id);
 
 }

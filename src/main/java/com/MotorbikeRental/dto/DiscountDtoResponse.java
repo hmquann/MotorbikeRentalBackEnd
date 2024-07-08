@@ -33,8 +33,6 @@ public class DiscountDtoResponse {
 
     private Integer quantity;
 
-    private boolean assignToAllUser;
-
     private Long createdByUserId;
 
     private String createdByUserName;
