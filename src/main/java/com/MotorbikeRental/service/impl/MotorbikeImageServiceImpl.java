@@ -1,5 +1,6 @@
 package com.MotorbikeRental.service.impl;
 
+import com.MotorbikeRental.entity.Motorbike;
 import com.MotorbikeRental.entity.MotorbikeImage;
 import com.MotorbikeRental.repository.MotorbikeImageRepository;
 import com.MotorbikeRental.service.MotorbikeImageService;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,10 +18,12 @@ public class MotorbikeImageServiceImpl implements MotorbikeImageService {
     private MotorbikeImageRepository motorbikeImageRepository;
     @Override
     public void saveMotorbikeImage(List<String> motorbikeImages,Long id) {
-
-        for(String imageUrl:motorbikeImages) {
+        for (String url : motorbikeImages) {
             MotorbikeImage motorbikeImage = new MotorbikeImage();
-            motorbikeImage.setUrl(imageUrl);
+            motorbikeImage.setUrl(url);
+            Motorbike motorbike = new Motorbike();
+            motorbike.setId(id);
+            motorbikeImage.setMotorbike(motorbike);
             motorbikeImageRepository.save(motorbikeImage);
         }
     }
