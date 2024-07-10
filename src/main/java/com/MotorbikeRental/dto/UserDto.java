@@ -31,5 +31,5 @@ public class UserDto {
     private String token;
 
     @JsonIgnoreProperties("user")
-    private List<RegisterMotorbikeDto> motorbikes;
+    private List<MotorbikeDto> motorbikes;
 }

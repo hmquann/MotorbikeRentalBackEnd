@@ -2,6 +2,7 @@ package com.MotorbikeRental.service.impl;
 
 
 import com.MotorbikeRental.config.VNPayConfig;
+import com.MotorbikeRental.dto.MotorbikeDto;
 import com.MotorbikeRental.dto.PaymentDto;
 import com.MotorbikeRental.dto.RegisterMotorbikeDto;
 import com.MotorbikeRental.dto.UserDto;
@@ -170,8 +171,8 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toSet());
         userDto.setRole(roleNames);
 
-        List<RegisterMotorbikeDto> motorbikeDtos = user.getMotorbikes().stream()
-                .map(motorbike -> mapper.map(motorbike, RegisterMotorbikeDto.class))
+        List<MotorbikeDto> motorbikeDtos = user.getMotorbikes().stream()
+                .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
                 .collect(Collectors.toList());
 
         // Set the motorbikes list in UserDto

@@ -54,6 +54,7 @@ public class User implements UserDetails {
     private List<Transaction> transactions;
 
     @OneToMany(mappedBy = "createdBy")
+    @JsonBackReference
     private List<Discount> createdDiscounts;
 
     @ManyToMany(cascade = CascadeType.REMOVE)
