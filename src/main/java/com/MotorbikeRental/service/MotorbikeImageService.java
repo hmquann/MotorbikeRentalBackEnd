@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface MotorbikeImageService {
     void saveMotorbikeImage(List<String> motorbikeImages, Long id);
+    List<String>getMotorbikeImage(Long id);
 }

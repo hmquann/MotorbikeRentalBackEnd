@@ -16,11 +16,16 @@ public class MotorbikeImageServiceImpl implements MotorbikeImageService {
     private MotorbikeImageRepository motorbikeImageRepository;
     @Override
     public void saveMotorbikeImage(List<String> motorbikeImages,Long id) {
-        MotorbikeImage motorbikeImage = new MotorbikeImage();
+
         for(String imageUrl:motorbikeImages) {
-            motorbikeImage.setId(id);
+            MotorbikeImage motorbikeImage = new MotorbikeImage();
             motorbikeImage.setUrl(imageUrl);
             motorbikeImageRepository.save(motorbikeImage);
         }
+    }
+
+    @Override
+    public List<String> getMotorbikeImage(Long id) {
+        return motorbikeImageRepository.getMotorbikeImageByMotorbikeId(id);
     }
 }
