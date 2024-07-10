@@ -1,18 +1,20 @@
 
 package com.MotorbikeRental.service.impl;
 
-import com.MotorbikeRental.dto.ModelDto;
-import com.MotorbikeRental.dto.RegisterMotorbikeDto;
-import com.MotorbikeRental.dto.UserDto;
+import com.MotorbikeRental.dto.*;
 import com.MotorbikeRental.entity.*;
 
 import com.MotorbikeRental.exception.ExistPlateException;
 import com.MotorbikeRental.repository.ModelRepository;
+import com.MotorbikeRental.repository.MotorbikeFilterRepository;
 import com.MotorbikeRental.repository.MotorbikeRepository;
 import com.MotorbikeRental.repository.UserRepository;
 
+import com.MotorbikeRental.service.JWTService;
+import com.MotorbikeRental.service.MotorbikeImageService;
 import com.MotorbikeRental.service.MotorbikeService;
 import com.MotorbikeRental.service.UserService;
+import com.cloudinary.Cloudinary;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,6 +23,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -29,48 +33,45 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MotorbikeServiceImpl  implements MotorbikeService {
-
+   @Autowired
+   private final Cloudinary cloudinary;
     @Autowired
     private final ModelMapper mapper;
     @Autowired
     private final MotorbikeRepository motorbikeRepository;
-
+    @Autowired
     private final ModelRepository modelRepository;
-
-
-    private final ModelServiceImpl modelService;
-    private final UserRepository userRepository;
-
+    @Autowired
+    private JWTService jwtService;
+    @Autowired
+    private final MotorbikeImageService motorbikeImageService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private final MotorbikeFilterRepository motorbikeFilterRepository;
     private final UserService userService;
 
 
     @Override
-    public Page<RegisterMotorbikeDto> getAllMotorbike(int page, int pageSize, Long userId, List<String> roles, String status) {
+    public Page<MotorbikeDto> getAllMotorbike(int page, int pageSize, Long userId, List<String> roles) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Motorbike> motorbikeList;
-        if ("All".equalsIgnoreCase(status)) {
-            if (roles.contains("ADMIN")) {
-                motorbikeList = motorbikeRepository.findAll(pageable);
-            } else {
-                motorbikeList = motorbikeRepository.findAllByOwner(roles, userId, pageable);
-            }
-        } else if (roles.contains("ADMIN"))  {
-            motorbikeList = motorbikeRepository.findAllByStatus(MotorbikeStatus.valueOf(status), pageable);
-        } else{
-            motorbikeList = motorbikeRepository.findAllByStatusByLessor(MotorbikeStatus.valueOf(status),userId, pageable);
+        if(roles.contains("ADMIN")){
+            motorbikeList = motorbikeRepository.findAll(pageable);
+        }else{
+            motorbikeList = motorbikeRepository.findAllByOwner(roles, userId, pageable);
         }
-        List<RegisterMotorbikeDto> dtoList = motorbikeList.stream()
+        List<MotorbikeDto> dtoList = motorbikeList.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
         return new PageImpl<>(dtoList, pageable, motorbikeList.getTotalElements());
     }
 
-        private RegisterMotorbikeDto convertToDto(Motorbike motorbike) {
-            RegisterMotorbikeDto dto = mapper.map(motorbike, RegisterMotorbikeDto.class);
+        private MotorbikeDto convertToDto(Motorbike motorbike) {
+            MotorbikeDto dto = mapper.map(motorbike, MotorbikeDto.class);
             ModelDto modelDto = mapper.map(motorbike.getModel(), ModelDto.class);
-            UserDto userDto = userService.convertToDto(motorbike.getUser());
             dto.setModel(modelDto);
-            dto.setUser(userDto);
+
             return dto;
         }
 
@@ -80,22 +81,15 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public Page<RegisterMotorbikeDto> searchByPlate(String searchTerm,String status, Long userId,List<String> roles, int page, int size) {
+    public Page<MotorbikeDto> searchByPlate(String searchTerm,Long userId,List<String> roles, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Motorbike> motorbikePage;
-        if("All".equalsIgnoreCase(status)) {
-            if (roles.contains("ADMIN")) {
-                motorbikePage = motorbikeRepository.searchAllMotorbikePlate(searchTerm, pageable);
-            } else {
-                motorbikePage = motorbikeRepository.searchMotorbikePlateByLessor(searchTerm, userId, pageable);
-            }
-        } else if (roles.contains("ADMIN")) {
-               motorbikePage = motorbikeRepository.searchMotorbikePlateAndStatus(searchTerm,MotorbikeStatus.valueOf(status),pageable);
+        if (roles.contains("ADMIN")) {
+            motorbikePage = motorbikeRepository.searchAllMotorbikePlate(searchTerm, pageable);
         } else {
-            motorbikePage = motorbikeRepository.searchMotorbikePlateAndStatusByLessor(searchTerm,MotorbikeStatus.valueOf(status),userId,pageable);
+            motorbikePage = motorbikeRepository.searchMotorbikePlateByLessor(searchTerm, userId, pageable);
         }
-
-        List<RegisterMotorbikeDto> dtoList = motorbikePage.getContent().stream()
+        List<MotorbikeDto> dtoList = motorbikePage.getContent().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
         return new PageImpl<>(dtoList, pageable, motorbikePage.getTotalElements());
@@ -123,29 +117,60 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public List<RegisterMotorbikeDto> getAllMotorbikeByStatus(MotorbikeStatus status) {
+    public List<MotorbikeDto> getAllMotorbikeByStatus(MotorbikeStatus status) {
         List<Motorbike> motorbikeList = motorbikeRepository.getAllMotorbikeByStatus(status);
-        List<RegisterMotorbikeDto> dtoList = motorbikeList.stream()
-                .map(motorbike -> mapper.map(motorbike, RegisterMotorbikeDto.class))
+        List<MotorbikeDto> dtoList = motorbikeList.stream()
+                .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
                 .collect(Collectors.toList());
         return dtoList;
     }
     @Override
-
-    public Motorbike registerMotorbike(RegisterMotorbikeDto registerMotorbikeDto) {
+    public Motorbike registerMotorbike(String accessToken,RegisterMotorbikeDto registerMotorbikeDto) {
         if(motorbikeRepository.existsByMotorbikePlate(registerMotorbikeDto.getMotorbikePlate())){
             throw  new ExistPlateException("The plate is exist in the system");
         }
-        Motorbike motorbike=mapper.map(registerMotorbikeDto,Motorbike.class);
+        String token = accessToken.split(" ")[1];
+        String username = jwtService.extractUsername(token);
+        System.out.println(username);
+        Optional<User> user = userRepository.findByEmail(username);
+
+        Motorbike motorbike=new Motorbike();
+        motorbike.setMotorbikeAddress(registerMotorbikeDto.getMotorbikeAddress());
+        motorbike.setMotorbikePlate(registerMotorbikeDto.getMotorbikePlate());
+        motorbike.setConstraintMotorbike(registerMotorbikeDto.getConstraintMotorbike());
+        motorbike.setModel(modelRepository.findById(registerMotorbikeDto.getModelId()).get());
+        motorbike.setUser(user.get());
+        motorbike.setDelivery(registerMotorbikeDto.isDelivery());
+        motorbike.setPrice(registerMotorbikeDto.getPrice());
+        motorbike.setOvertimeLimit(registerMotorbikeDto.getOvertimeLimit());
+        motorbike.setOvertimeFee(registerMotorbikeDto.getOvertimeFee());
+        motorbike.setDeliveryFee(registerMotorbikeDto.getDeliveryFee());
+        motorbike.setFreeShipLimit(registerMotorbikeDto.getFreeShipLimit());
+        motorbike.setYearOfManuFacture(registerMotorbikeDto.getYearOfManufacture());
         motorbike.setStatus(MotorbikeStatus.PENDING);
         motorbike.setTripCount(Long.valueOf(0));
-        return motorbikeRepository.save(motorbike);
+        Motorbike savedMotorbike=motorbikeRepository.save(motorbike);
+        return savedMotorbike;
     }
 
     @Override
-    public void approveMotorbike(int motorbikeId) {
-
+    public List<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto) {
+        List <Motorbike> filter=motorbikeFilterRepository.listMotorbikeByFilter(
+                filterMotorbikeDto.getStartTime(),
+                filterMotorbikeDto.getEndTime(),
+                filterMotorbikeDto.getAddress(),
+        filterMotorbikeDto.getBrandId(),
+        filterMotorbikeDto.getFuelType(),
+        filterMotorbikeDto.getModelType(),
+        filterMotorbikeDto.isDelivery()
+        );
+        List<MotorbikeDto> dtoList = filter.stream()
+                .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
+                .collect(Collectors.toList());
+        return dtoList;
     }
+
+
 
     @Override
     public Motorbike checkExistPlate( String motorbikePlate) {
@@ -153,42 +178,11 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public void getMotorbikeByAddress( String address) {
-
-    }
-
-    @Override
-    public void sortMotorbikeBycriteria( String criteria) {
-
-    }
-
-    @Override
-    public List<Motorbike> getMotorbikeByBrand( String brandName) {
-        return null;
-    }
-
-    @Override
-    public List<Motorbike> getMotorbikeByModel( String modelName) {
-        return null;
-    }
-
-    @Override
-    public List<Motorbike> getMotorbikeByRequireTime(Date startDate, Date endDate) {
-        return null;
-    }
-
-    @Override
-    public List<Motorbike> getDeliveryMotorbike(boolean delivery) {
-        return null;
-    }
-
-
-    @Override
-    public Page<RegisterMotorbikeDto> getPendingMotorbikes(MotorbikeStatus status,int page,int pageSize) {
+    public Page<MotorbikeDto> getPendingMotorbikes(MotorbikeStatus status,int page,int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         List<Motorbike> motorbikeList = motorbikeRepository.getAllMotorbikeByStatus(status);
-        List<RegisterMotorbikeDto> dtoList = motorbikeList.stream()
-                .map(motorbike -> mapper.map(motorbike, RegisterMotorbikeDto.class))
+        List<MotorbikeDto> dtoList = motorbikeList.stream()
+                .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtoList, pageable, dtoList.size());
     }
@@ -201,6 +195,20 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     @Override
     public Motorbike rejectMotorbike(Long id) {
         return updateMotorbikeStatus(id, MotorbikeStatus.DEACTIVE);
+    }
+
+    @Override
+    public List<MotorbikeDto> listFiveStar() {
+        List<MotorbikeDto>motorbikeList=new ArrayList<>();
+          List<Long> users=motorbikeFilterRepository.getFiveStarLessor();
+          for(MotorbikeDto motorbike:getAllMotorbikeByStatus(MotorbikeStatus.ACTIVE)){
+              for(Long id:users){
+                  if(motorbike.getUserId()==id){
+                      motorbikeList.add(motorbike);
+                  }
+              }
+          }
+          return motorbikeList;
     }
 
     private Motorbike updateMotorbikeStatus(Long id, MotorbikeStatus status) {

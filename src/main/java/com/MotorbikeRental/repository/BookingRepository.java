@@ -9,6 +9,6 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking,Long> {
-    @Query("select b from Booking b where b.motorbikeId=:motorbikeId")
+    @Query("select b from Booking b where b.motorbike.id=:motorbikeId")
     ResponseEntity<List<Booking>> getBookingByMotorbikeId(Long motorbikeId);
 }

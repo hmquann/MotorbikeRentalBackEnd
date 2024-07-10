@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @Data
 @Entity
 @Table(name = "[User]")
+@ToString
 public class User implements UserDetails {
 
     @Id
@@ -47,6 +50,7 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonBackReference
+    @ToString.Exclude
     private List<Transaction> transactions;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -55,20 +59,27 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @ToString.Exclude
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
     @JsonBackReference
+    @ToString.Exclude
     private List<Location> locationSet;
 
     @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
+    @ToString.Exclude
     private List<Message> messages;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonBackReference
+    @ToString.Exclude
     private List<Motorbike> motorbikes;
-
+    @OneToMany(mappedBy = "renter",cascade = CascadeType.ALL)
+    @JsonBackReference
+    @ToStringExclude
+    private List<Booking> bookingList;
 
     @JsonManagedReference
     @Override

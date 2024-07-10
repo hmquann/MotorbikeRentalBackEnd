@@ -16,7 +16,6 @@ public class MotorbikeDto {
 
     private Long yearOfManufacture;
 
-
     private Long price;
 
     private Long overtimeFee;
@@ -33,5 +32,5 @@ public class MotorbikeDto {
 
     private String motorbikeAddress;
 
-    private List<String>motorbikeImages;
+    private List<MotorbikeImageDto>motorbikeImages;
 }

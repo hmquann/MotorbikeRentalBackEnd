@@ -46,5 +46,6 @@ public interface MotorbikeRepository extends JpaRepository<Motorbike, Long>{
 
     @Query("SELECT m FROM Motorbike m WHERE m.status = :status ")
     Page<Motorbike> findAllByStatus(@Param("status") MotorbikeStatus status, Pageable pageable);
-
+    @Query("SELECT  m FROM Motorbike m ORDER BY m.id DESC ")
+    List<Motorbike> findLastMotorbike();
 }
