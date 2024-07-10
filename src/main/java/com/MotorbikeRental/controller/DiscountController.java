@@ -3,6 +3,7 @@ package com.MotorbikeRental.controller;
 import com.MotorbikeRental.dto.DiscountDto;
 import com.MotorbikeRental.dto.DiscountDtoResponse;
 import com.MotorbikeRental.dto.ModelDto;
+import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.Discount;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.exception.ValidationException;
@@ -86,13 +87,32 @@ public class DiscountController {
         return ResponseEntity.ok(discountDto);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteDiscount(@RequestParam("code") String code) {
-        boolean isDeleted = discountService.deleteDiscountByCode(code);
+    @DeleteMapping("/{discountId}/remove-references")
+    public ResponseEntity<?> removeReferences(@PathVariable Long discountId) {
+        discountService.removeUserReferences(discountId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<DiscountDtoResponse> deleteDiscount(@PathVariable Long id) {
+        boolean isDeleted = discountService.deleteDiscountById(id);
         if (!isDeleted) {
-            return new ResponseEntity<>("Discount with code " + code+ " not found",HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return new ResponseEntity<>("Discount is deleted", HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @PatchMapping("/updateDiscount/{id}")
+    public ResponseEntity<?> updateBrand(@PathVariable Long id, @RequestBody DiscountDto  discount) {
+        try {
+            DiscountDtoResponse  updateDiscount = discountService.updateDiscount(id, discount);
+            if (updateDiscount == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.ok(updateDiscount);
+        } catch (ValidationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/updateExpired")

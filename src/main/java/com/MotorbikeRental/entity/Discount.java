@@ -46,7 +46,7 @@ public class Discount {
     @JoinColumn(name = "created_by_userId")
     private User createdBy;
 
-    @ManyToMany(mappedBy = "discounts")
+    @ManyToMany(mappedBy = "discounts", cascade = CascadeType.REMOVE)
     private Set<User> users = new HashSet<>();
 
     @Override

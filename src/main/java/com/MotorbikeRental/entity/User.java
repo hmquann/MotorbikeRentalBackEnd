@@ -56,7 +56,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "createdBy")
     private List<Discount> createdDiscounts;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "User_Discount",
             joinColumns = @JoinColumn(name = "user_id"),
