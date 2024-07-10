@@ -36,4 +36,10 @@ public class Transaction {
     @JsonBackReference
     private User users;
 
+    @Override
+    public String toString() {
+        return "Transaction{id=" + id + ", amount=" + amount + ", transactionDate=" + transactionDate + ", status=" + status + "}";
+    }
+
+
 }
