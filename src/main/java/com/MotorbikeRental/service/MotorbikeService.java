@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MotorbikeService {
-    public Page<MotorbikeDto> getAllMotorbike(int page,int pageSize,Long userId,List<String> roles);
+    public Page<MotorbikeDto> getAllMotorbike(int page,int pageSize,Long userId,List<String> roles, String status);
 
     Page<Motorbike> getMotorbikeWithPagination(int page, int pageSize);
 
-    Page<MotorbikeDto> searchByPlate(String searchTerm,Long userId,List<String> roles, int page, int size);
+    Page<MotorbikeDto> searchByPlate(String searchTerm,String status,Long userId,List<String> roles, int page, int size);
 
     void toggleMotorbikeStatus(Long id);
 
