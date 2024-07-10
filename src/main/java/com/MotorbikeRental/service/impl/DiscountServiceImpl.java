@@ -95,15 +95,64 @@ public class DiscountServiceImpl implements DiscountService {
         return convertToDto(discount);
     }
 
+    public void removeUserReferences(Long discountId) {
+        Discount discount = discountRepository.findById(discountId).orElseThrow(() -> new RuntimeException("Discount not found"));
+        for (User user : discount.getUsers()) {
+            user.getDiscounts().remove(discount);
+            userRepository.save(user);
+        }
+    }
 
-    public boolean deleteDiscountByCode(String code) {
-        Discount discount = discountRepository.findByCode(code);
+
+    public boolean deleteDiscountById(Long id) {
+        Discount discount = discountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Discount not found"));
         if (discount != null) {
             discountRepository.delete(discount);
             return true;
         }
         return false;
     }
+
+    public DiscountDtoResponse  updateDiscount(Long id, DiscountDto discountDto) {
+        Discount existingDiscount = discountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Discount not found"));
+
+
+        if (!existingDiscount.getCode().equals(discountDto.getCode())) {
+            if (discountRepository.existsByCode(discountDto.getCode())) {
+                throw new ValidationException("Discount code already exists");
+            }
+            existingDiscount.setCode(discountDto.getCode());
+        }
+
+        existingDiscount.setName(discountDto.getName());
+        existingDiscount.setDescription(discountDto.getDescription());
+        existingDiscount.setVoucherType(discountDto.getVoucherType());
+        switch (existingDiscount.getVoucherType()) {
+            case PERCENTAGE:
+                existingDiscount.setDiscountPercent(discountDto.getDiscountPercent());
+                existingDiscount.setMaxDiscountMoney(discountDto.getMaxDiscountMoney());
+                existingDiscount.setDiscountMoney(0);
+                break;
+            case FIXED_MONEY:
+                existingDiscount.setDiscountMoney(discountDto.getDiscountMoney());
+                existingDiscount.setDiscountPercent(0);
+                existingDiscount.setMaxDiscountMoney(0);
+                break;
+            default:
+                throw new ValidationException("Invalid voucher type");
+        }
+        existingDiscount.setStartDate(discountDto.getStartDate());
+        existingDiscount.setExpirationDate(discountDto.getExpirationDate());
+        existingDiscount.setQuantity(discountDto.getQuantity());
+
+
+        Discount updatedDiscount = discountRepository.save(existingDiscount);
+        return convertToDto(updatedDiscount);
+    }
+
+
 
     @Transactional
     @Scheduled(cron = "0 0 0 * * ?")

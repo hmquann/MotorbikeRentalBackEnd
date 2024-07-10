@@ -16,9 +16,14 @@ public interface DiscountService {
 
     Discount getDiscountByCode(String code);
 
-    boolean deleteDiscountByCode(String code);
+    boolean deleteDiscountById(Long id);
+
+    void removeUserReferences(Long discountId);
+
     public void updateExpiredDiscounts();
 
     DiscountDtoResponse getDiscountById(Long id);
+
+    DiscountDtoResponse updateDiscount(Long id, DiscountDto updatedDiscount);
 
 }
