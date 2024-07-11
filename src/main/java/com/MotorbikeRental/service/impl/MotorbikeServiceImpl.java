@@ -2,6 +2,7 @@
 package com.MotorbikeRental.service.impl;
 
 import com.MotorbikeRental.dto.ModelDto;
+import com.MotorbikeRental.dto.MotorbikeDto;
 import com.MotorbikeRental.dto.RegisterMotorbikeDto;
 import com.MotorbikeRental.dto.UserDto;
 import com.MotorbikeRental.entity.*;
@@ -189,6 +190,16 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     public Motorbike rejectMotorbike(Long id) {
         return updateMotorbikeStatus(id, MotorbikeStatus.DEACTIVE);
     }
+
+    @Override
+    public MotorbikeDto getMotorbikeById(Long id) {
+        return null;
+    }
+
+//    @Override
+//    public MotorbikeDto getMotorbikeById(Long id) {
+//        return mapper.map(motorbikeRepository.getById(id), MotorbikeDto.class);
+//    }
 
     private Motorbike updateMotorbikeStatus(Long id, MotorbikeStatus status) {
         Optional<Motorbike> motorbikeOpt = motorbikeRepository.findById(id);

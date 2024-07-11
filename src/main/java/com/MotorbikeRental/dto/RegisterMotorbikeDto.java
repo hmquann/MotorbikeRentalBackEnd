@@ -1,8 +1,5 @@
 package com.MotorbikeRental.dto;
-import com.MotorbikeRental.entity.Brand;
-import com.MotorbikeRental.entity.Model;
-import com.MotorbikeRental.entity.MotorbikeImage;
-import com.MotorbikeRental.entity.MotorbikeStatus;
+import com.MotorbikeRental.entity.*;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +32,8 @@ public class RegisterMotorbikeDto {
     private String constraintMotorbike;
 
     private String motorbikeAddress;
+
+    private LicenseType licenseType;
 
     private List<MultipartFile> motorbikeImages;
   

@@ -107,6 +107,8 @@ public class MotorbikeController {
     public List<RegisterMotorbikeDto> getAllActiveMotorbike(){
         return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.ACTIVE);
     }
+
+
 }
 
 

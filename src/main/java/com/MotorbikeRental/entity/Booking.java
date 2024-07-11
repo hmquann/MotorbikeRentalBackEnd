@@ -12,10 +12,10 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookingId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User renter;
 
-    private Long renter_id;
-
-    private Long motorbikeId;
 
     private LocalDateTime startDate;
 

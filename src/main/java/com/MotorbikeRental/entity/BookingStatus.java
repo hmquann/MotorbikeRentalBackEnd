@@ -1,5 +1,5 @@
 package com.MotorbikeRental.entity;
 
 public enum BookingStatus {
-    PENDING, ACCEPTED, DENIED
+    PENDING, ACCEPTED, DENIED, DONE, CANCELED;
 }

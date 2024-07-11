@@ -13,4 +13,6 @@ public interface BookingService {
     Booking saveBooking(BookingRequest bookingRequest);
     boolean changeStatusBooking();
     ResponseEntity<List<Booking>> getBookingListByMotorbikeId(Long motorbikeId);
+
+    List<BookingRequest> getBookingListByRenterId(Long renterId);
 }

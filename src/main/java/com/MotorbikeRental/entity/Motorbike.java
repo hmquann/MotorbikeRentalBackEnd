@@ -73,10 +73,8 @@ public class Motorbike {
     @OneToMany(mappedBy = "motorbike")
     private List<MotorbikeImage>motorbikeImages;
 
-//    @JsonManagedReference
-//    public User user(){
-//        return user;
-//    }
+    @Enumerated(EnumType.STRING)
+    private LicenseType licenseType;
 
     @ManyToOne
     @JoinColumn(name="model_id")

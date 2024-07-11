@@ -39,6 +39,7 @@ public class LicenseServiceImpl implements LicenseService {
            return mapper.map(license, LicenseDto.class);
     }
 
+
     @Override
     public Page<LicenseDto> getPendingLicenseWithPagination(int page, int pageSize, LicenseStatus status) {
 

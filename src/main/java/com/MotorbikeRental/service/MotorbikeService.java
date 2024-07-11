@@ -3,6 +3,7 @@ package com.MotorbikeRental.service;
 
 
 
+import com.MotorbikeRental.dto.MotorbikeDto;
 import com.MotorbikeRental.dto.RegisterMotorbikeDto;
 import com.MotorbikeRental.entity.MotorbikeStatus;
 import com.MotorbikeRental.entity.Motorbike;
@@ -46,5 +47,7 @@ public interface MotorbikeService {
     Page<RegisterMotorbikeDto> getPendingMotorbikes(MotorbikeStatus status, int page, int pageSize);
     Motorbike approveMotorbike(Long id);
     Motorbike rejectMotorbike(Long id);
+
+    Motorbike getMotorbikeById(Long id);
 
 }

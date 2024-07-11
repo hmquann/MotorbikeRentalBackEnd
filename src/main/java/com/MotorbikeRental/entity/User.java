@@ -69,6 +69,10 @@ public class User implements UserDetails {
     @JsonBackReference
     private List<Motorbike> motorbikes;
 
+    @OneToMany(mappedBy = "renter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Booking> bookings = new ArrayList<>();
+
 
     @JsonManagedReference
     @Override
