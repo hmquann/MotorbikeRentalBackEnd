@@ -1,11 +1,12 @@
 package com.MotorbikeRental.service.impl;
 
-import com.MotorbikeRental.dto.*;
+import com.MotorbikeRental.dto.BookingRequest;
 import com.MotorbikeRental.entity.Booking;
 import com.MotorbikeRental.entity.BookingStatus;
 import com.MotorbikeRental.entity.License;
 import com.MotorbikeRental.entity.Motorbike;
 import com.MotorbikeRental.repository.BookingRepository;
+import com.MotorbikeRental.repository.MotorbikeRepository;
 import com.MotorbikeRental.service.BookingService;
 import com.MotorbikeRental.service.MotorbikeService;
 import com.MotorbikeRental.service.UserService;
@@ -28,14 +29,18 @@ public class BookingServiceImpl implements BookingService {
     private final UserService userService;;
     private final MotorbikeService motorbikeService;
     @Autowired
+    private final MotorbikeRepository motorbikeRepository;
+    @Autowired
     private ModelMapper mapper;
     @Override
     public Booking saveBooking(BookingRequest bookingRequest) {
         Booking booking = new Booking();
-        Motorbike motorbike = motorbikeService.getMotorbikeById(bookingRequest.getMotorbikeId());
+
         booking.setStartDate(bookingRequest.getStartDate());
         booking.setEndDate(bookingRequest.getEndDate());
         booking.setRenter(userService.getUserById(bookingRequest.getRenterId()));
+        Motorbike motorbike=motorbikeRepository.findById(bookingRequest.getMotorbikeId())
+                .orElseThrow(()->new NullPointerException("Not found"));
         booking.setMotorbike(motorbike);
         booking.setReceiveLocation(bookingRequest.getReceiveLocation());
         booking.setTotalPrice(bookingRequest.getTotalPrice());

@@ -4,6 +4,8 @@ import com.MotorbikeRental.entity.*;
 import com.MotorbikeRental.repository.ModelRepository;
 import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.*;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +23,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -34,20 +40,17 @@ public class MotorbikeController {
     private MotorbikeService motorbikeService;
 
     @Autowired
-    private JWTService jwtService;
-
+    private MotorbikeImageService motorbikeImageService;
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ModelRepository modelRepository;
+    private Cloudinary cloudinary;
 
     @GetMapping("/allMotorbike/{page}/{pageSize}")
-    public Page<RegisterMotorbikeDto> getAllMotorbike(@PathVariable int page,
+    public Page<MotorbikeDto> getAllMotorbike(@PathVariable int page,
                                                       @PathVariable int pageSize,
                                                       @RequestParam(required = false) Long userId,
-                                                      @RequestParam(required = false) List<String> role) {
-        return motorbikeService.getAllMotorbike(page,pageSize,userId,role);
+                                                      @RequestParam(required = false) List<String> role,
+                                                      @RequestParam String status) {
+        return motorbikeService.getAllMotorbike(page,pageSize,userId,role,status);
     }
 
 //    @GetMapping("/allMotorbike/{page}/{pageSize}")
@@ -57,13 +60,14 @@ public class MotorbikeController {
 //    }
 
     @GetMapping("/search")
-    public Page<RegisterMotorbikeDto> searchByPlate(
+    public Page<MotorbikeDto> searchByPlate(
             @RequestParam String searchTerm,
+            @RequestParam String status,
             @RequestParam Long userId,
             @RequestParam List<String> role,
             @RequestParam int page,
             @RequestParam int size) {
-        return motorbikeService.searchByPlate(searchTerm,userId,role, page, size);
+        return motorbikeService.searchByPlate(searchTerm,status,userId,role, page, size);
     }
 
     @PutMapping("/toggleStatus/{id}")
@@ -79,7 +83,7 @@ public class MotorbikeController {
     }
 
     @GetMapping("/pending/{page}/{pageSize}")
-    public Page<RegisterMotorbikeDto> getPendingMotorbikes(@PathVariable int page,@PathVariable int pageSize){
+    public Page<MotorbikeDto> getPendingMotorbikes(@PathVariable int page,@PathVariable int pageSize){
         return motorbikeService.getPendingMotorbikes(MotorbikeStatus.PENDING,page,pageSize);
     }
 
@@ -98,16 +102,32 @@ public class MotorbikeController {
 
 
     @RequestMapping (value="/register",method =RequestMethod.POST)
-    public ResponseEntity<Motorbike> registerMotorbike( @RequestBody RegisterMotorbikeDto registerMotorbikeDto){
-        Motorbike motorbike=new Motorbike();
-        motorbikeService.registerMotorbike(registerMotorbikeDto);
-        return ResponseEntity.ok(motorbike);
+    public ResponseEntity<Motorbike> registerMotorbike( @RequestHeader("Authorization") String accessToken,@ModelAttribute RegisterMotorbikeDto registerMotorbikeDto) {
+        System.out.println(registerMotorbikeDto);
+
+        Motorbike savedMotorbike=motorbikeService.registerMotorbike(accessToken,registerMotorbikeDto);
+        Long motorbikeId = savedMotorbike.getId();
+        List<MultipartFile> imageFiles = registerMotorbikeDto.getMotorbikeImages();
+        List<String>imageUrls=new ArrayList<>();
+        try {
+            for(MultipartFile file:imageFiles) {
+                Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+               imageUrls.add((String) uploadResult.get("secure_url"));
+            }
+        }  catch (IOException e) {
+           return ResponseEntity.internalServerError().body(null);
+        }
+        motorbikeImageService.saveMotorbikeImage(imageUrls,motorbikeId);
+        return ResponseEntity.ok(savedMotorbike);
     }
     @GetMapping("/activeMotorbikeList")
-    public List<RegisterMotorbikeDto> getAllActiveMotorbike(){
+    public List<MotorbikeDto> getAllActiveMotorbike(){
         return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.ACTIVE);
     }
-
+    @PostMapping("/filter")
+    public List<MotorbikeDto>getMotorbikeByFilter(@RequestBody FilterMotorbikeDto filter){
+        return motorbikeService.listMotorbikeByFilter(filter);
+    }
 
 }
 

@@ -1,5 +1,6 @@
 package com.MotorbikeRental.dto;
 import com.MotorbikeRental.entity.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,9 +40,7 @@ public class RegisterMotorbikeDto {
   
     private MotorbikeStatus motorbikeStatus;
 
-    private ModelDto model;
-
-    private UserDto user;
+    private Long modelId;
 
 
 }

@@ -37,5 +37,5 @@ public class License {
 
     @Enumerated(EnumType.STRING)
     private LicenseStatus status;
-
+    private String licenseType;
 }

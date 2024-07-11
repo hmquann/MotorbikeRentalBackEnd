@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @Data
 @Entity
 @Table(name = "[User]")
+@ToString
 public class User implements UserDetails {
 
     @Id
@@ -47,7 +50,20 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonBackReference
+    @ToString.Exclude
     private List<Transaction> transactions;
+
+    @OneToMany(mappedBy = "createdBy")
+    @JsonBackReference
+    private List<Discount> createdDiscounts;
+
+    @ManyToMany(cascade = CascadeType.REMOVE)
+    @JoinTable(
+            name = "User_Discount",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "discount_id")
+    )
+    private Set<Discount> discounts = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -55,24 +71,33 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @ToString.Exclude
     private Set<Role> roles = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", firstName='" + firstName + "', lastName='" + lastName + "', email='" + email + "'}";
+    }
+
 
     @OneToMany(mappedBy = "user")
     @JsonBackReference
+    @ToString.Exclude
     private List<Location> locationSet;
 
     @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
+    @ToString.Exclude
     private List<Message> messages;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonBackReference
+    @ToString.Exclude
     private List<Motorbike> motorbikes;
-
-    @OneToMany(mappedBy = "renter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<Booking> bookings = new ArrayList<>();
-
+    @OneToMany(mappedBy = "renter",cascade = CascadeType.ALL)
+    @JsonBackReference
+    @ToStringExclude
+    private List<Booking> bookingList;
 
     @JsonManagedReference
     @Override
@@ -80,6 +105,16 @@ public class User implements UserDetails {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
+    }
+
+    public void addDiscount(Discount discount) {
+        this.discounts.add(discount);
+        discount.getUsers().add(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, email, phone, isActive, balance, token);
     }
 
     @Override

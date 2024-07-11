@@ -11,11 +11,10 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int bookingId;
+    private Long bookingId;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User renter;
-
 
     private LocalDateTime startDate;
 
