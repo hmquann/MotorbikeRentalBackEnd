@@ -3,6 +3,7 @@ import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.Model;
 import com.MotorbikeRental.entity.MotorbikeImage;
 import com.MotorbikeRental.entity.MotorbikeStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,9 +41,7 @@ public class RegisterMotorbikeDto {
   
     private MotorbikeStatus motorbikeStatus;
 
-    private ModelDto model;
-
-    private UserDto user;
+    private Long modelId;
 
 
 }

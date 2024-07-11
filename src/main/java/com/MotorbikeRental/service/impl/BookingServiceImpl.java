@@ -5,9 +5,12 @@ import com.MotorbikeRental.entity.Booking;
 import com.MotorbikeRental.entity.BookingStatus;
 import com.MotorbikeRental.entity.Motorbike;
 import com.MotorbikeRental.repository.BookingRepository;
+import com.MotorbikeRental.repository.MotorbikeRepository;
 import com.MotorbikeRental.service.BookingService;
+import com.MotorbikeRental.service.MotorbikeService;
 import com.MotorbikeRental.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +23,19 @@ import static com.MotorbikeRental.entity.BookingStatus.PENDING;
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
-    private final UserService userService;;
+    @Autowired
+    private final UserService userService;
+    @Autowired
+    private final MotorbikeRepository motorbikeRepository;
     @Override
     public Booking saveBooking(BookingRequest bookingRequest) {
         Booking booking = new Booking();
         booking.setStartDate(bookingRequest.getStartDate());
         booking.setEndDate(bookingRequest.getEndDate());
-        booking.setRenter_id(bookingRequest.getRenterId());
-        booking.setMotorbikeId(1L);
+        booking.setRenter(userService.getUserById(bookingRequest.getRenterId()));
+        Motorbike motorbike=motorbikeRepository.findById(bookingRequest.getMotorbikeId())
+                .orElseThrow(()->new NullPointerException("Not found"));
+        booking.setMotorbike(motorbike);
         booking.setReceiveLocation(bookingRequest.getReceiveLocation());
         booking.setTotalPrice(bookingRequest.getTotalPrice());
         booking.setStatus(PENDING);

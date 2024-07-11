@@ -30,5 +30,5 @@ public class License {
     private LocalDate birthOfDate;
     private String licenseImageUrl;
     private LicenseStatus status;
-
+    private String licenseType;
 }
