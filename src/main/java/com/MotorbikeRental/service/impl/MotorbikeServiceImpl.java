@@ -139,7 +139,14 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     public List<MotorbikeDto> getAllMotorbikeByStatus(MotorbikeStatus status) {
         List<Motorbike> motorbikeList = motorbikeRepository.getAllMotorbikeByStatus(status);
         List<MotorbikeDto> dtoList = motorbikeList.stream()
-                .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
+                .map(motorbike -> {
+                    MotorbikeDto dto = mapper.map(motorbike, MotorbikeDto.class);
+                    if (motorbike.getUser() != null) {
+                        UserDto userDto = userService.convertToDto(motorbike.getUser());
+                        dto.setUser(userDto);
+                    }
+                    return dto;
+                })
                 .collect(Collectors.toList());
         return dtoList;
     }

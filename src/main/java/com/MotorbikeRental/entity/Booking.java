@@ -33,4 +33,7 @@ public class Booking {
     @JoinColumn(name="motorbike_id")
     private Motorbike motorbike;
 
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    private FeedBack feedback;
+
 }
