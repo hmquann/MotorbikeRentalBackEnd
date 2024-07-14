@@ -3,6 +3,8 @@ package com.MotorbikeRental.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @Table(name = "Feedback")
@@ -14,7 +16,8 @@ public class FeedBack {
     @JoinColumn(name="booking_id")
     private Booking booking;
     private String feedbackContent;
-    private Long rate;
+    private int rate;
+    private LocalDateTime feedbackTime;
 
 
 

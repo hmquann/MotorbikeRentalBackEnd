@@ -30,6 +30,8 @@ public class UserDto {
 
     private String token;
 
+    private Long totalTripCount;
+
     @JsonIgnoreProperties("user")
     private List<MotorbikeDto> motorbikes;
 }
