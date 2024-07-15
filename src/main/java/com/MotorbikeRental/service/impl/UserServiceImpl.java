@@ -194,7 +194,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addLessor(User user) {
-        user.getRoles().add(roleRepository.findByName("LESSOR"));
+        Role lessor=roleRepository.findByName("LESSOR");
+        user.getRoles().add(lessor);
         userRepository.save(user);
     }
 

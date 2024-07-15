@@ -50,6 +50,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmailOrPhone(@Param("emailOrPhone") String emailOrPhone);
     @Query("SELECT CONCAT(u.lastName,' ',u.firstName) FROM User u WHERE u.email = :email")
     String getUserNameByEmail(@Param("email") String email);
-    @Query("")
-    void addLessor(User user);
 }
