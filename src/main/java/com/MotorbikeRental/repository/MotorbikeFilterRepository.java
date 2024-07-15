@@ -25,17 +25,19 @@ public class MotorbikeFilterRepository {
             LocalDateTime endDate,
             String address,
             Long brandId,
-            FuelType fuelType,
+            Boolean electric,
             ModelType modelType,
-            boolean isDelivery) {
+            Boolean isDelivery,
+            Long minPrice,
+            Long maxPrice) {
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Motorbike> criteriaQuery = criteriaBuilder.createQuery(Motorbike.class);
         Root<Motorbike> root = criteriaQuery.from(Motorbike.class);
 
         Join<Motorbike, Booking> bookingJoin = root.join("bookingList", JoinType.LEFT);
-        Join<Motorbike, Model> modelJoin = root.join("model", JoinType.INNER);
-        Join<Model, Brand> brandJoin = modelJoin.join("brand", JoinType.INNER);
+        Join<Motorbike, Model> modelJoin = root.join("model", JoinType.LEFT);
+        Join<Model, Brand> brandJoin = modelJoin.join("brand", JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -47,16 +49,20 @@ public class MotorbikeFilterRepository {
             predicates.add(criteriaBuilder.equal(brandJoin.get("brandId"), brandId));
         }
 
-        if (fuelType != null) {
-            predicates.add(criteriaBuilder.equal(modelJoin.get("fuelType"), fuelType));
+        if (electric != null) {
+            predicates.add(criteriaBuilder.equal(modelJoin.get("fuelType"),"ELECTRIC"));
         }
 
         if (modelType != null) {
             predicates.add(criteriaBuilder.equal(modelJoin.get("modelType"), modelType));
         }
-
-        predicates.add(criteriaBuilder.equal(root.get("delivery"), isDelivery));
-
+        if(isDelivery!=null){
+            predicates.add(criteriaBuilder.equal(root.get("delivery"), isDelivery));
+        }
+        if (minPrice != null && maxPrice != null) {
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
+        }
         if (startDate != null && endDate != null) {
             Predicate noBookingDuringTimePredicate = criteriaBuilder.or(
                     criteriaBuilder.isNull(bookingJoin.get("startDate")),

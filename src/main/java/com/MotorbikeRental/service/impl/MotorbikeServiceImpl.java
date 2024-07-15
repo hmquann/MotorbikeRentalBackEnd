@@ -137,6 +137,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
     @Override
     public List<MotorbikeDto> getAllMotorbikeByStatus(MotorbikeStatus status) {
+
         List<Motorbike> motorbikeList = motorbikeRepository.getAllMotorbikeByStatus(status);
         List<MotorbikeDto> dtoList = motorbikeList.stream()
                 .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
@@ -152,7 +153,9 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         String username = jwtService.extractUsername(token);
         System.out.println(username);
         Optional<User> user = userRepository.findByEmail(username);
-
+        if(motorbikeRepository.countMotorbikeByUser(user.get().getId())==0){
+            userRepository.addLessor(user.get());
+        }
         Motorbike motorbike=new Motorbike();
         motorbike.setMotorbikeAddress(registerMotorbikeDto.getMotorbikeAddress());
         motorbike.setMotorbikePlate(registerMotorbikeDto.getMotorbikePlate());
@@ -168,6 +171,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         motorbike.setYearOfManuFacture(registerMotorbikeDto.getYearOfManufacture());
         motorbike.setStatus(MotorbikeStatus.PENDING);
         motorbike.setTripCount(Long.valueOf(0));
+
         Motorbike savedMotorbike=motorbikeRepository.save(motorbike);
         return savedMotorbike;
     }
@@ -175,17 +179,28 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     @Override
     public List<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto) {
         List <Motorbike> filter=motorbikeFilterRepository.listMotorbikeByFilter(
-                filterMotorbikeDto.getStartTime(),
-                filterMotorbikeDto.getEndTime(),
-                filterMotorbikeDto.getAddress(),
+        filterMotorbikeDto.getStartTime(),
+        filterMotorbikeDto.getEndTime(),
+        filterMotorbikeDto.getAddress(),
         filterMotorbikeDto.getBrandId(),
-        filterMotorbikeDto.getFuelType(),
+        filterMotorbikeDto.getElectric(),
         filterMotorbikeDto.getModelType(),
-        filterMotorbikeDto.isDelivery()
+        filterMotorbikeDto.getIsDelivery(),
+        filterMotorbikeDto.getMinPrice(),
+        filterMotorbikeDto.getMaxPrice()
         );
+
         List<MotorbikeDto> dtoList = filter.stream()
                 .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
                 .collect(Collectors.toList());
+        if(filterMotorbikeDto.getIsFiveStar()!=null){
+            List<Long>fiveStarUserIdList=motorbikeFilterRepository.getFiveStarLessor();
+            for(MotorbikeDto motorbikeDto:dtoList){
+                if(!fiveStarUserIdList.contains(motorbikeDto.getUserId())){
+                  dtoList.remove(motorbikeDto);
+                }
+            }
+        }
         return dtoList;
     }
 

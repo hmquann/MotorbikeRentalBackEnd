@@ -3,6 +3,7 @@ package com.MotorbikeRental.repository;
 
 import com.MotorbikeRental.entity.Motorbike;
 import com.MotorbikeRental.entity.MotorbikeStatus;
+import com.MotorbikeRental.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -46,6 +47,6 @@ public interface MotorbikeRepository extends JpaRepository<Motorbike, Long>{
 
     @Query("SELECT m FROM Motorbike m WHERE m.status = :status ")
     Page<Motorbike> findAllByStatus(@Param("status") MotorbikeStatus status, Pageable pageable);
-    @Query("SELECT  m FROM Motorbike m ORDER BY m.id DESC ")
-    List<Motorbike> findLastMotorbike();
+    @Query("SELECT COUNT(m)from Motorbike  m where m.user.id=:id")
+    Long countMotorbikeByUser(Long id);
 }

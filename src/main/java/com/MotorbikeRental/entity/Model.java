@@ -38,7 +38,7 @@ public class Model {
     private ModelType modelType;
     @ManyToOne
     @JoinColumn(name="brand_id")
-//    @JsonBackReference()
+    @JsonBackReference
     private Brand brand;
     @OneToMany(mappedBy = "model",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonBackReference

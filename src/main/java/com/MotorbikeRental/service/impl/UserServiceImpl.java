@@ -181,6 +181,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void addLessor(User user) {
+        user.getRoles().add(roleRepository.findByName("LESSOR"));
+        userRepository.save(user);
+    }
+
+    @Override
     public Page<User> getUserByPagination(int page, int pageSize) {
         return userRepository.findAll(PageRequest.of(page,pageSize));
     }
