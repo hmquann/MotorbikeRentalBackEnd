@@ -161,7 +161,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         System.out.println(username);
         Optional<User> user = userRepository.findByEmail(username);
         if(motorbikeRepository.countMotorbikeByUser(user.get().getId())==0){
-            userRepository.addLessor(user.get());
+            userService.addLessor(user.get());
         }
         Motorbike motorbike=new Motorbike();
         motorbike.setMotorbikeAddress(registerMotorbikeDto.getMotorbikeAddress());
