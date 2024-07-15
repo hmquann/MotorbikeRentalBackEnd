@@ -186,8 +186,8 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     @Override
     public List<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto) {
         List <Motorbike> filter=motorbikeFilterRepository.listMotorbikeByFilter(
-        filterMotorbikeDto.getStartTime(),
-        filterMotorbikeDto.getEndTime(),
+        filterMotorbikeDto.getStartDate(),
+        filterMotorbikeDto.getEndDate(),
         filterMotorbikeDto.getAddress(),
         filterMotorbikeDto.getBrandId(),
         filterMotorbikeDto.getElectric(),
@@ -196,7 +196,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         filterMotorbikeDto.getMinPrice(),
         filterMotorbikeDto.getMaxPrice()
         );
-
+        System.out.println(filterMotorbikeDto);
         List<MotorbikeDto> dtoList = filter.stream()
                 .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
                 .collect(Collectors.toList());

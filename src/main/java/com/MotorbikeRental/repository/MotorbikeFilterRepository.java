@@ -67,10 +67,8 @@ public class MotorbikeFilterRepository {
             Predicate noBookingDuringTimePredicate = criteriaBuilder.or(
                     criteriaBuilder.isNull(bookingJoin.get("startDate")),
                     criteriaBuilder.and(
-                            criteriaBuilder.or(
                                     criteriaBuilder.lessThan(bookingJoin.get("startDate"), startDate),
                                     criteriaBuilder.greaterThan(bookingJoin.get("endDate"), endDate)
-                            )
                     )
             );
             predicates.add(noBookingDuringTimePredicate);
