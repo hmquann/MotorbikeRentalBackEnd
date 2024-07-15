@@ -28,6 +28,8 @@ public class MotorbikeDto {
 
     private Long deliveryFee;
 
+    private Long tripCount;
+
     private String constraintMotorbike;
 
     private String motorbikeAddress;

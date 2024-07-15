@@ -15,11 +15,13 @@ public class FilterMotorbikeDto implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     LocalDateTime endTime;
     String address;
-    boolean isFiveStar;
+    Boolean isFiveStar;
     Long brandId;
-    FuelType fuelType;
+    Boolean electric;
     ModelType modelType;
-    boolean isDelivery;
+    Boolean isDelivery;
+    Long minPrice;
+    Long maxPrice;
 
 
 }

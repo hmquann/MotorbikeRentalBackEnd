@@ -39,7 +39,7 @@ public class Motorbike {
     private Long tripCount;
 
     @Column(name = "delivery")
-    boolean delivery;
+    private Boolean delivery;
 
     @Column(name="free_ship_limit")
     private Long freeShipLimit;
