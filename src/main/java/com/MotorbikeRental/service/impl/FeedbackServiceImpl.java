@@ -3,6 +3,7 @@ package com.MotorbikeRental.service.impl;
 import com.MotorbikeRental.dto.FeedbackDto;
 import com.MotorbikeRental.entity.Booking;
 import com.MotorbikeRental.entity.BookingStatus;
+import com.MotorbikeRental.entity.Discount;
 import com.MotorbikeRental.entity.FeedBack;
 import com.MotorbikeRental.repository.BookingRepository;
 import com.MotorbikeRental.repository.FeedbackRepository;
@@ -54,6 +55,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedBack = feedbackRepository.save(feedBack);
 
         feedbackDto.setId(feedBack.getId());
+        feedbackDto.setRenterName(booking.getRenter().getFirstName() + " " + booking.getRenter().getLastName());
         feedbackDto.setFeedbackTime(feedBack.getFeedbackTime());
         return modelMapper.map(feedbackDto, FeedbackDto.class);
 
@@ -65,5 +67,18 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedbacks.stream()
                 .map(feedback -> modelMapper.map(feedback, FeedbackDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public boolean deleteFeedbackById(Long id) {
+        FeedBack feedBack = feedbackRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Feedback not found"));
+        if (feedBack != null) {
+            if (feedBack.getBooking() != null) {
+                feedBack.getBooking().setFeedback(null);
+            }
+            feedbackRepository.delete(feedBack);
+            return true;
+        }
+        return false;
     }
 }

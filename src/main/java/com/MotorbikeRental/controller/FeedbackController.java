@@ -72,4 +72,13 @@ public class FeedbackController {
         List<FeedbackDto> feedbacks = feedbackService.getFeedbacksByMotorbikeId(motorbikeId);
         return ResponseEntity.ok(feedbacks);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<FeedbackDto> deleteFeedback(@PathVariable Long id) {
+        boolean isDeleted = feedbackService.deleteFeedbackById(id);
+        if (!isDeleted) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
 }
