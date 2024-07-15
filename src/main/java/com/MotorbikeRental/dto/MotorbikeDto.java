@@ -38,6 +38,8 @@ public class MotorbikeDto {
 
     private MotorbikeStatus motorbikeStatus;
 
+    private Long tripCount;
+
     private ModelDto model;
 
     @JsonIgnoreProperties("motorbikes")
