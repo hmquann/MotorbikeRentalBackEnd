@@ -89,6 +89,13 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         }
 
     @Override
+    public MotorbikeDto getMotorbikeById(Long id) {
+        Motorbike motorbike = motorbikeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Motorbike not found"));
+        return convertToDto(motorbike);
+    }
+
+    @Override
     public Page<Motorbike> getMotorbikeWithPagination(int page, int pageSize){
         return motorbikeRepository.findAll(PageRequest.of(page,pageSize));
     }
