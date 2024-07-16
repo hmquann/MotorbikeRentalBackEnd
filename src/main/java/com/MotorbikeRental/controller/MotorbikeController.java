@@ -129,6 +129,12 @@ public class MotorbikeController {
         return motorbikeService.listMotorbikeByFilter(filter);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<MotorbikeDto> getMotorbikeById(@PathVariable Long id) {
+        MotorbikeDto motorbikeDto = motorbikeService.getMotorbikeById(id);
+        return ResponseEntity.ok(motorbikeDto);
+    }
+
 }
 
 
