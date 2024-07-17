@@ -34,4 +34,6 @@ public class UserDto {
 
     @JsonIgnoreProperties("user")
     private List<MotorbikeDto> motorbikes;
+
+    private List<BookingDto> bookings;
 }
