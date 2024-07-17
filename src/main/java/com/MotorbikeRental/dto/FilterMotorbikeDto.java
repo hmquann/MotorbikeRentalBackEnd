@@ -20,6 +20,8 @@ public class FilterMotorbikeDto implements Serializable {
     FuelType fuelType;
     ModelType modelType;
     Boolean isDelivery;
+    Long minPrice;
+    Long maxPrice;
 
 
 }

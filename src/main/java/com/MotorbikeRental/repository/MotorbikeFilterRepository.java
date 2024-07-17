@@ -20,22 +20,25 @@ public class MotorbikeFilterRepository {
     private final EntityManager entityManager;
     @Autowired
     private final BookingRepository bookingRepository;
+
     public List<Motorbike> listMotorbikeByFilter(
             LocalDateTime startDate,
             LocalDateTime endDate,
             String address,
             Long brandId,
-            FuelType fuelType,
+            Boolean electric,
             ModelType modelType,
-            boolean isDelivery) {
+            Boolean isDelivery,
+            Long minPrice,
+            Long maxPrice) {
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Motorbike> criteriaQuery = criteriaBuilder.createQuery(Motorbike.class);
         Root<Motorbike> root = criteriaQuery.from(Motorbike.class);
 
         Join<Motorbike, Booking> bookingJoin = root.join("bookingList", JoinType.LEFT);
-        Join<Motorbike, Model> modelJoin = root.join("model", JoinType.INNER);
-        Join<Model, Brand> brandJoin = modelJoin.join("brand", JoinType.INNER);
+        Join<Motorbike, Model> modelJoin = root.join("model", JoinType.LEFT);
+        Join<Model, Brand> brandJoin = modelJoin.join("brand", JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -47,26 +50,42 @@ public class MotorbikeFilterRepository {
             predicates.add(criteriaBuilder.equal(brandJoin.get("brandId"), brandId));
         }
 
-        if (fuelType != null) {
-            predicates.add(criteriaBuilder.equal(modelJoin.get("fuelType"), fuelType));
+        if (electric != null && electric) {
+            predicates.add(criteriaBuilder.equal(modelJoin.get("fuelType"), "ELECTRIC"));
         }
 
         if (modelType != null) {
             predicates.add(criteriaBuilder.equal(modelJoin.get("modelType"), modelType));
         }
 
-        predicates.add(criteriaBuilder.equal(root.get("delivery"), isDelivery));
+        if (isDelivery != null) {
+            predicates.add(criteriaBuilder.equal(root.get("delivery"), isDelivery));
+        }
+
+        if (minPrice != null) {
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
+        }
+
+        if (maxPrice != null) {
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
+        }
 
         if (startDate != null && endDate != null) {
-            Predicate noBookingDuringTimePredicate = criteriaBuilder.or(
-                    criteriaBuilder.isNull(bookingJoin.get("startDate")),
-                    criteriaBuilder.and(
-                            criteriaBuilder.or(
-                                    criteriaBuilder.lessThan(bookingJoin.get("startDate"), startDate),
-                                    criteriaBuilder.greaterThan(bookingJoin.get("endDate"), endDate)
-                            )
-                    )
+            Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
+            Root<Booking> bookingRoot = subquery.from(Booking.class);
+            subquery.select(bookingRoot.get("motorbike").get("id"));
+
+            Predicate bookingOverlapPredicate = criteriaBuilder.and(
+                    criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("startDate"), endDate),
+                    criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("endDate"), startDate)
             );
+
+            subquery.where(bookingOverlapPredicate);
+
+            Predicate noBookingDuringTimePredicate = criteriaBuilder.not(
+                    root.get("id").in(subquery)
+            );
+
             predicates.add(noBookingDuringTimePredicate);
         }
 

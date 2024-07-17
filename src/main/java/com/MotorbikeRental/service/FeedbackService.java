@@ -8,4 +8,6 @@ public interface FeedbackService {
     FeedbackDto sendFeedback(FeedbackDto feedbackDto);
 
     List<FeedbackDto> getFeedbacksByMotorbikeId(Long motorbikeId);
+
+    boolean deleteFeedbackById(Long id);
 }

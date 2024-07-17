@@ -133,6 +133,12 @@ public class MotorbikeController {
         return motorbikeService.updateMotorbike(id,updateMotorbikeDto);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<MotorbikeDto> getMotorbikeById(@PathVariable Long id) {
+        MotorbikeDto motorbikeDto = motorbikeService.getMotorbikeById(id);
+        return ResponseEntity.ok(motorbikeDto);
+    }
+
 }
 
 

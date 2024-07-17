@@ -28,6 +28,8 @@ public class MotorbikeDto {
 
     private Long deliveryFee;
 
+    private Long tripCount;
+
     private String constraintMotorbike;
 
     private String motorbikeAddress;
@@ -36,7 +38,6 @@ public class MotorbikeDto {
 
     private MotorbikeStatus motorbikeStatus;
 
-    private Long tripCount;
 
     private ModelDto model;
 
