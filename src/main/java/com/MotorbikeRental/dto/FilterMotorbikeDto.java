@@ -11,15 +11,15 @@ import java.time.LocalDateTime;
 @Data
 public class FilterMotorbikeDto implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    LocalDateTime startTime;
+    LocalDateTime startDate;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    LocalDateTime endTime;
+    LocalDateTime endDate;
     String address;
-    boolean isFiveStar;
+    Boolean isFiveStar;
     Long brandId;
     FuelType fuelType;
     ModelType modelType;
-    boolean isDelivery;
+    Boolean isDelivery;
 
 
 }

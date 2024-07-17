@@ -128,6 +128,10 @@ public class MotorbikeController {
     public List<MotorbikeDto>getMotorbikeByFilter(@RequestBody FilterMotorbikeDto filter){
         return motorbikeService.listMotorbikeByFilter(filter);
     }
+    @PostMapping("/updateMotorbike/{id}")
+    public MotorbikeDto updateMotorbike(@PathVariable Long id,@RequestBody UpdateMotorbikeDto updateMotorbikeDto){
+        return motorbikeService.updateMotorbike(id,updateMotorbikeDto);
+    }
 
 }
 
