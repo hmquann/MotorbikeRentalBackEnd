@@ -205,7 +205,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         );
         System.out.println(filterMotorbikeDto);
         List<MotorbikeDto> dtoList = filter.stream()
-                .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
         if(filterMotorbikeDto.getIsFiveStar()!=null){
             List<Long>fiveStarUserIdList=motorbikeFilterRepository.getFiveStarLessor();

@@ -2,10 +2,7 @@ package com.MotorbikeRental.service.impl;
 
 
 import com.MotorbikeRental.config.VNPayConfig;
-import com.MotorbikeRental.dto.MotorbikeDto;
-import com.MotorbikeRental.dto.PaymentDto;
-import com.MotorbikeRental.dto.RegisterMotorbikeDto;
-import com.MotorbikeRental.dto.UserDto;
+import com.MotorbikeRental.dto.*;
 import com.MotorbikeRental.entity.*;
 import com.MotorbikeRental.exception.UserNotFoundException;
 import com.MotorbikeRental.repository.BookingRepository;
@@ -179,15 +176,18 @@ public class UserServiceImpl implements UserService {
                 .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
                 .collect(Collectors.toList());
 
+        List<BookingDto> bookingDtos = user.getBookingList().stream()
+                .map(booking -> mapper.map(booking, BookingDto.class))
+                .collect(Collectors.toList());
+
         if (user.getId() != null) {
             Long totalTripCount = bookingRepository.countBookingsByUserId(user.getId());
             userDto.setTotalTripCount(totalTripCount);
         } else {
             userDto.setTotalTripCount(0L); // or handle appropriately if user.getId() is null
         }
-//        userDto.setTotalTripCount(totalTripCount);
 
-        // Set the motorbikes list in UserDto
+        userDto.setBookings(bookingDtos);
         userDto.setMotorbikes(motorbikeDtos);
         return userDto;
     }

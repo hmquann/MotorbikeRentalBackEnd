@@ -81,4 +81,37 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
         return false;
     }
+
+    @Override
+    public FeedbackDto editFeedback(Long feedbackId, FeedbackDto feedbackDto) {
+        FeedBack existingFeedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new IllegalArgumentException("Feedback not found"));
+
+
+        if (feedbackDto.getRate() != 0) {
+            existingFeedback.setRate(feedbackDto.getRate());
+        }
+
+
+        if (feedbackDto.getFeedbackContent() != null) {
+            existingFeedback.setFeedbackContent(feedbackDto.getFeedbackContent());
+        }
+
+
+        existingFeedback.setFeedbackTime(LocalDateTime.now());
+
+        FeedBack updatedFeedback = feedbackRepository.save(existingFeedback);
+
+
+        FeedbackDto updatedFeedbackDto = new FeedbackDto(
+                updatedFeedback.getId(),
+                updatedFeedback.getBooking().getBookingId(),
+                updatedFeedback.getFeedbackContent(),
+                updatedFeedback.getRate(),
+                updatedFeedback.getFeedbackTime(),
+                updatedFeedback.getBooking().getRenter().getFirstName() + " " + updatedFeedback.getBooking().getRenter().getLastName()
+        );
+
+        return updatedFeedbackDto;
+    }
 }
