@@ -26,7 +26,6 @@ public class MotorbikeFilterRepository {
             LocalDateTime endDate,
             String address,
             Long brandId,
-            Boolean electric,
             ModelType modelType,
             Boolean isDelivery,
             Long minPrice,
@@ -50,9 +49,6 @@ public class MotorbikeFilterRepository {
             predicates.add(criteriaBuilder.equal(brandJoin.get("brandId"), brandId));
         }
 
-        if (electric != null && electric) {
-            predicates.add(criteriaBuilder.equal(modelJoin.get("fuelType"), "ELECTRIC"));
-        }
 
         if (modelType != null) {
             predicates.add(criteriaBuilder.equal(modelJoin.get("modelType"), modelType));

@@ -197,7 +197,6 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         filterMotorbikeDto.getEndDate(),
         filterMotorbikeDto.getAddress(),
         filterMotorbikeDto.getBrandId(),
-        filterMotorbikeDto.getElectric(),
         filterMotorbikeDto.getModelType(),
         filterMotorbikeDto.getIsDelivery(),
         filterMotorbikeDto.getMinPrice(),
