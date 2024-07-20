@@ -2,6 +2,7 @@ package com.MotorbikeRental.controller;
 
 import com.MotorbikeRental.dto.BookingDto;
 import com.MotorbikeRental.dto.BookingRequest;
+import com.MotorbikeRental.dto.FilterBookingDto;
 import com.MotorbikeRental.entity.Booking;
 import com.MotorbikeRental.service.BookingService;
 import com.MotorbikeRental.service.UserService;
@@ -35,9 +36,19 @@ public class BookingController {
         return bookingService.getBookingListByMotorbikeId(id);
     }
 
-    @GetMapping(value = "getListBookingByRenterId/{id}")
+    @GetMapping(value = "/getListBookingByRenterId/{id}")
     public ResponseEntity<List<BookingRequest>> getListBookingByRenterId(@PathVariable Long id){
         return ResponseEntity.ok(bookingService.getBookingListByRenterId(id));
     }
 
+    @GetMapping(value = "/getListBookingByLessorId/{id}")
+    public ResponseEntity<List<BookingRequest>> getListBookingByLessorId(@PathVariable Long id){
+        return ResponseEntity.ok(bookingService.getBookingListByLessorId(id));
+    }
+
+
+    @PostMapping("/filter")
+    public ResponseEntity<List<BookingRequest>> filterBookings(@RequestBody FilterBookingDto filterBookingDto) {
+        return ResponseEntity.ok(bookingService.filterBookings(filterBookingDto));
+    }
 }

@@ -1,10 +1,12 @@
 package com.MotorbikeRental.service.impl;
 
 import com.MotorbikeRental.dto.BookingRequest;
+import com.MotorbikeRental.dto.FilterBookingDto;
 import com.MotorbikeRental.entity.Booking;
 import com.MotorbikeRental.entity.BookingStatus;
 import com.MotorbikeRental.entity.License;
 import com.MotorbikeRental.entity.Motorbike;
+import com.MotorbikeRental.repository.BookingFilterRepository;
 import com.MotorbikeRental.repository.BookingRepository;
 import com.MotorbikeRental.repository.MotorbikeRepository;
 import com.MotorbikeRental.service.BookingService;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +35,8 @@ public class BookingServiceImpl implements BookingService {
     private final MotorbikeRepository motorbikeRepository;
     @Autowired
     private ModelMapper mapper;
+
+    private final BookingFilterRepository bookingFilterRepository;
     @Override
     public Booking saveBooking(BookingRequest bookingRequest) {
         Booking booking = new Booking();
@@ -39,6 +44,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setStartDate(bookingRequest.getStartDate());
         booking.setEndDate(bookingRequest.getEndDate());
         booking.setRenter(userService.getUserById(bookingRequest.getRenterId()));
+        booking.setBookingTime(bookingRequest.getBookingTime());
         Motorbike motorbike=motorbikeRepository.findById(bookingRequest.getMotorbikeId())
                 .orElseThrow(()->new NullPointerException("Not found"));
         booking.setMotorbike(motorbike);
@@ -62,6 +68,33 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingRequest> getBookingListByRenterId(Long renterId) {
         List<Booking> bookingList= bookingRepository.getBookingListByRenterId(renterId);
+        List<BookingRequest> bookingRequestList = bookingList.stream()
+                .map(booking -> mapper.map(booking, BookingRequest.class))
+                .collect(Collectors.toList());
+        return bookingRequestList;
+    }
+
+    @Override
+    public List<BookingRequest> getBookingListByLessorId(Long lessorId) {
+        List<Booking> bookingList= bookingRepository.getBookingListByLessorId(lessorId);
+        List<BookingRequest> bookingRequestList = bookingList.stream()
+                .map(booking -> mapper.map(booking, BookingRequest.class))
+                .collect(Collectors.toList());
+        return bookingRequestList;
+    }
+
+    @Override
+    public List<BookingRequest> filterBookings(FilterBookingDto filterBookingDto) {
+        String tripType = filterBookingDto.getTripType();
+        Long userId = filterBookingDto.getUserId();
+        BookingStatus status = null;
+        if(filterBookingDto.getStatus() != "all") {
+            status = BookingStatus.fromString(filterBookingDto.getStatus());
+        }
+        String sort = filterBookingDto.getSort();
+        LocalDateTime startTime = filterBookingDto.getStartTime();
+        LocalDateTime endTime = filterBookingDto.getEndTime();
+        List<Booking> bookingList= bookingFilterRepository.filterBookings(tripType,userId,status,startTime,endTime,sort);
         List<BookingRequest> bookingRequestList = bookingList.stream()
                 .map(booking -> mapper.map(booking, BookingRequest.class))
                 .collect(Collectors.toList());

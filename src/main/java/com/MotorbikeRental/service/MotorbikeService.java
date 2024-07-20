@@ -39,6 +39,8 @@ public interface MotorbikeService {
     Motorbike rejectMotorbike(Long id);
     List<MotorbikeDto> listFiveStar();
 
-    Motorbike getMotorbikeById(Long id);
+    MotorbikeDto getMotorbikeById(Long id);
+
+    MotorbikeDto existMotorbikeByUserId(Long motorbikeId, Long userId);
 
 }

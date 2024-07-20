@@ -1,6 +1,7 @@
 package com.MotorbikeRental.repository;
 
 
+import com.MotorbikeRental.dto.MotorbikeDto;
 import com.MotorbikeRental.entity.Motorbike;
 import com.MotorbikeRental.entity.MotorbikeStatus;
 import org.springframework.data.domain.Page;
@@ -48,4 +49,9 @@ public interface MotorbikeRepository extends JpaRepository<Motorbike, Long>{
     Page<Motorbike> findAllByStatus(@Param("status") MotorbikeStatus status, Pageable pageable);
     @Query("SELECT  m FROM Motorbike m ORDER BY m.id DESC ")
     List<Motorbike> findLastMotorbike();
+
+    Motorbike getMotorbikeById(Long Id);
+
+    @Query("SELECT m from Motorbike m where m.id = :motorbikeId and m.user.id = :userId")
+    Motorbike existsMotorbikeByUserId(Long motorbikeId, Long userId);
 }

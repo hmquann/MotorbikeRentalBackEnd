@@ -231,8 +231,15 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public Motorbike getMotorbikeById(Long id) {
-        return null;
+    public MotorbikeDto getMotorbikeById(Long id) {
+        Motorbike motorbike = motorbikeRepository.getMotorbikeById(id);
+        return mapper.map(motorbike,MotorbikeDto.class);
+    }
+
+    @Override
+    public MotorbikeDto existMotorbikeByUserId(Long motorbikeId, Long userId) {
+        Motorbike motorbike = motorbikeRepository.existsMotorbikeByUserId(motorbikeId, userId);
+        return mapper.map(motorbike,MotorbikeDto.class);
     }
 
     private Motorbike updateMotorbikeStatus(Long id, MotorbikeStatus status) {

@@ -20,6 +20,8 @@ public class Booking {
 
     private LocalDateTime endDate;
 
+    private LocalDateTime bookingTime;
+
     private double totalPrice;
     @Column(columnDefinition = "nvarchar(255)")
     private String receiveLocation;
