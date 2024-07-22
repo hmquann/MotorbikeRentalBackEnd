@@ -6,6 +6,7 @@ package com.MotorbikeRental.service;
 import com.MotorbikeRental.dto.FilterMotorbikeDto;
 import com.MotorbikeRental.dto.MotorbikeDto;
 import com.MotorbikeRental.dto.RegisterMotorbikeDto;
+import com.MotorbikeRental.dto.UpdateMotorbikeDto;
 import com.MotorbikeRental.entity.MotorbikeStatus;
 import com.MotorbikeRental.entity.Motorbike;
 import org.springframework.data.domain.Page;
@@ -38,6 +39,6 @@ public interface MotorbikeService {
     Motorbike approveMotorbike(Long id);
     Motorbike rejectMotorbike(Long id);
     List<MotorbikeDto> listFiveStar();
+    MotorbikeDto updateMotorbike(Long id, UpdateMotorbikeDto updateMotorbikeDto);
     MotorbikeDto getMotorbikeById(Long id);
-
 }

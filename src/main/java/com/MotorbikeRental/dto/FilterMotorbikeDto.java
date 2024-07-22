@@ -17,7 +17,7 @@ public class FilterMotorbikeDto implements Serializable {
     String address;
     Boolean isFiveStar;
     Long brandId;
-    Boolean electric;
+    FuelType fuelType;
     ModelType modelType;
     Boolean isDelivery;
     Long minPrice;
