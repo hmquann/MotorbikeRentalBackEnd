@@ -29,22 +29,17 @@ public class Motorbike {
     private Long price;
 
     @Column(name="over_time_fee")
-    private Long overTimeFee;
+    private Long overtimeFee;
 
     @Column(name="over_time_limit")
-    private Long overTimeLimit;
+    private Long overtimeLimit;
 
-    @Column(name="distance_limit_per_day")
-    private Long distanceLimitPerDay;
-
-    @Column(name="out_limit_fee")
-    private Long outLimitFee;
 
     @Column(name="trip_count")
     private Long tripCount;
 
     @Column(name = "delivery")
-    boolean delivery;
+    private Boolean delivery;
 
     @Column(name="free_ship_limit")
     private Long freeShipLimit;

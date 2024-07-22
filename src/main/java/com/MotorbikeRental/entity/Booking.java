@@ -11,11 +11,10 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int bookingId;
-
-    private Long renter_id;
-
-    private Long motorbikeId;
+    private Long bookingId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User renter;
 
     private LocalDateTime startDate;
 
@@ -31,7 +30,10 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
     @ManyToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="motorbike_id")
     private Motorbike motorbike;
+
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    private FeedBack feedback;
 
 }

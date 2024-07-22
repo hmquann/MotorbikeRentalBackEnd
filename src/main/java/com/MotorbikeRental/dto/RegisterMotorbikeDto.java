@@ -41,10 +41,7 @@ public class RegisterMotorbikeDto {
   
     private MotorbikeStatus motorbikeStatus;
 
-    private ModelDto model;
-
-    @JsonIgnoreProperties("motorbikes")
-    private UserDto user;
+    private Long modelId;
 
 
 }

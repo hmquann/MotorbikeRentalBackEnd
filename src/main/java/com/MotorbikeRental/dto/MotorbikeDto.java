@@ -1,5 +1,7 @@
 package com.MotorbikeRental.dto;
 
+import com.MotorbikeRental.entity.MotorbikeStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.List;
@@ -8,14 +10,11 @@ import java.util.List;
 public class MotorbikeDto {
     private Long id;
 
-    private ModelDto model;
-
     private Long userId;
 
     private String motorbikePlate;
 
     private Long yearOfManufacture;
-
 
     private Long price;
 
@@ -29,9 +28,19 @@ public class MotorbikeDto {
 
     private Long deliveryFee;
 
+    private Long tripCount;
+
     private String constraintMotorbike;
 
     private String motorbikeAddress;
 
-    private List<String>motorbikeImages;
+    private List<MotorbikeImageDto>motorbikeImages;
+
+    private MotorbikeStatus motorbikeStatus;
+
+
+    private ModelDto model;
+
+    @JsonIgnoreProperties("motorbikes")
+    private UserDto user;
 }

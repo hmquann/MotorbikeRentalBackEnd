@@ -20,7 +20,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findByEmailOrPhone(String searchTerm, Pageable pageable);
 
     Optional<User> findByEmail(String email);
-
+    @Query("select u from User u where u.email=:email")
+    Optional<User> findByEmail2(String email);
     Optional<User> findByToken(String token);
 
     Optional<User> findByPhone(String phone);

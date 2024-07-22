@@ -36,6 +36,7 @@ public interface UserService {
     Page<UserDto> searchUserByEmailOrPhone(String searchTerm, int page, int size);
     UserDto convertToDto(User user);
 
+    void addLessor(User user);
 
     String getUserNameByEmail(String email);
 

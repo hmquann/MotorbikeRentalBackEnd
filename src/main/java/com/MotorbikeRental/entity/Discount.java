@@ -1,6 +1,7 @@
 package com.MotorbikeRental.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -44,6 +45,7 @@ public class Discount {
 
     @ManyToOne
     @JoinColumn(name = "created_by_userId")
+    @JsonManagedReference
     private User createdBy;
 
     @ManyToMany(mappedBy = "discounts", cascade = CascadeType.REMOVE)

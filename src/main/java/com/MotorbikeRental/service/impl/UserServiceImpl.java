@@ -2,11 +2,13 @@ package com.MotorbikeRental.service.impl;
 
 
 import com.MotorbikeRental.config.VNPayConfig;
+import com.MotorbikeRental.dto.MotorbikeDto;
 import com.MotorbikeRental.dto.PaymentDto;
 import com.MotorbikeRental.dto.RegisterMotorbikeDto;
 import com.MotorbikeRental.dto.UserDto;
 import com.MotorbikeRental.entity.*;
 import com.MotorbikeRental.exception.UserNotFoundException;
+import com.MotorbikeRental.repository.BookingRepository;
 import com.MotorbikeRental.repository.RoleRepository;
 import com.MotorbikeRental.repository.TransactionRepository;
 import com.MotorbikeRental.repository.UserRepository;
@@ -42,6 +44,9 @@ public class UserServiceImpl implements UserService {
     private final TransactionRepository transactionRepository;
     @Autowired
     private final ModelMapper mapper;
+    @Autowired
+    private BookingRepository bookingRepository;
+
     @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -170,13 +175,28 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toSet());
         userDto.setRole(roleNames);
 
-        List<RegisterMotorbikeDto> motorbikeDtos = user.getMotorbikes().stream()
-                .map(motorbike -> mapper.map(motorbike, RegisterMotorbikeDto.class))
+        List<MotorbikeDto> motorbikeDtos = user.getMotorbikes().stream()
+                .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
                 .collect(Collectors.toList());
+
+        if (user.getId() != null) {
+            Long totalTripCount = bookingRepository.countBookingsByUserId(user.getId());
+            userDto.setTotalTripCount(totalTripCount);
+        } else {
+            userDto.setTotalTripCount(0L); // or handle appropriately if user.getId() is null
+        }
+//        userDto.setTotalTripCount(totalTripCount);
 
         // Set the motorbikes list in UserDto
         userDto.setMotorbikes(motorbikeDtos);
         return userDto;
+    }
+
+    @Override
+    public void addLessor(User user) {
+        Role lessor=roleRepository.findByName("LESSOR");
+        user.getRoles().add(lessor);
+        userRepository.save(user);
     }
 
     @Override
