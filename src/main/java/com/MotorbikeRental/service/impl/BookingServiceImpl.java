@@ -102,4 +102,9 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList());
         return bookingRequestList;
     }
+
+    public boolean hasFeedbackBeenSent(Long bookingId) {
+        Booking booking = bookingRepository.findByBookingId(bookingId);
+        return booking != null && booking.isFeedbackkk();
+    }
 }

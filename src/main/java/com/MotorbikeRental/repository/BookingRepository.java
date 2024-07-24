@@ -17,6 +17,8 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     @Query("select b from Booking b where b.motorbike.id=:motorbikeId")
     ResponseEntity<List<Booking>> getBookingByMotorbikeId(Long motorbikeId);
 
+    Booking findByBookingId(Long bookingId);
+
 
     List<Booking> getBookingListByRenterId(Long renterId);
 
