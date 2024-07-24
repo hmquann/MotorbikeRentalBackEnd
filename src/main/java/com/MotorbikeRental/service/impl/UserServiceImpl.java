@@ -26,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -226,11 +227,9 @@ public class UserServiceImpl implements UserService {
                 user.setBalance(newBalance);
                 userRepository.save(user);
             } else {
-                // Nếu balance là null, bạn có thể gán một giá trị mặc định hoặc xử lý theo cách khác
-                // Ví dụ: user.setBalance(amount);
+              
             }
         } else {
-            // Xử lý khi không tìm thấy userId
             System.out.println("User with ID " + userId + " not found.");
         }
 
@@ -254,7 +253,7 @@ public class UserServiceImpl implements UserService {
             transaction.setUsers(user);
             transaction.setAmount(amount);
             transaction.setProcessed(true);
-            transaction.setTransactionDate(new Date());
+            transaction.setTransactionDate(LocalDateTime.now());
             transaction.setType(TransactionType.WITHDRAW);
             transaction.setStatus(TransactionStatus.SUCCESS);
             transactionRepository.save(transaction);

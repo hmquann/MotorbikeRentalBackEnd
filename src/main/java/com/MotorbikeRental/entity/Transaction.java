@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -29,7 +30,7 @@ public class Transaction {
     private TransactionType type;
 
     @Column(name = "transaction_date")
-    private Date transactionDate;
+    private LocalDateTime transactionDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

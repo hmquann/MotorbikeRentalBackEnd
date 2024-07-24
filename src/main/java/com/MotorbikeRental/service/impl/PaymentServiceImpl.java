@@ -22,6 +22,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -99,7 +100,7 @@ public class PaymentServiceImpl implements PaymentService {
         transaction.setAmount(amount);
         transaction.setVnpTxnRef(vnp_TxnRef);
         transaction.setProcessed(false);
-        transaction.setTransactionDate(new Date());
+        transaction.setTransactionDate(LocalDateTime.now());
         transaction.setType(TransactionType.TOP_UP);
         transactionRepository.save(transaction);
 
