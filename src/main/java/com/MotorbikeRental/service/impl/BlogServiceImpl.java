@@ -33,7 +33,6 @@ public class BlogServiceImpl implements BlogService {
         blog.setTitle(blogDto.getTitle());
         blog.setContent(blogDto.getContent());
         blog.setCreatedAt(LocalDateTime.now());
-        blog.setWordFilePath(blogDto.getWordFilePath());
 
         Optional<User> userOptional = userRepository.findById(blogDto.getUserId());
         if (userOptional.isPresent()) {
@@ -50,7 +49,7 @@ public class BlogServiceImpl implements BlogService {
             Blog blog = optionalBlog.get();
             blog.setTitle(blogDTO.getTitle());
             blog.setContent(blogDTO.getContent());
-            blog.setWordFilePath(blogDTO.getWordFilePath());
+            blog.setCreatedAt(LocalDateTime.now());
             return blogRepository.save(blog);
         } else {
             throw new BlogNotFoundException("Blog not found with id: " + id);
@@ -61,7 +60,7 @@ public class BlogServiceImpl implements BlogService {
     public List<BlogDto> getAllBlog() {
         List<Blog> blogList = blogRepository.findAll();
         List<BlogDto> blogDtoList = blogList.stream()
-                .map(booking -> mapper.map(blogList, BlogDto.class))
+                .map(blog -> mapper.map(blog, BlogDto.class))
                 .collect(Collectors.toList());
         return blogDtoList;
     }
@@ -81,4 +80,5 @@ public class BlogServiceImpl implements BlogService {
     public void deleteBlog(Long id) {
         blogRepository.deleteById(id);
     }
+
 }

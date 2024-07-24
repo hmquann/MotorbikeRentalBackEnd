@@ -13,9 +13,11 @@ public class Blog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "nvarchar(max)")
     private String title;
 
     @Lob
+    @Column(columnDefinition = "nvarchar(max)")
     private String content;
 
     private LocalDateTime createdAt;

@@ -7,12 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -21,43 +16,13 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
 
-    private static final String UPLOAD_DIR = "uploads/";
-
-    @PostMapping("/create")
-    public ResponseEntity<Blog> createBlog(
-            @RequestParam("title") String title,
-            @RequestParam("userId") Long userId,
-            @RequestParam(value = "content", required = false) String content,
-            @RequestParam(value = "file", required = false) MultipartFile file
-    ) {
-        String filePath = null;
-
-        if (file != null && !file.isEmpty()) {
-            try {
-                if (!Files.exists(Paths.get(UPLOAD_DIR))) {
-                    Files.createDirectories(Paths.get(UPLOAD_DIR));
-                }
-                filePath = Paths.get(UPLOAD_DIR, file.getOriginalFilename()).toString();
-                Files.write(Paths.get(filePath), file.getBytes());
-                // Read file content and set it to content
-                content = new String(file.getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        BlogDto blogDto = new BlogDto();
-        blogDto.setTitle(title);
-        blogDto.setUserId(userId);
-        blogDto.setContent(content);
-        blogDto.setWordFilePath(filePath);
-
+    @PostMapping("/createBlog")
+    public ResponseEntity<Blog> createBlog(@RequestBody BlogDto blogDto) {
         Blog createdBlog = blogService.createBlog(blogDto);
         return new ResponseEntity<>(createdBlog, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/updateBlog/{id}")
     public ResponseEntity<Blog> updateBlog(@PathVariable Long id, @RequestBody BlogDto blogDto) {
         Blog updatedBlog = blogService.updateBlog(id, blogDto);
         return new ResponseEntity<>(updatedBlog, HttpStatus.OK);
@@ -69,9 +34,17 @@ public class BlogController {
         return new ResponseEntity<>(blogs, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteBlog/{id}")
     public ResponseEntity<Void> deleteBlog(@PathVariable Long id) {
         blogService.deleteBlog(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/getBlog/{id}")
+    public ResponseEntity<BlogDto> createBlog(@PathVariable Long id) {
+        BlogDto blogDto = blogService.getBlogById(id);
+        return new ResponseEntity<>(blogDto, HttpStatus.CREATED);
+    }
+
+
 }

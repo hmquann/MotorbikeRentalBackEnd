@@ -25,11 +25,9 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.saveBooking(bookingRequest));
     }
 
-    @GetMapping(value="/changestatus")
-    public ResponseEntity<Booking> changeStatusBooking(@PathVariable Long userId,@RequestBody Booking booking){
-//        bookingService.saveBooking(booking,userId);
-//
-        return null;
+    @PutMapping(value="/changeStatus/{id}/{status}")
+    public ResponseEntity<Booking> changeStatusBooking(@PathVariable Long id,@PathVariable String status){
+        return ResponseEntity.ok(bookingService.changeStatusBooking(id,status));
     }
     @GetMapping(value="/listSchedule/{id}")
     public ResponseEntity<List<Booking>> getListBookingByMotorbike(@PathVariable Long id){

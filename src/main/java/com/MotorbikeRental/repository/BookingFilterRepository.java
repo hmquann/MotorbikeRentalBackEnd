@@ -37,8 +37,13 @@ public class BookingFilterRepository {
             if (tripType.equals("renter")) {
                 predicates.add(criteriaBuilder.equal(root.get("renter").get("id"), userId));
             } else if (tripType.equals("lessor")) {
-                predicates.add(criteriaBuilder.equal(root.get("lessor").get("id"), userId));
+                predicates.add(criteriaBuilder.equal(root.get("motorbike").get("user").get("id"), userId));
             }
+        } else {
+            predicates.add(criteriaBuilder.or(
+                    criteriaBuilder.equal(root.get("renter").get("id"), userId),
+                    criteriaBuilder.equal(root.get("motorbike").get("user").get("id"), userId)
+            ));
         }
 
         if (status != null && !status.equals("all")) {
@@ -47,14 +52,9 @@ public class BookingFilterRepository {
 
         if (startTime != null && endTime != null) {
             predicates.add(
-                    criteriaBuilder.or(
-                            criteriaBuilder.isNull(root.get("startDate")),
-                            criteriaBuilder.and(
-                                    criteriaBuilder.or(
-                                            criteriaBuilder.lessThan(root.get("startDate"), startTime),
-                                            criteriaBuilder.greaterThan(root.get("endDate"), endTime)
-                                    )
-                            )
+                    criteriaBuilder.and(
+                            criteriaBuilder.greaterThanOrEqualTo(root.get("startDate"), startTime),
+                            criteriaBuilder.lessThanOrEqualTo(root.get("endDate"), endTime)
                     )
             );
         }

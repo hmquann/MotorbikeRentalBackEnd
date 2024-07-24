@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public interface BookingService {
     Booking  saveBooking(BookingRequest bookingRequest);
-    boolean changeStatusBooking();
+    Booking changeStatusBooking(Long id,String status);
     ResponseEntity<List<Booking>> getBookingListByMotorbikeId(Long motorbikeId);
 
     List<BookingRequest> getBookingListByRenterId(Long renterId);
