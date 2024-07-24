@@ -293,7 +293,15 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     @Override
     public MotorbikeDto existMotorbikeByUserId(Long motorbikeId, Long userId) {
         Motorbike motorbike = motorbikeRepository.existsMotorbikeByUserId(motorbikeId, userId);
-        return mapper.map(motorbike, MotorbikeDto.class);
+        return convertToDto(motorbike);
+    }
+
+    public MotorbikeDto updateMotorbike(Long id,UpdateMotorbikeDto updateMotorbikeDto) {
+        Motorbike motorbike=motorbikeRepository.findById(id).orElseThrow();
+         mapper.map(updateMotorbikeDto,motorbike);
+         motorbikeRepository.save(motorbike);
+         MotorbikeDto motorbikeDto=mapper.map(motorbike,MotorbikeDto.class);
+         return motorbikeDto;
     }
 
         public MotorbikeDto updateMotorbike (Long id, UpdateMotorbikeDto updateMotorbikeDto){

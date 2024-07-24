@@ -39,4 +39,7 @@ public class Booking {
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
     private FeedBack feedback;
 
+    @Column(name = "is_feedback")
+    private boolean isFeedbackkk;
+
 }

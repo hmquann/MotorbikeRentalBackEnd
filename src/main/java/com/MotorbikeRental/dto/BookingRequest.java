@@ -16,4 +16,5 @@ public class BookingRequest {
     private double totalPrice;
     private String receiveLocation;
     private BookingStatus status;
+    private boolean isFeedbackkk;
 }
