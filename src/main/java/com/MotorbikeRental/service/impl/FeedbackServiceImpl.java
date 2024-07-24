@@ -54,12 +54,17 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedBack.setFeedbackTime(LocalDateTime.now());
         feedBack = feedbackRepository.save(feedBack);
 
+        booking.setFeedbackkk(true);
+        bookingRepository.save(booking);
+
+
         feedbackDto.setId(feedBack.getId());
         feedbackDto.setRenterName(booking.getRenter().getFirstName() + " " + booking.getRenter().getLastName());
         feedbackDto.setFeedbackTime(feedBack.getFeedbackTime());
         return modelMapper.map(feedbackDto, FeedbackDto.class);
 
     }
+
 
 
     public List<FeedbackDto> getFeedbacksByMotorbikeId(Long motorbikeId) {

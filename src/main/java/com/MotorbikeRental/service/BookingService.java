@@ -21,5 +21,7 @@ public interface BookingService {
 
     public List<BookingRequest> filterBookings(FilterBookingDto filterBookingDto);
 
+    boolean hasFeedbackBeenSent(Long bookingId);
+
 
 }

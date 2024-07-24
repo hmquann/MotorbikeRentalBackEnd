@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/booking")
@@ -48,5 +50,13 @@ public class BookingController {
     @PostMapping("/filter")
     public ResponseEntity<List<BookingRequest>> filterBookings(@RequestBody FilterBookingDto filterBookingDto) {
         return ResponseEntity.ok(bookingService.filterBookings(filterBookingDto));
+    }
+
+    @GetMapping("/checkFeedbackStatus/{bookingId}")
+    public ResponseEntity<Map<String, Boolean>> checkFeedbackStatus(@PathVariable Long bookingId) {
+        boolean feedbackSent = bookingService.hasFeedbackBeenSent(bookingId);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("feedbackSent", feedbackSent);
+        return ResponseEntity.ok(response);
     }
 }
