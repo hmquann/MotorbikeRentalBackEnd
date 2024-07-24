@@ -1,5 +1,6 @@
 package com.MotorbikeRental.dto;
 
+import com.MotorbikeRental.entity.LicenseType;
 import com.MotorbikeRental.entity.MotorbikeStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
@@ -43,4 +44,6 @@ public class MotorbikeDto {
 
     @JsonIgnoreProperties("motorbikes")
     private UserDto user;
+
+    private LicenseType licenseType;
 }

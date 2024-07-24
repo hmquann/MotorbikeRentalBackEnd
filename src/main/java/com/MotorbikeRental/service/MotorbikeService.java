@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MotorbikeService {
-    public Page<MotorbikeDto> getAllMotorbike(int page,int pageSize,Long userId,List<String> roles, String status);
+    public Page<MotorbikeDto> getAllMotorbike(int page, int pageSize, Long userId, List<String> roles, String status);
 
     Page<Motorbike> getMotorbikeWithPagination(int page, int pageSize);
 
@@ -39,6 +39,9 @@ public interface MotorbikeService {
     Motorbike approveMotorbike(Long id);
     Motorbike rejectMotorbike(Long id);
     List<MotorbikeDto> listFiveStar();
+
+    MotorbikeDto existMotorbikeByUserId(Long motorbikeId, Long userId);
     MotorbikeDto updateMotorbike(Long id, UpdateMotorbikeDto updateMotorbikeDto);
     MotorbikeDto getMotorbikeById(Long id);
+
 }

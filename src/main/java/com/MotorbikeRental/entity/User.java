@@ -74,6 +74,11 @@ public class User implements UserDetails {
     @ToString.Exclude
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference
+    @ToString.Exclude
+    private List<Blog> blogs;
+
     @Override
     public String toString() {
         return "User{id=" + id + ", firstName='" + firstName + "', lastName='" + lastName + "', email='" + email + "'}";

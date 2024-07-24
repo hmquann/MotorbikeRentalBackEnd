@@ -139,6 +139,17 @@ public class MotorbikeController {
         return ResponseEntity.ok(motorbikeDto);
     }
 
+    @GetMapping("/getMotorbikeById/{id}")
+    public ResponseEntity<MotorbikeDto> getMotorbikeById(@PathVariable Long id){
+        return ResponseEntity.ok(motorbikeService.getMotorbikeById(id));
+    }
+
+    @GetMapping("/existMotorbikeByUserId/{motorbikeId}/{userId}")
+    public ResponseEntity<MotorbikeDto> existMotorbikeByUserId(@PathVariable Long motorbikeId, @PathVariable Long userId){
+        return ResponseEntity.ok(motorbikeService.existMotorbikeByUserId(motorbikeId,userId));
+    }
+
+
 }
 
 
