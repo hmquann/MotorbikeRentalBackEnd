@@ -33,7 +33,7 @@ public class Booking {
     private BookingStatus status;
 
     @ManyToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="motorbike_id")
     private Motorbike motorbike;
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
