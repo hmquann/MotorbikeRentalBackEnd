@@ -17,6 +17,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     @Query("select b from Booking b where b.motorbike.id=:motorbikeId")
     ResponseEntity<List<Booking>> getBookingByMotorbikeId(Long motorbikeId);
 
+
     List<Booking> getBookingListByRenterId(Long renterId);
 
     @Query("SELECT b FROM Booking b WHERE b.motorbike.user.id = :lessorId")
@@ -37,4 +38,8 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
                                  @Param("sort") String sort,
                                  @Param("startTime") LocalDateTime startTime,
                                  @Param("endTime") LocalDateTime endTime);
+
+    @Query("SELECT COUNT(b) FROM Booking b WHERE b.motorbike.user.id = :userId")
+    Long countBookingsByUserId(@Param("userId") Long userId);
+
 }

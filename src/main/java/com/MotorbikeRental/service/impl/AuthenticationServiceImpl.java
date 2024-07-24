@@ -1,10 +1,7 @@
 package com.MotorbikeRental.service.impl;
 
 
-import com.MotorbikeRental.dto.JwtAuthenticationResponse;
-import com.MotorbikeRental.dto.RefreshTokenRequest;
-import com.MotorbikeRental.dto.SigninRequest;
-import com.MotorbikeRental.dto.SignupRequest;
+import com.MotorbikeRental.dto.*;
 import com.MotorbikeRental.entity.Role;
 import com.MotorbikeRental.exception.DuplicateUserException;
 import com.MotorbikeRental.exception.InactiveUserException;
@@ -14,6 +11,7 @@ import com.MotorbikeRental.repository.RoleRepository;
 import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.AuthenticationService;
 import com.MotorbikeRental.service.JWTService;
+import com.MotorbikeRental.service.UserService;
 import lombok.RequiredArgsConstructor;
 import com.MotorbikeRental.entity.User;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -39,6 +37,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
+
+    private final UserService userService;
 
     private final JWTService jwtService;
     private final RoleRepository roleRepository;
@@ -114,6 +114,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
         jwtAuthenticationResponse.setToken(jwt);
+        UserDto userDto = userService.convertToDto(user);
 
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
         jwtAuthenticationResponse.setRoles(roleNames);
@@ -125,6 +126,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         jwtAuthenticationResponse.setGender(user.isGender());
         jwtAuthenticationResponse.setEmail(user.getEmail());
         jwtAuthenticationResponse.setPhone(user.getPhone());
+        jwtAuthenticationResponse.setTotalTripCount(userDto.getTotalTripCount());
         return jwtAuthenticationResponse;
     }
 

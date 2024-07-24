@@ -29,6 +29,8 @@ public class MotorbikeDto {
 
     private Long deliveryFee;
 
+    private Long tripCount;
+
     private String constraintMotorbike;
 
     private String motorbikeAddress;
@@ -36,6 +38,7 @@ public class MotorbikeDto {
     private List<MotorbikeImageDto>motorbikeImages;
 
     private MotorbikeStatus motorbikeStatus;
+
 
     private ModelDto model;
 

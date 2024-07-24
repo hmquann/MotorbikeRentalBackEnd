@@ -128,6 +128,16 @@ public class MotorbikeController {
     public List<MotorbikeDto>getMotorbikeByFilter(@RequestBody FilterMotorbikeDto filter){
         return motorbikeService.listMotorbikeByFilter(filter);
     }
+    @PostMapping("/updateMotorbike/{id}")
+    public MotorbikeDto updateMotorbike(@PathVariable Long id,@RequestBody UpdateMotorbikeDto updateMotorbikeDto){
+        return motorbikeService.updateMotorbike(id,updateMotorbikeDto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MotorbikeDto> getMotorbikeById(@PathVariable Long id) {
+        MotorbikeDto motorbikeDto = motorbikeService.getMotorbikeById(id);
+        return ResponseEntity.ok(motorbikeDto);
+    }
 
     @GetMapping("/getMotorbikeById/{id}")
     public ResponseEntity<MotorbikeDto> getMotorbikeById(@PathVariable Long id){
