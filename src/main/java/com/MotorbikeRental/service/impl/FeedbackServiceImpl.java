@@ -79,7 +79,9 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .orElseThrow(() -> new RuntimeException("Feedback not found"));
         if (feedBack != null) {
             if (feedBack.getBooking() != null) {
+                Booking booking = feedBack.getBooking();
                 feedBack.getBooking().setFeedback(null);
+                booking.setFeedbackkk(false);
             }
             feedbackRepository.delete(feedBack);
             return true;
