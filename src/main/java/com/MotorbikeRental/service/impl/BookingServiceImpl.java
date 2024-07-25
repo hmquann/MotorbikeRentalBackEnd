@@ -46,8 +46,6 @@ public class BookingServiceImpl implements BookingService {
     private final MotorbikeService motorbikeService;
     @Autowired
     private final MotorbikeRepository motorbikeRepository;
-    @Autowired
-    private ModelMapper mapper;
 
     private final BookingFilterRepository bookingFilterRepository;
     @Override
@@ -88,7 +86,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.topModelsInCurrentMonth(PageRequest.of(0,5));
     }
 
-    @Override
+
 
     public Long getMonthlyRevenueByLessorId(Long lessorId) {
         return bookingRepository.getAnnualInMonthByLessorId(lessorId);
@@ -142,7 +140,6 @@ public class BookingServiceImpl implements BookingService {
         bookingRepository.save(b);
     }
 
-=======
     public List<BookingRequest> getBookingListByRenterId(Long renterId) {
         List<Booking> bookingList= bookingRepository.getBookingListByRenterId(renterId);
         List<BookingRequest> bookingRequestList = bookingList.stream()
