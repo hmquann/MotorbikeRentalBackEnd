@@ -25,6 +25,12 @@ public interface DiscountRepository extends JpaRepository<Discount, Long> {
     @Query("SELECT d FROM Discount d WHERE d.expired = false AND d.expirationDate < :today")
     List<Discount> findByExpiredFalseAndExpirationDateBefore(@Param("today") LocalDate today);
 
+    @Query("SELECT d FROM Discount d JOIN d.users u WHERE u.id = :userId")
+    List<Discount> findDiscountsByUserId(@Param("userId") Long userId);
+
+
+    @Query("SELECT d FROM Discount d JOIN d.users u WHERE d.id = :discountId AND u.id = :userId")
+    Discount findByDiscountIdAndUserId(@Param("discountId") Long discountId, @Param("userId") Long userId);
 //    boolean deleteByCode(String code);
 
 
