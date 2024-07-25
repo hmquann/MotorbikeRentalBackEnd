@@ -56,6 +56,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     @Query("SELECT COUNT(b) FROM Booking b WHERE b.motorbike.user.id = :userId")
     Long countBookingsByUserId(@Param("userId") Long userId);
 
+
     @Query("SELECT  new com.MotorbikeRental.dto.TopModelDto(m.modelName, COUNT(b.bookingId)) " +
             "FROM Booking b " +
             "JOIN b.motorbike mb " +

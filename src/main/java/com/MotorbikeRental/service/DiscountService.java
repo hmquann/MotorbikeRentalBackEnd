@@ -26,4 +26,7 @@ public interface DiscountService {
 
     DiscountDtoResponse updateDiscount(Long id, DiscountDto updatedDiscount);
 
+    List<DiscountDtoResponse> getListDiscountByUser(Long id);
+
+    boolean deleteDiscountByIdAndUserId(Long id, Long userId);
 }

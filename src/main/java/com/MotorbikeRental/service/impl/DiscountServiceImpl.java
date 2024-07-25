@@ -114,7 +114,15 @@ public class DiscountServiceImpl implements DiscountService {
         }
         return false;
     }
-
+    @Override
+    public boolean deleteDiscountByIdAndUserId(Long id, Long userId) {
+        Discount discount = discountRepository.findByDiscountIdAndUserId(id, userId);
+        if (discount != null) {
+            discountRepository.delete(discount);
+            return true;
+        }
+        return false;
+    }
     public DiscountDtoResponse  updateDiscount(Long id, DiscountDto discountDto) {
         Discount existingDiscount = discountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Discount not found"));
@@ -154,6 +162,18 @@ public class DiscountServiceImpl implements DiscountService {
         Discount updatedDiscount = discountRepository.save(existingDiscount);
         return convertToDto(updatedDiscount);
     }
+
+    @Override
+    public List<DiscountDtoResponse> getListDiscountByUser(Long id) {
+        User user = userRepository.getUserById(id);
+        List<Discount> discountList = discountRepository.findDiscountsByUserId(id);
+        List<DiscountDtoResponse> discountDtoResponseList =  discountList.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return discountDtoResponseList;
+    }
+
+
 
     private void DiscountValidation(DiscountDto discountDto) {
         if (discountDto.getDiscountPercent() < 0 || discountDto.getDiscountPercent() > 100) {
