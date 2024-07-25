@@ -19,9 +19,6 @@ import java.util.Map;
 @Service
 public interface BookingService {
 
-    Booking saveBooking(BookingRequest bookingRequest);
-
-    boolean changeStatusBooking();
     List<BookingDto> getBookingListByMotorbikeId(Long motorbikeId);
     List<TopModelDto> getTop5ModelsInCurrentMonth();
     Long getMonthlyRevenueByLessorId(Long lessorId);
@@ -32,7 +29,6 @@ public interface BookingService {
 
     Booking  saveBooking(BookingRequest bookingRequest);
     Booking changeStatusBooking(Long id,String status);
-    ResponseEntity<List<Booking>> getBookingListByMotorbikeId(Long motorbikeId);
 
     List<BookingRequest> getBookingListByRenterId(Long renterId);
 

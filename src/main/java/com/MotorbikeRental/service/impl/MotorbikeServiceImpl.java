@@ -198,17 +198,17 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
     @Override
     public List<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto) {
-        List <Motorbike> filter=motorbikeFilterRepository.listMotorbikeByFilter(
-        filterMotorbikeDto.getStartDate(),
-        filterMotorbikeDto.getEndDate(),
-        filterMotorbikeDto.getAddress(),
-        filterMotorbikeDto.getBrandId(),
-        filterMotorbikeDto.getModelType(),
-        filterMotorbikeDto.getIsDelivery(),
-        filterMotorbikeDto.getMinPrice(),
-        filterMotorbikeDto.getMaxPrice()
+        List<Motorbike> filter = motorbikeFilterRepository.listMotorbikeByFilter(
+                filterMotorbikeDto.getStartDate(),
+                filterMotorbikeDto.getEndDate(),
+                filterMotorbikeDto.getAddress(),
+                filterMotorbikeDto.getBrandId(),
+                filterMotorbikeDto.getModelType(),
+                filterMotorbikeDto.getIsDelivery(),
+                filterMotorbikeDto.getMinPrice(),
+                filterMotorbikeDto.getMaxPrice()
         );
-        if(filter.size()<5) {
+        if (filter.size() < 5) {
             String district = "";
             String province = "";
             if (filterMotorbikeDto.getAddress() != null && !filterMotorbikeDto.getAddress().isEmpty()) {
@@ -219,7 +219,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                 }
             }
 
-            filter=motorbikeFilterRepository.listMotorbikeByFilter(
+            filter = motorbikeFilterRepository.listMotorbikeByFilter(
                     filterMotorbikeDto.getStartDate(),
                     filterMotorbikeDto.getEndDate(),
                     province,
@@ -244,16 +244,6 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                     } else {
                         return 0;
                     }
-
-        });
-        List<MotorbikeDto> dtoList = filter.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-        if(filterMotorbikeDto.getIsFiveStar()!=null){
-            List<Long>fiveStarUserIdList=motorbikeFilterRepository.getFiveStarLessor();
-            for(MotorbikeDto motorbikeDto:dtoList){
-                if(!fiveStarUserIdList.contains(motorbikeDto.getUserId())){
-                  dtoList.remove(motorbikeDto);
                 }
             });
         }
@@ -269,8 +259,12 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                 }
             }
 
-        return dtoList;
+            return dtoList;
     }
+
+
+
+
 
 
 
