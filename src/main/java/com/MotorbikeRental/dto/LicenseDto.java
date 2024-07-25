@@ -13,6 +13,7 @@ import java.time.LocalDate;
 public class LicenseDto {
     private String licenseNumber;
     private Long userId;
+    private LicenseType licenseType;
     private LocalDate birthOfDate;
     private String licenseImageUrl;
     private LicenseStatus status;

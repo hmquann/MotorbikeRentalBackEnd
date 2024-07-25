@@ -32,9 +32,13 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.changeStatusBooking(id,status));
     }
     @GetMapping(value="/listSchedule/{id}")
-    public ResponseEntity<List<Booking>> getListBookingByMotorbike(@PathVariable Long id){
+    public List<BookingDto> getListBookingByMotorbike(@PathVariable Long id){
         return bookingService.getBookingListByMotorbikeId(id);
     }
+@PostMapping(value="markBusyDays/{id}")
+    public void markBusyDays(@PathVariable Long id,@RequestBody BookingDto bookingDto){
+        bookingService.markBusyDays(bookingDto.getStartDate(),bookingDto.getEndTime(),id);
+}
 
     @GetMapping(value = "/getListBookingByRenterId/{id}")
     public ResponseEntity<List<BookingRequest>> getListBookingByRenterId(@PathVariable Long id){

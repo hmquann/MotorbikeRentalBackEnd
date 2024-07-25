@@ -60,6 +60,7 @@ public class LicenseController {
             license.setLicenseNumber(licenseDto.getLicenseNumber());
             license.setBirthOfDate(licenseDto.getBirthOfDate());
             license.setLicenseImageUrl(imageUrl);
+            license.setLicenseType(licenseDto.getLicenseType());
             license.setUser(user.get());
             license.setStatus(LicenseStatus.PENDING);
             // Save the license to the database
