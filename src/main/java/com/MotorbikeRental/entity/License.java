@@ -38,4 +38,7 @@ public class License {
     @Enumerated(EnumType.STRING)
     private LicenseStatus status;
 
+
+
+
 }

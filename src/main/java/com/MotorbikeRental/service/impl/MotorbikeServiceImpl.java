@@ -208,31 +208,43 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         filterMotorbikeDto.getMinPrice(),
         filterMotorbikeDto.getMaxPrice()
         );
-        System.out.println(filterMotorbikeDto);
-          String district = "";
-
-        if (filterMotorbikeDto.getAddress()!= null && !filterMotorbikeDto.getAddress().isEmpty()) {
-            int commaIndex = filterMotorbikeDto.getAddress().indexOf(",");
-            if (commaIndex != -1) {
-                district = filterMotorbikeDto.getAddress().substring(0, commaIndex).trim();
-            }
-        }
-        final String selectedDistrict=district;
-        Collections.sort(filter, new Comparator<Motorbike>() {
-            @Override
-            public int compare(Motorbike m1, Motorbike m2) {
-                boolean m1ContainsDistrict = m1.getMotorbikeAddress().contains(selectedDistrict);
-                boolean m2ContainsDistrict = m2.getMotorbikeAddress().contains(selectedDistrict);
-
-                // Nếu m1 chứa district mà m2 không chứa, m1 sẽ được đặt lên trước
-                if (m1ContainsDistrict && !m2ContainsDistrict) {
-                    return -1;
-                } else if (!m1ContainsDistrict && m2ContainsDistrict) {
-                    return 1;
-                } else {
-                    return 0;
+        if(filter.size()<5) {
+            String district = "";
+            String province = "";
+            if (filterMotorbikeDto.getAddress() != null && !filterMotorbikeDto.getAddress().isEmpty()) {
+                int commaIndex = filterMotorbikeDto.getAddress().indexOf(",");
+                if (commaIndex != -1) {
+                    district = filterMotorbikeDto.getAddress().substring(0, commaIndex).trim();
+                    province = filterMotorbikeDto.getAddress().substring(1, commaIndex).trim();
                 }
             }
+
+            filter=motorbikeFilterRepository.listMotorbikeByFilter(
+                    filterMotorbikeDto.getStartDate(),
+                    filterMotorbikeDto.getEndDate(),
+                    province,
+                    filterMotorbikeDto.getBrandId(),
+                    filterMotorbikeDto.getModelType(),
+                    filterMotorbikeDto.getIsDelivery(),
+                    filterMotorbikeDto.getMinPrice(),
+                    filterMotorbikeDto.getMaxPrice()
+            );
+            final String selectedDistrict = district;
+            Collections.sort(filter, new Comparator<Motorbike>() {
+                @Override
+                public int compare(Motorbike m1, Motorbike m2) {
+                    boolean m1ContainsDistrict = m1.getMotorbikeAddress().contains(selectedDistrict);
+                    boolean m2ContainsDistrict = m2.getMotorbikeAddress().contains(selectedDistrict);
+
+                    // Nếu m1 chứa district mà m2 không chứa, m1 sẽ được đặt lên trước
+                    if (m1ContainsDistrict && !m2ContainsDistrict) {
+                        return -1;
+                    } else if (!m1ContainsDistrict && m2ContainsDistrict) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+
         });
         List<MotorbikeDto> dtoList = filter.stream()
                 .map(this::convertToDto)
@@ -243,8 +255,20 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                 if(!fiveStarUserIdList.contains(motorbikeDto.getUserId())){
                   dtoList.remove(motorbikeDto);
                 }
-            }
+            });
         }
+            List<MotorbikeDto> dtoList = filter.stream()
+                    .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
+                    .collect(Collectors.toList());
+            if (filterMotorbikeDto.getIsFiveStar() != null) {
+                List<Long> fiveStarUserIdList = motorbikeFilterRepository.getFiveStarLessor();
+                for (MotorbikeDto motorbikeDto : dtoList) {
+                    if (!fiveStarUserIdList.contains(motorbikeDto.getUserId())) {
+                        dtoList.remove(motorbikeDto);
+                    }
+                }
+            }
+
         return dtoList;
     }
 
@@ -304,14 +328,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
          return motorbikeDto;
     }
 
-//        public MotorbikeDto updateMotorbike (Long id, UpdateMotorbikeDto updateMotorbikeDto){
-//            Motorbike motorbike = motorbikeRepository.findById(id).orElseThrow();
-//            mapper.map(updateMotorbikeDto, motorbike);
-//            motorbikeRepository.save(motorbike);
-//            MotorbikeDto motorbikeDto = mapper.map(motorbike, MotorbikeDto.class);
-//            return motorbikeDto;
-//
-//        }
+
 
         private Motorbike updateMotorbikeStatus (Long id, MotorbikeStatus status){
             Optional<Motorbike> motorbikeOpt = motorbikeRepository.findById(id);
