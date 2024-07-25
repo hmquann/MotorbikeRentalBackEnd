@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class Motorbike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "motorbike_id")
     private Long id;
 
     @Column(name="price_per_day")
@@ -68,10 +69,8 @@ public class Motorbike {
     @OneToMany(mappedBy = "motorbike")
     private List<MotorbikeImage>motorbikeImages;
 
-//    @JsonManagedReference
-//    public User user(){
-//        return user;
-//    }
+    @Enumerated(EnumType.STRING)
+    private LicenseType licenseType;
 
     @ManyToOne
     @JoinColumn(name="model_id")

@@ -54,12 +54,17 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedBack.setFeedbackTime(LocalDateTime.now());
         feedBack = feedbackRepository.save(feedBack);
 
+        booking.setFeedbackkk(true);
+        bookingRepository.save(booking);
+
+
         feedbackDto.setId(feedBack.getId());
         feedbackDto.setRenterName(booking.getRenter().getFirstName() + " " + booking.getRenter().getLastName());
         feedbackDto.setFeedbackTime(feedBack.getFeedbackTime());
         return modelMapper.map(feedbackDto, FeedbackDto.class);
 
     }
+
 
 
     public List<FeedbackDto> getFeedbacksByMotorbikeId(Long motorbikeId) {
@@ -80,5 +85,38 @@ public class FeedbackServiceImpl implements FeedbackService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public FeedbackDto editFeedback(Long feedbackId, FeedbackDto feedbackDto) {
+        FeedBack existingFeedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new IllegalArgumentException("Feedback not found"));
+
+
+        if (feedbackDto.getRate() != 0) {
+            existingFeedback.setRate(feedbackDto.getRate());
+        }
+
+
+        if (feedbackDto.getFeedbackContent() != null) {
+            existingFeedback.setFeedbackContent(feedbackDto.getFeedbackContent());
+        }
+
+
+        existingFeedback.setFeedbackTime(LocalDateTime.now());
+
+        FeedBack updatedFeedback = feedbackRepository.save(existingFeedback);
+
+
+        FeedbackDto updatedFeedbackDto = new FeedbackDto(
+                updatedFeedback.getId(),
+                updatedFeedback.getBooking().getBookingId(),
+                updatedFeedback.getFeedbackContent(),
+                updatedFeedback.getRate(),
+                updatedFeedback.getFeedbackTime(),
+                updatedFeedback.getBooking().getRenter().getFirstName() + " " + updatedFeedback.getBooking().getRenter().getLastName()
+        );
+
+        return updatedFeedbackDto;
     }
 }

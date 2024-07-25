@@ -33,4 +33,6 @@ public class JwtAuthenticationResponse {
 
     private boolean isGender;
 
+    private Long totalTripCount;
+
 }

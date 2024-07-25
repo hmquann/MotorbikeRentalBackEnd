@@ -218,6 +218,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                     province = filterMotorbikeDto.getAddress().substring(1, commaIndex).trim();
                 }
             }
+
             filter=motorbikeFilterRepository.listMotorbikeByFilter(
                     filterMotorbikeDto.getStartDate(),
                     filterMotorbikeDto.getEndDate(),
@@ -243,6 +244,16 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                     } else {
                         return 0;
                     }
+
+        });
+        List<MotorbikeDto> dtoList = filter.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        if(filterMotorbikeDto.getIsFiveStar()!=null){
+            List<Long>fiveStarUserIdList=motorbikeFilterRepository.getFiveStarLessor();
+            for(MotorbikeDto motorbikeDto:dtoList){
+                if(!fiveStarUserIdList.contains(motorbikeDto.getUserId())){
+                  dtoList.remove(motorbikeDto);
                 }
             });
         }
@@ -302,7 +313,13 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
           return motorbikeList;
     }
 
+
     @Override
+    public MotorbikeDto existMotorbikeByUserId(Long motorbikeId, Long userId) {
+        Motorbike motorbike = motorbikeRepository.existsMotorbikeByUserId(motorbikeId, userId);
+        return convertToDto(motorbike);
+    }
+
     public MotorbikeDto updateMotorbike(Long id,UpdateMotorbikeDto updateMotorbikeDto) {
         Motorbike motorbike=motorbikeRepository.findById(id).orElseThrow();
          mapper.map(updateMotorbikeDto,motorbike);
@@ -311,18 +328,26 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
          return motorbikeDto;
     }
 
-    private Motorbike updateMotorbikeStatus(Long id, MotorbikeStatus status) {
-        Optional<Motorbike> motorbikeOpt = motorbikeRepository.findById(id);
-        if (motorbikeOpt.isPresent()) {
-            Motorbike motorbike = motorbikeOpt.get();
-            motorbike.setStatus(status);
-            return motorbikeRepository.save(motorbike);
-        } else {
-            throw new RuntimeException("Motorbike not found");
+        public MotorbikeDto updateMotorbike (Long id, UpdateMotorbikeDto updateMotorbikeDto){
+            Motorbike motorbike = motorbikeRepository.findById(id).orElseThrow();
+            mapper.map(updateMotorbikeDto, motorbike);
+            motorbikeRepository.save(motorbike);
+            MotorbikeDto motorbikeDto = mapper.map(motorbike, MotorbikeDto.class);
+            return motorbikeDto;
+
         }
+
+        private Motorbike updateMotorbikeStatus (Long id, MotorbikeStatus status){
+            Optional<Motorbike> motorbikeOpt = motorbikeRepository.findById(id);
+            if (motorbikeOpt.isPresent()) {
+                Motorbike motorbike = motorbikeOpt.get();
+                motorbike.setStatus(status);
+                return motorbikeRepository.save(motorbike);
+            } else {
+                throw new RuntimeException("Motorbike not found");
+            }
+        }
+
+
     }
-
-
-
-}
 

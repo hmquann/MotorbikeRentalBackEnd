@@ -17,4 +17,5 @@ public class LicenseDto {
     private LocalDate birthOfDate;
     private String licenseImageUrl;
     private LicenseStatus status;
+    private LicenseType licenseType;
 }

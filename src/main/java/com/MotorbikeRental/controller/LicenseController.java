@@ -73,9 +73,9 @@ public class LicenseController {
         }
     }
   @GetMapping("getLicenseByUserId/{id}")
-    public LicenseDto getLicenseByUserId(@PathVariable Long id){
-        LicenseDto license=licenseService.getLicenseByUserId(id);
-        return license;
+    public ResponseEntity<LicenseDto> getLicenseByUserId(@PathVariable Long id){
+        LicenseDto licenseDto=licenseService.getLicenseByUserId(id);
+        return ResponseEntity.ok(licenseDto);
   }
     @GetMapping("/getAllLicense/{page}/{pageSize}")
     public ResponseEntity<Page<LicenseDto>> listLicenseWithPagination(@PathVariable int page, @PathVariable int pageSize) {
