@@ -180,4 +180,15 @@ public class BookingServiceImpl implements BookingService {
         return booking != null && booking.isFeedbackkk();
     }
 
+    public BookingRequest convertToDto(Booking booking) {
+        return mapper.map(booking, BookingRequest.class);
+    }
+
+    public List<BookingRequest> findByMotorbikeId(Long motorbikeId) {
+        List<Booking> bookings = bookingRepository.findByMotorbikeId(motorbikeId);
+        return bookings.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
 }

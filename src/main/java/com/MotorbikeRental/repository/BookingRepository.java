@@ -26,6 +26,8 @@ import java.util.Map;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking,Long> {
+    List<Booking> findByMotorbikeId(Long motorbikeId);
+
     @Query("select b from Booking b where b.motorbike.id=:motorbikeId")
     List<Booking> getBookingByMotorbikeId(Long motorbikeId);
 

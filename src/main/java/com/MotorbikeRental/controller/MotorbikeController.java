@@ -73,7 +73,6 @@ public class MotorbikeController {
     @PutMapping("/toggleStatus/{id}")
     public ResponseEntity<String> toggleMotorbikeStatus(@PathVariable Long id) {
         try {
-            // Gọi phương thức từ service để thực hiện toggle trạng thái của xe máy
             motorbikeService.toggleMotorbikeStatus(id);
             return ResponseEntity.ok("Toggle motorbike status successfully.");
         } catch (Exception e) {
