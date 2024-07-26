@@ -63,4 +63,10 @@ public class BookingController {
         response.put("feedbackSent", feedbackSent);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/motorbike/{motorbikeId}")
+    public ResponseEntity<List<BookingRequest>> getBookingsByMotorbikeId(@PathVariable Long motorbikeId) {
+        List<BookingRequest> bookings = bookingService.findByMotorbikeId(motorbikeId);
+        return ResponseEntity.ok(bookings);
+    }
 }

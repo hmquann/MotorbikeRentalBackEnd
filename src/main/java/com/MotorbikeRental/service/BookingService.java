@@ -38,4 +38,6 @@ public interface BookingService {
 
     boolean hasFeedbackBeenSent(Long bookingId);
 
+    List<BookingRequest> findByMotorbikeId(Long motorbikeId);
+
 }
