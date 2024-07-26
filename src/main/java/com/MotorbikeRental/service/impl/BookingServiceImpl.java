@@ -46,8 +46,6 @@ public class BookingServiceImpl implements BookingService {
     private final MotorbikeService motorbikeService;
     @Autowired
     private final MotorbikeRepository motorbikeRepository;
-    @Autowired
-    private ModelMapper mapper;
 
     private final BookingFilterRepository bookingFilterRepository;
     @Override
@@ -66,6 +64,11 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(PENDING);
 
         return bookingRepository.save(booking);
+    }
+
+    @Override
+    public boolean changeStatusBooking() {
+        return false;
     }
 
     @Override
@@ -142,7 +145,6 @@ public class BookingServiceImpl implements BookingService {
         bookingRepository.save(b);
     }
 
-=======
     public List<BookingRequest> getBookingListByRenterId(Long renterId) {
         List<Booking> bookingList= bookingRepository.getBookingListByRenterId(renterId);
         List<BookingRequest> bookingRequestList = bookingList.stream()

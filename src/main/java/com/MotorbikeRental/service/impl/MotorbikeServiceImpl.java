@@ -243,7 +243,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                         return 1;
                     } else {
                         return 0;
-                    }
+                    }}
 
         });
         List<MotorbikeDto> dtoList = filter.stream()
@@ -255,8 +255,10 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                 if(!fiveStarUserIdList.contains(motorbikeDto.getUserId())){
                   dtoList.remove(motorbikeDto);
                 }
-            });
+            }};
         }
+
+
             List<MotorbikeDto> dtoList = filter.stream()
                     .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
                     .collect(Collectors.toList());
@@ -271,6 +273,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
         return dtoList;
     }
+
 
 
 

@@ -30,9 +30,8 @@ public interface BookingService {
     Map<String,Long>mainLocationPercentage();
     void markBusyDays(LocalDateTime startDate, LocalDateTime endDate,Long motorbikeId);
 
-    Booking  saveBooking(BookingRequest bookingRequest);
     Booking changeStatusBooking(Long id,String status);
-    ResponseEntity<List<Booking>> getBookingListByMotorbikeId(Long motorbikeId);
+//    ResponseEntity<List<Booking>> getBookingListByMotorbikeId(Long motorbikeId);
 
     List<BookingRequest> getBookingListByRenterId(Long renterId);
 
