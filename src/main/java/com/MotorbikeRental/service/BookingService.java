@@ -19,9 +19,6 @@ import java.util.Map;
 @Service
 public interface BookingService {
 
-    Booking saveBooking(BookingRequest bookingRequest);
-
-    boolean changeStatusBooking();
     List<BookingDto> getBookingListByMotorbikeId(Long motorbikeId);
     List<TopModelDto> getTop5ModelsInCurrentMonth();
     Long getMonthlyRevenueByLessorId(Long lessorId);
@@ -31,7 +28,9 @@ public interface BookingService {
     void markBusyDays(LocalDateTime startDate, LocalDateTime endDate,Long motorbikeId);
 
     Booking changeStatusBooking(Long id,String status);
+
 //    ResponseEntity<List<Booking>> getBookingListByMotorbikeId(Long motorbikeId);
+
 
     List<BookingRequest> getBookingListByRenterId(Long renterId);
 
@@ -40,5 +39,7 @@ public interface BookingService {
     public List<BookingRequest> filterBookings(FilterBookingDto filterBookingDto);
 
     boolean hasFeedbackBeenSent(Long bookingId);
+
+    List<BookingRequest> findByMotorbikeId(Long motorbikeId);
 
 }

@@ -10,10 +10,8 @@ import com.MotorbikeRental.dto.UserDto;
 import com.MotorbikeRental.entity.*;
 
 import com.MotorbikeRental.exception.ExistPlateException;
-import com.MotorbikeRental.repository.ModelRepository;
-import com.MotorbikeRental.repository.MotorbikeFilterRepository;
-import com.MotorbikeRental.repository.MotorbikeRepository;
-import com.MotorbikeRental.repository.UserRepository;
+import com.MotorbikeRental.exception.ValidationException;
+import com.MotorbikeRental.repository.*;
 
 import com.MotorbikeRental.service.JWTService;
 import com.MotorbikeRental.service.MotorbikeImageService;
@@ -55,6 +53,8 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     @Autowired
     private final MotorbikeFilterRepository motorbikeFilterRepository;
     private final UserService userService;
+
+    private final BookingRepository bookingRepository;
 
 
     @Override
@@ -132,7 +132,19 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         Motorbike motorbike = motorbikeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Motorbike not found with id: " + id));
 
+        List<Booking> bookings = bookingRepository.findByMotorbikeId(id);
+
+
             if (motorbike.getStatus() == MotorbikeStatus.ACTIVE) {
+                for (Booking booking : bookings) {
+                    if (booking.getStatus() == BookingStatus.DEPOSIT_MADE) {
+                        throw new ValidationException("Cannot de-active a motorbike in DEPOSIT_MADE state.");
+                    } else if (booking.getStatus() == BookingStatus.BUSY) {
+                        throw new ValidationException("Cannot de-active a motorbike in BUSY state.");
+                    } else if (booking.getStatus() == BookingStatus.RENTING) {
+                        throw new ValidationException("Cannot de-active a motorbike in RENTING state.");
+                    }
+                }
                 motorbike.setStatus(MotorbikeStatus.DEACTIVE);
             } else if (motorbike.getStatus() == MotorbikeStatus.DEACTIVE) {
                 motorbike.setStatus(MotorbikeStatus.ACTIVE);
@@ -198,17 +210,17 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
     @Override
     public List<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto) {
-        List <Motorbike> filter=motorbikeFilterRepository.listMotorbikeByFilter(
-        filterMotorbikeDto.getStartDate(),
-        filterMotorbikeDto.getEndDate(),
-        filterMotorbikeDto.getAddress(),
-        filterMotorbikeDto.getBrandId(),
-        filterMotorbikeDto.getModelType(),
-        filterMotorbikeDto.getIsDelivery(),
-        filterMotorbikeDto.getMinPrice(),
-        filterMotorbikeDto.getMaxPrice()
+        List<Motorbike> filter = motorbikeFilterRepository.listMotorbikeByFilter(
+                filterMotorbikeDto.getStartDate(),
+                filterMotorbikeDto.getEndDate(),
+                filterMotorbikeDto.getAddress(),
+                filterMotorbikeDto.getBrandId(),
+                filterMotorbikeDto.getModelType(),
+                filterMotorbikeDto.getIsDelivery(),
+                filterMotorbikeDto.getMinPrice(),
+                filterMotorbikeDto.getMaxPrice()
         );
-        if(filter.size()<5) {
+        if (filter.size() < 5) {
             String district = "";
             String province = "";
             if (filterMotorbikeDto.getAddress() != null && !filterMotorbikeDto.getAddress().isEmpty()) {
@@ -219,7 +231,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                 }
             }
 
-            filter=motorbikeFilterRepository.listMotorbikeByFilter(
+            filter = motorbikeFilterRepository.listMotorbikeByFilter(
                     filterMotorbikeDto.getStartDate(),
                     filterMotorbikeDto.getEndDate(),
                     province,
@@ -243,17 +255,20 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                         return 1;
                     } else {
                         return 0;
-                    }}
 
-        });
-        List<MotorbikeDto> dtoList = filter.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-        if(filterMotorbikeDto.getIsFiveStar()!=null){
-            List<Long>fiveStarUserIdList=motorbikeFilterRepository.getFiveStarLessor();
-            for(MotorbikeDto motorbikeDto:dtoList){
-                if(!fiveStarUserIdList.contains(motorbikeDto.getUserId())){
-                  dtoList.remove(motorbikeDto);
+//                     }}
+
+//         });
+//         List<MotorbikeDto> dtoList = filter.stream()
+//                 .map(this::convertToDto)
+//                 .collect(Collectors.toList());
+//         if(filterMotorbikeDto.getIsFiveStar()!=null){
+//             List<Long>fiveStarUserIdList=motorbikeFilterRepository.getFiveStarLessor();
+//             for(MotorbikeDto motorbikeDto:dtoList){
+//                 if(!fiveStarUserIdList.contains(motorbikeDto.getUserId())){
+//                   dtoList.remove(motorbikeDto);
+                    }
+
                 }
             }};
         }
@@ -271,9 +286,8 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                 }
             }
 
-        return dtoList;
+            return dtoList;
     }
-
 
 
 
@@ -330,6 +344,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
          MotorbikeDto motorbikeDto=mapper.map(motorbike,MotorbikeDto.class);
          return motorbikeDto;
     }
+
 
 
         private Motorbike updateMotorbikeStatus (Long id, MotorbikeStatus status){

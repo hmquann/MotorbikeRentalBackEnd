@@ -91,7 +91,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.topModelsInCurrentMonth(PageRequest.of(0,5));
     }
 
-    @Override
+
 
     public Long getMonthlyRevenueByLessorId(Long lessorId) {
         return bookingRepository.getAnnualInMonthByLessorId(lessorId);
@@ -183,6 +183,17 @@ public class BookingServiceImpl implements BookingService {
     public boolean hasFeedbackBeenSent(Long bookingId) {
         Booking booking = bookingRepository.findByBookingId(bookingId);
         return booking != null && booking.isFeedbackkk();
+    }
+
+    public BookingRequest convertToDto(Booking booking) {
+        return mapper.map(booking, BookingRequest.class);
+    }
+
+    public List<BookingRequest> findByMotorbikeId(Long motorbikeId) {
+        List<Booking> bookings = bookingRepository.findByMotorbikeId(motorbikeId);
+        return bookings.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
 }
