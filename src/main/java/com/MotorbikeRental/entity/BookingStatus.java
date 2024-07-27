@@ -1,7 +1,8 @@
 package com.MotorbikeRental.entity;
 
 public enum BookingStatus {
-        PENDING, PENDING_DEPOSIT, DEPOSIT_MADE,BUSY, RENTING, REJECTED, CANCELED, DONE;
+
+        PENDING, PENDING_DEPOSIT, DEPOSIT_MADE, BUSY, RENTING, REJECTED, CANCELED, DONE;
 
 
         public static BookingStatus fromString(String status) {
