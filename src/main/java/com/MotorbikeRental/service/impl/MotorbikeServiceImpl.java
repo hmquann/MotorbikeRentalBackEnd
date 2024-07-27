@@ -256,22 +256,22 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                     } else {
                         return 0;
 
-//                     }}
+                    }}
 
-//         });
-//         List<MotorbikeDto> dtoList = filter.stream()
-//                 .map(this::convertToDto)
-//                 .collect(Collectors.toList());
-//         if(filterMotorbikeDto.getIsFiveStar()!=null){
-//             List<Long>fiveStarUserIdList=motorbikeFilterRepository.getFiveStarLessor();
-//             for(MotorbikeDto motorbikeDto:dtoList){
-//                 if(!fiveStarUserIdList.contains(motorbikeDto.getUserId())){
-//                   dtoList.remove(motorbikeDto);
+            });
+         List<MotorbikeDto> dtoList = filter.stream()
+                 .map(this::convertToDto)
+                 .collect(Collectors.toList());
+         if(filterMotorbikeDto.getIsFiveStar()!=null){
+            List<Long>fiveStarUserIdList=motorbikeFilterRepository.getFiveStarLessor();
+             for(MotorbikeDto motorbikeDto:dtoList){
+                 if(!fiveStarUserIdList.contains(motorbikeDto.getUserId())){
+                   dtoList.remove(motorbikeDto);
                     }
 
                 }
             }};
-        }
+
 
 
             List<MotorbikeDto> dtoList = filter.stream()
