@@ -29,7 +29,7 @@ public class AuthenticationController {
     public ResponseEntity<User> signUp(@RequestBody SignupRequest signupRequest, HttpServletRequest httpServletRequest){
         User user = authenticationService.signUp(signupRequest);
         String url = httpServletRequest.getRequestURL().toString()+"/verify/"+user.getToken();
-        String newUrl = url.replace("rentalmotorbikebe.azurewebsites.net", "proud-rock-0ffde1d0f.5.azurestaticapps.net");
+        String newUrl = url.replace("https://rentalmotorbikewebapp.azurewebsites.net", "https://lively-meadow-0dcca260f.5.azurestaticapps.net");
         emailService.sendVerificationEmail(user, newUrl.replace(httpServletRequest.getServletPath(),""));
         return ResponseEntity.ok(user);
 
@@ -41,7 +41,8 @@ public class AuthenticationController {
         String newEmail = changeEmailRequest.getNewEmail();
         authenticationService.checkEmail(newEmail);
         String url = httpServletRequest.getRequestURL().toString()+"/updateEmail/"+user.getToken()+"/"+newEmail;
-        String newUrl = url.replace("rentalmotorbikebe.azurewebsites.net", "proud-rock-0ffde1d0f.5.azurestaticapps.net");
+        String newUrl = url.replace("https://rentalmotorbikewebapp.azurewebsites.net", "https://lively-meadow-0dcca260f.5.azurestaticapps.net");
+
         emailService.sendChangeEmail(user, newUrl.replace(httpServletRequest.getServletPath(),""), newEmail);
         return ResponseEntity.ok(user);
 
