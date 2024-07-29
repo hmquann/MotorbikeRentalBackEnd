@@ -69,8 +69,8 @@ public class SecurityConfig {
                 @Override
                 public void addCorsMappings(CorsRegistry registry) {
                     registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
-//                            .allowedOrigins("https://lively-meadow-0dcca260f.5.azurestaticapps.net")
-                            .allowedOrigins("http://localhost:3000")
+                            .allowedOrigins("https://agreeable-dune-0c269c40f.5.azurestaticapps.net/")
+//                            .allowedOrigins("http://localhost:3000")
                             .allowedHeaders("*");
                 }
             };
