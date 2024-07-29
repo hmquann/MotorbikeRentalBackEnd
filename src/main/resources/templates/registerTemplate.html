@@ -40,13 +40,13 @@
 <body>
 <div class="email-container">
     <div class="header">
-        <h1>Verify Registration</h1>
+        <h1>Xác thực Email</h1>
     </div>
     <div class="body">
-        <p th:utext="'Dear ' + '<strong>' + ${userName} + '</strong>'+','"></p>
-        <p th:utext="'Please click the link below to verify your registration:'"></p>
+        <p th:utext="'Kính gửi ' + '<strong>' + ${userName} + '</strong>'+','"></p>
+        <p th:utext="'Vui lòng nhấn vào đường link bên dưới để xác thực Email của bạn'"></p>
         <a class="green-button" th:href="@{${url}}" style="color: white;">VERIFY</a>
-        <p th:utext="'Thank you!'"></p>
+        <p th:utext="'Cảm ơn!'"></p>
     </div>
     <div class="footer">
         <p>© 2024 Motor Rental Service Company. All rights reserved.</p>
