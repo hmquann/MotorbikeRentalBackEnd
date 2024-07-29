@@ -334,6 +334,9 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     @Override
     public MotorbikeDto existMotorbikeByUserId(Long motorbikeId, Long userId) {
         Motorbike motorbike = motorbikeRepository.existsMotorbikeByUserId(motorbikeId, userId);
+        if (motorbike == null) {
+            return null;
+        }
         return convertToDto(motorbike);
     }
 

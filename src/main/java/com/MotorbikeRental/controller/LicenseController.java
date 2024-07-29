@@ -5,6 +5,7 @@ import com.MotorbikeRental.dto.RegisterLicenseDto;
 import com.MotorbikeRental.entity.License;
 import com.MotorbikeRental.entity.LicenseStatus;
 import com.MotorbikeRental.entity.User;
+import com.MotorbikeRental.exception.LicenseNotFound;
 import com.MotorbikeRental.repository.LicenseRepository;
 import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.JWTService;
@@ -75,6 +76,9 @@ public class LicenseController {
   @GetMapping("getLicenseByUserId/{id}")
     public ResponseEntity<LicenseDto> getLicenseByUserId(@PathVariable Long id){
         LicenseDto licenseDto=licenseService.getLicenseByUserId(id);
+        if(licenseDto == null){
+            throw new LicenseNotFound("You don't have license. Please upload and verify!!!");
+        }
         return ResponseEntity.ok(licenseDto);
   }
     @GetMapping("/getAllLicense/{page}/{pageSize}")

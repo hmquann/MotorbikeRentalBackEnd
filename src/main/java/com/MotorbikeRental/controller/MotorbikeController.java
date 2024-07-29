@@ -8,6 +8,8 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +40,9 @@ public class MotorbikeController {
 
     @Autowired
     private MotorbikeService motorbikeService;
+
+    private static final Logger logger = LoggerFactory.getLogger(MotorbikeController.class);
+
 
     @Autowired
     private MotorbikeImageService motorbikeImageService;
@@ -143,9 +148,20 @@ public class MotorbikeController {
 //        return ResponseEntity.ok(motorbikeService.getMotorbikeById(id));
 //    }
 
+
     @GetMapping("/existMotorbikeByUserId/{motorbikeId}/{userId}")
-    public ResponseEntity<MotorbikeDto> existMotorbikeByUserId(@PathVariable Long motorbikeId, @PathVariable Long userId){
-        return ResponseEntity.ok(motorbikeService.existMotorbikeByUserId(motorbikeId,userId));
+    public ResponseEntity<MotorbikeDto> existMotorbikeByUserId(@PathVariable Long motorbikeId, @PathVariable Long userId) {
+        try {
+            MotorbikeDto motorbikeDto = motorbikeService.existMotorbikeByUserId(motorbikeId, userId);
+            if (motorbikeDto == null) {
+                logger.error("Motorbike not found for motorbikeId: {} and userId: {}", motorbikeId, userId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(motorbikeDto);
+        } catch (Exception e) {
+            logger.error("An error occurred while checking motorbike by user ID", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 

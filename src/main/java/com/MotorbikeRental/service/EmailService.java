@@ -1,5 +1,6 @@
 package com.MotorbikeRental.service;
 
+import com.MotorbikeRental.dto.EmailSuccessBookingDto;
 import com.MotorbikeRental.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
@@ -17,5 +18,7 @@ public interface EmailService {
     String sendForgotPasswordEmail(User user,String url);
 
     String sendChangeEmail(User user, String url,String newEmail);
+
+    String sendEmailSuccessBooking(EmailSuccessBookingDto emailSuccessBookingDto);
 
 }
