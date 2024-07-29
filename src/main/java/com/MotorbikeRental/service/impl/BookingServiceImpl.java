@@ -66,10 +66,6 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.save(booking);
     }
 
-    @Override
-    public boolean changeStatusBooking() {
-        return false;
-    }
 
     @Override
     public Booking changeStatusBooking(Long id, String status) {

@@ -1,5 +1,6 @@
 package com.MotorbikeRental.service.impl;
 
+import com.MotorbikeRental.dto.EmailSuccessBookingDto;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.service.EmailService;
 import com.MotorbikeRental.service.UserService;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -132,6 +136,39 @@ public class EmailServiceImpl implements EmailService {
             context.setVariable("userName",user.getFirstName()+ user.getLastName());
             context.setVariable("url",url);
             String htmlContent = templateEngine.process("changeEmailTemplate", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String sendEmailSuccessBooking(EmailSuccessBookingDto emailSuccessBookingDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailSuccessBookingDto.getRenterEmail());
+            mimeMessageHelper.setSubject("Xác nhận đặt chuyến");
+
+            Context context = new Context();
+            context.setVariable("userName", emailSuccessBookingDto.getRenterName());
+            context.setVariable("motorbikeName", emailSuccessBookingDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailSuccessBookingDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailSuccessBookingDto.getBookingTime());
+            context.setVariable("startDate", emailSuccessBookingDto.getStartDate());
+            context.setVariable("endDate", emailSuccessBookingDto.getEndDate());
+            context.setVariable("receiveLocation", emailSuccessBookingDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailSuccessBookingDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+
+            String htmlContent = templateEngine.process("sendEmailSuccessBooking", context);
             mimeMessageHelper.setText(htmlContent, true);
 
 

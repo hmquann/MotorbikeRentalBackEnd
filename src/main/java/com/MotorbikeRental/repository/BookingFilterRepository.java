@@ -57,6 +57,11 @@ public class BookingFilterRepository {
                             criteriaBuilder.lessThanOrEqualTo(root.get("endDate"), endTime)
                     )
             );
+        } else if(startTime != null && endTime == null){
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("startDate"), startTime)
+            );
+        } else if (startTime == null && endTime != null) {
+            criteriaBuilder.lessThanOrEqualTo(root.get("endDate"), endTime);
         }
 
         criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));

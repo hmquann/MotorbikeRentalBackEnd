@@ -19,6 +19,8 @@ import java.util.Map;
 @Service
 public interface BookingService {
 
+    Booking saveBooking(BookingRequest bookingRequest);
+
     List<BookingDto> getBookingListByMotorbikeId(Long motorbikeId);
     List<TopModelDto> getTop5ModelsInCurrentMonth();
     Long getMonthlyRevenueByLessorId(Long lessorId);

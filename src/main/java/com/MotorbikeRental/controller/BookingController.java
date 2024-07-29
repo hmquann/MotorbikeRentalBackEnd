@@ -1,11 +1,12 @@
 package com.MotorbikeRental.controller;
 
-import com.MotorbikeRental.dto.BookingDto;
-import com.MotorbikeRental.dto.BookingRequest;
-import com.MotorbikeRental.dto.FilterBookingDto;
+import com.MotorbikeRental.dto.*;
 import com.MotorbikeRental.entity.Booking;
+import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.service.BookingService;
+import com.MotorbikeRental.service.EmailService;
 import com.MotorbikeRental.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final UserService userService;
+    private final EmailService emailService;
 
     @RequestMapping (value="/create",method =RequestMethod.POST)
     public ResponseEntity<Booking> createBooking(@RequestBody BookingRequest bookingRequest){
@@ -68,5 +70,11 @@ public class BookingController {
     public ResponseEntity<List<BookingRequest>> getBookingsByMotorbikeId(@PathVariable Long motorbikeId) {
         List<BookingRequest> bookings = bookingService.findByMotorbikeId(motorbikeId);
         return ResponseEntity.ok(bookings);
+    }
+
+
+    @RequestMapping (value="/sendEmailSuccessBooking",method =RequestMethod.POST)
+    public String sendEmailSuccessBooking(@RequestBody EmailSuccessBookingDto emailSuccessBookingDto){
+        return emailService.sendEmailSuccessBooking(emailSuccessBookingDto);
     }
 }
