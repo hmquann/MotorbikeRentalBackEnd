@@ -24,12 +24,15 @@ public class AuthenticationController {
     private final EmailService emailService;
     private final UserService userService;
 
-    @CrossOrigin(origins = "https://proud-rock-0ffde1d0f.5.azurestaticapps.net", methods = {RequestMethod.POST, RequestMethod.OPTIONS})
+//    @CrossOrigin(origins = "https://proud-rock-0ffde1d0f.5.azurestaticapps.net", methods = {RequestMethod.POST, RequestMethod.OPTIONS})
     @RequestMapping (value="/signup",method =RequestMethod.POST)
     public ResponseEntity<User> signUp(@RequestBody SignupRequest signupRequest, HttpServletRequest httpServletRequest){
         User user = authenticationService.signUp(signupRequest);
         String url = httpServletRequest.getRequestURL().toString()+"/verify/"+user.getToken();
-        String newUrl = url.replace("https://rentalmotorbikewebapp.azurewebsites.net", "https://lively-meadow-0dcca260f.5.azurestaticapps.net");
+
+//        String newUrl = url.replace("rentalmotorbikebe.azurewebsites.net", "proud-rock-0ffde1d0f.5.azurestaticapps.net");
+        String newUrl = url.replace("localhost:8080", "localhost:3000");
+
         emailService.sendVerificationEmail(user, newUrl.replace(httpServletRequest.getServletPath(),""));
         return ResponseEntity.ok(user);
 
