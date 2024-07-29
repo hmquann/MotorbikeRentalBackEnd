@@ -80,4 +80,8 @@ public class Motorbike {
     @OneToMany(mappedBy = "motorbike")
     @JsonBackReference
     private List<Booking> bookingList;
+
+    @OneToMany(mappedBy = "motorbike", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<Schedule> schedules = new ArrayList<>();
 }
