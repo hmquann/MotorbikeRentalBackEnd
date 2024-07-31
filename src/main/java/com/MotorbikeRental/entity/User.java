@@ -45,6 +45,7 @@ public class User implements UserDetails {
 
     private BigDecimal balance;
 
+    private String avatarImage;
 
     private String token;
 

@@ -26,6 +26,11 @@ public class Booking {
     @Column(columnDefinition = "nvarchar(255)")
     private String receiveLocation;
 
+    @Column(nullable = true)
+    private Double longitude;
+
+    @Column(nullable = true)
+    private Double latitude;
 //    @Column(name = "payment_id")
 //    private int paymentId;
 

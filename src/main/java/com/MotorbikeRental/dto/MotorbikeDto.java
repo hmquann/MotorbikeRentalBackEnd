@@ -39,6 +39,9 @@ public class MotorbikeDto {
 
     private MotorbikeStatus motorbikeStatus;
 
+    private Double longitude;
+
+    private Double latitude;
 
     private ModelDto model;
 
