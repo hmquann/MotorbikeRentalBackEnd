@@ -5,6 +5,7 @@ package com.MotorbikeRental.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -34,6 +35,11 @@ public class Motorbike {
     @Column(name="over_time_limit")
     private Long overtimeLimit;
 
+    @Column(nullable = true)
+    private Double longitude;
+
+    @Column(nullable = true)
+    private Double latitude;
 
     @Column(name="trip_count")
     private Long tripCount;
