@@ -278,7 +278,7 @@ public class UserServiceImpl implements UserService {
             transaction.setAmount(amount);
             transaction.setProcessed(true);
             transaction.setTransactionDate(LocalDateTime.now());
-            transaction.setType(TransactionType.WITHDRAW);
+            transaction.setType(TransactionType.DEPOSIT);
             transaction.setStatus(TransactionStatus.SUCCESS);
             transactionRepository.save(transaction);
         }
@@ -299,7 +299,7 @@ public class UserServiceImpl implements UserService {
             transaction.setAmount(amount);
             transaction.setProcessed(true);
             transaction.setTransactionDate(LocalDateTime.now());
-            transaction.setType(TransactionType.TOP_UP);
+            transaction.setType(TransactionType.DEPOSIT_RECEIVE);
             transaction.setStatus(TransactionStatus.SUCCESS);
             transactionRepository.save(transaction);
         }
