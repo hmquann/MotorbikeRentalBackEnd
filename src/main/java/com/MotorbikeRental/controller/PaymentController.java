@@ -36,6 +36,26 @@ public class PaymentController {
         }
     }
 
+    @PostMapping("/subtract")
+    public ResponseEntity<String> subtract(@RequestParam Long id, @RequestParam BigDecimal amount) {
+        try {
+            userService.subtractMoney(id, amount);
+            return ResponseEntity.ok("Subtraction successful");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Subtraction failed: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<String> add(@RequestParam Long id, @RequestParam BigDecimal amount) {
+        try {
+            userService.addMoney(id, amount);
+            return ResponseEntity.ok("Addition successful");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Addition failed: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/return")
     public ResponseEntity<Void> returnPayment(@RequestParam String vnp_ResponseCode,
                                               @RequestParam BigDecimal amount,

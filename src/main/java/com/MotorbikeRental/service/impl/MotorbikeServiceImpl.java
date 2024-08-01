@@ -10,10 +10,8 @@ import com.MotorbikeRental.dto.UserDto;
 import com.MotorbikeRental.entity.*;
 
 import com.MotorbikeRental.exception.ExistPlateException;
-import com.MotorbikeRental.repository.ModelRepository;
-import com.MotorbikeRental.repository.MotorbikeFilterRepository;
-import com.MotorbikeRental.repository.MotorbikeRepository;
-import com.MotorbikeRental.repository.UserRepository;
+import com.MotorbikeRental.exception.ValidationException;
+import com.MotorbikeRental.repository.*;
 
 import com.MotorbikeRental.service.JWTService;
 import com.MotorbikeRental.service.MotorbikeImageService;
@@ -56,6 +54,8 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     private final MotorbikeFilterRepository motorbikeFilterRepository;
     private final UserService userService;
 
+    private final BookingRepository bookingRepository;
+
 
     @Override
     public Page<MotorbikeDto> getAllMotorbike(int page, int pageSize, Long userId, List<String> roles,String status) {
@@ -80,13 +80,26 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
         private MotorbikeDto convertToDto(Motorbike motorbike) {
             MotorbikeDto dto = mapper.map(motorbike, MotorbikeDto.class);
-            ModelDto modelDto = mapper.map(motorbike.getModel(), ModelDto.class);
+
+            if (motorbike.getModel() != null) {
+                ModelDto modelDto = mapper.map(motorbike.getModel(), ModelDto.class);
+                dto.setModel(modelDto);
+            } else {
+                dto.setModel(null);
+            }
             UserDto userDto = userService.convertToDto(motorbike.getUser());
-            dto.setModel(modelDto);
+//            dto.setModel(modelDto);
             dto.setUser(userDto);
 
             return dto;
         }
+
+    @Override
+    public MotorbikeDto getMotorbikeById(Long id) {
+        Motorbike motorbike = motorbikeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Motorbike not found"));
+        return convertToDto(motorbike);
+    }
 
     @Override
     public Page<Motorbike> getMotorbikeWithPagination(int page, int pageSize){
@@ -119,7 +132,19 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         Motorbike motorbike = motorbikeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Motorbike not found with id: " + id));
 
+        List<Booking> bookings = bookingRepository.findByMotorbikeId(id);
+
+
             if (motorbike.getStatus() == MotorbikeStatus.ACTIVE) {
+                for (Booking booking : bookings) {
+                    if (booking.getStatus() == BookingStatus.DEPOSIT_MADE) {
+                        throw new ValidationException("Cannot de-active a motorbike in DEPOSIT_MADE state.");
+                    } else if (booking.getStatus() == BookingStatus.BUSY) {
+                        throw new ValidationException("Cannot de-active a motorbike in BUSY state.");
+                    } else if (booking.getStatus() == BookingStatus.RENTING) {
+                        throw new ValidationException("Cannot de-active a motorbike in RENTING state.");
+                    }
+                }
                 motorbike.setStatus(MotorbikeStatus.DEACTIVE);
             } else if (motorbike.getStatus() == MotorbikeStatus.DEACTIVE) {
                 motorbike.setStatus(MotorbikeStatus.ACTIVE);
@@ -185,30 +210,83 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
     @Override
     public List<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto) {
-        List <Motorbike> filter=motorbikeFilterRepository.listMotorbikeByFilter(
-        filterMotorbikeDto.getStartDate(),
-        filterMotorbikeDto.getEndDate(),
-        filterMotorbikeDto.getAddress(),
-        filterMotorbikeDto.getBrandId(),
-        filterMotorbikeDto.getElectric(),
-        filterMotorbikeDto.getModelType(),
-        filterMotorbikeDto.getIsDelivery(),
-        filterMotorbikeDto.getMinPrice(),
-        filterMotorbikeDto.getMaxPrice()
+        List<Motorbike> filter = motorbikeFilterRepository.listMotorbikeByFilter(
+                filterMotorbikeDto.getStartDate(),
+                filterMotorbikeDto.getEndDate(),
+                filterMotorbikeDto.getAddress(),
+                filterMotorbikeDto.getBrandId(),
+                filterMotorbikeDto.getModelType(),
+                filterMotorbikeDto.getIsDelivery(),
+                filterMotorbikeDto.getMinPrice(),
+                filterMotorbikeDto.getMaxPrice()
         );
-        System.out.println(filterMotorbikeDto);
-        List<MotorbikeDto> dtoList = filter.stream()
-                .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
-                .collect(Collectors.toList());
-        if(filterMotorbikeDto.getIsFiveStar()!=null){
-            List<Long>fiveStarUserIdList=motorbikeFilterRepository.getFiveStarLessor();
-            for(MotorbikeDto motorbikeDto:dtoList){
-                if(!fiveStarUserIdList.contains(motorbikeDto.getUserId())){
-                  dtoList.remove(motorbikeDto);
+        if (filter.size() < 5) {
+            String district = "";
+            String province = "";
+            if (filterMotorbikeDto.getAddress() != null && !filterMotorbikeDto.getAddress().isEmpty()) {
+                int commaIndex = filterMotorbikeDto.getAddress().indexOf(",");
+                if (commaIndex != -1) {
+                    district = filterMotorbikeDto.getAddress().substring(0, commaIndex).trim();
+                    province = filterMotorbikeDto.getAddress().substring(1, commaIndex).trim();
                 }
             }
-        }
-        return dtoList;
+
+            filter = motorbikeFilterRepository.listMotorbikeByFilter(
+                    filterMotorbikeDto.getStartDate(),
+                    filterMotorbikeDto.getEndDate(),
+                    province,
+                    filterMotorbikeDto.getBrandId(),
+                    filterMotorbikeDto.getModelType(),
+                    filterMotorbikeDto.getIsDelivery(),
+                    filterMotorbikeDto.getMinPrice(),
+                    filterMotorbikeDto.getMaxPrice()
+            );
+            final String selectedDistrict = district;
+            Collections.sort(filter, new Comparator<Motorbike>() {
+                @Override
+                public int compare(Motorbike m1, Motorbike m2) {
+                    boolean m1ContainsDistrict = m1.getMotorbikeAddress().contains(selectedDistrict);
+                    boolean m2ContainsDistrict = m2.getMotorbikeAddress().contains(selectedDistrict);
+
+                    // Nếu m1 chứa district mà m2 không chứa, m1 sẽ được đặt lên trước
+                    if (m1ContainsDistrict && !m2ContainsDistrict) {
+                        return -1;
+                    } else if (!m1ContainsDistrict && m2ContainsDistrict) {
+                        return 1;
+                    } else {
+                        return 0;
+
+                    }}
+
+            });
+         List<MotorbikeDto> dtoList = filter.stream()
+                 .map(this::convertToDto)
+                 .collect(Collectors.toList());
+         if(filterMotorbikeDto.getIsFiveStar()!=null){
+            List<Long>fiveStarUserIdList=motorbikeFilterRepository.getFiveStarLessor();
+             for(MotorbikeDto motorbikeDto:dtoList){
+                 if(!fiveStarUserIdList.contains(motorbikeDto.getUserId())){
+                   dtoList.remove(motorbikeDto);
+                    }
+
+                }
+            }};
+
+
+
+            List<MotorbikeDto> dtoList = filter.stream()
+                    .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
+                    .collect(Collectors.toList());
+            if (filterMotorbikeDto.getIsFiveStar() != null) {
+                List<Long> fiveStarUserIdList = motorbikeFilterRepository.getFiveStarLessor();
+                for (MotorbikeDto motorbikeDto : dtoList) {
+                    if (!fiveStarUserIdList.contains(motorbikeDto.getUserId())) {
+                        dtoList.remove(motorbikeDto);
+                    }
+                }
+            }
+
+            return dtoList;
     }
 
 
@@ -252,18 +330,37 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
           return motorbikeList;
     }
 
-    private Motorbike updateMotorbikeStatus(Long id, MotorbikeStatus status) {
-        Optional<Motorbike> motorbikeOpt = motorbikeRepository.findById(id);
-        if (motorbikeOpt.isPresent()) {
-            Motorbike motorbike = motorbikeOpt.get();
-            motorbike.setStatus(status);
-            return motorbikeRepository.save(motorbike);
-        } else {
-            throw new RuntimeException("Motorbike not found");
+
+    @Override
+    public MotorbikeDto existMotorbikeByUserId(Long motorbikeId, Long userId) {
+        Motorbike motorbike = motorbikeRepository.existsMotorbikeByUserId(motorbikeId, userId);
+        if (motorbike == null) {
+            return null;
         }
+        return convertToDto(motorbike);
+    }
+
+    public MotorbikeDto updateMotorbike(Long id,UpdateMotorbikeDto updateMotorbikeDto) {
+        Motorbike motorbike=motorbikeRepository.findById(id).orElseThrow();
+         mapper.map(updateMotorbikeDto,motorbike);
+         motorbikeRepository.save(motorbike);
+         MotorbikeDto motorbikeDto=mapper.map(motorbike,MotorbikeDto.class);
+         return motorbikeDto;
     }
 
 
 
-}
+        private Motorbike updateMotorbikeStatus (Long id, MotorbikeStatus status){
+            Optional<Motorbike> motorbikeOpt = motorbikeRepository.findById(id);
+            if (motorbikeOpt.isPresent()) {
+                Motorbike motorbike = motorbikeOpt.get();
+                motorbike.setStatus(status);
+                return motorbikeRepository.save(motorbike);
+            } else {
+                throw new RuntimeException("Motorbike not found");
+            }
+        }
+
+
+    }
 

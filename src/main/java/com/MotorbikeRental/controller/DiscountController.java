@@ -87,6 +87,12 @@ public class DiscountController {
         return ResponseEntity.ok(discountDto);
     }
 
+    @GetMapping("/getListDiscountByUser/{id}")
+    public ResponseEntity<List<DiscountDtoResponse>> getListDiscountByUser(@PathVariable Long id) {
+        List<DiscountDtoResponse> discountDto = discountService.getListDiscountByUser(id);
+        return ResponseEntity.ok(discountDto);
+    }
+
     @DeleteMapping("/{discountId}/remove-references")
     public ResponseEntity<?> removeReferences(@PathVariable Long discountId) {
         discountService.removeUserReferences(discountId);
@@ -96,6 +102,16 @@ public class DiscountController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<DiscountDtoResponse> deleteDiscount(@PathVariable Long id) {
         boolean isDeleted = discountService.deleteDiscountById(id);
+        if (!isDeleted) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+
+    @DeleteMapping("/deleteDiscountByIdAndUserId/{id}/{userId}")
+    public ResponseEntity<DiscountDtoResponse> deleteDiscountByIdAndUserId(@PathVariable Long id,@PathVariable Long userId) {
+        boolean isDeleted = discountService.deleteDiscountByIdAndUserId(id,userId);
         if (!isDeleted) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

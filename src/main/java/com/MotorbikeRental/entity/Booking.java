@@ -20,6 +20,8 @@ public class Booking {
 
     private LocalDateTime endDate;
 
+    private LocalDateTime bookingTime;
+
     private double totalPrice;
     @Column(columnDefinition = "nvarchar(255)")
     private String receiveLocation;
@@ -34,11 +36,15 @@ public class Booking {
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
+
     @ManyToOne
     @JoinColumn(name="motorbike_id")
     private Motorbike motorbike;
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
     private FeedBack feedback;
+
+    @Column(name = "is_feedback")
+    private boolean isFeedbackkk;
 
 }

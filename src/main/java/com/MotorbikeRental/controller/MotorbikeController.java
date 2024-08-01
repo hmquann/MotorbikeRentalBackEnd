@@ -8,6 +8,8 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +40,9 @@ public class MotorbikeController {
 
     @Autowired
     private MotorbikeService motorbikeService;
+
+    private static final Logger logger = LoggerFactory.getLogger(MotorbikeController.class);
+
 
     @Autowired
     private MotorbikeImageService motorbikeImageService;
@@ -73,7 +78,6 @@ public class MotorbikeController {
     @PutMapping("/toggleStatus/{id}")
     public ResponseEntity<String> toggleMotorbikeStatus(@PathVariable Long id) {
         try {
-            // Gọi phương thức từ service để thực hiện toggle trạng thái của xe máy
             motorbikeService.toggleMotorbikeStatus(id);
             return ResponseEntity.ok("Toggle motorbike status successfully.");
         } catch (Exception e) {
@@ -128,6 +132,38 @@ public class MotorbikeController {
     public List<MotorbikeDto>getMotorbikeByFilter(@RequestBody FilterMotorbikeDto filter){
         return motorbikeService.listMotorbikeByFilter(filter);
     }
+    @PostMapping("/updateMotorbike/{id}")
+    public MotorbikeDto updateMotorbike(@PathVariable Long id,@RequestBody UpdateMotorbikeDto updateMotorbikeDto){
+        return motorbikeService.updateMotorbike(id,updateMotorbikeDto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MotorbikeDto> getMotorbikeById(@PathVariable Long id) {
+        MotorbikeDto motorbikeDto = motorbikeService.getMotorbikeById(id);
+        return ResponseEntity.ok(motorbikeDto);
+    }
+
+//    @GetMapping("/getMotorbikeById/{id}")
+//    public ResponseEntity<MotorbikeDto> getMotorbikeById(@PathVariable Long id){
+//        return ResponseEntity.ok(motorbikeService.getMotorbikeById(id));
+//    }
+
+
+    @GetMapping("/existMotorbikeByUserId/{motorbikeId}/{userId}")
+    public ResponseEntity<MotorbikeDto> existMotorbikeByUserId(@PathVariable Long motorbikeId, @PathVariable Long userId) {
+        try {
+            MotorbikeDto motorbikeDto = motorbikeService.existMotorbikeByUserId(motorbikeId, userId);
+            if (motorbikeDto == null) {
+                logger.error("Motorbike not found for motorbikeId: {} and userId: {}", motorbikeId, userId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(motorbikeDto);
+        } catch (Exception e) {
+            logger.error("An error occurred while checking motorbike by user ID", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 
 }
 

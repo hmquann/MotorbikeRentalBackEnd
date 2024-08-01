@@ -27,8 +27,18 @@ public class License {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
     private LocalDate birthOfDate;
+
     private String licenseImageUrl;
+
+    @Enumerated(EnumType.STRING)
+    private LicenseType licenseType;
+
+    @Enumerated(EnumType.STRING)
     private LicenseStatus status;
-    private String licenseType;
+
+
+
+
 }

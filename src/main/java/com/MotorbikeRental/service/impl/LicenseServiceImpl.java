@@ -4,6 +4,7 @@ import com.MotorbikeRental.dto.LicenseDto;
 import com.MotorbikeRental.dto.RegisterLicenseDto;
 import com.MotorbikeRental.entity.License;
 import com.MotorbikeRental.entity.LicenseStatus;
+import com.MotorbikeRental.exception.LicenseNotFound;
 import com.MotorbikeRental.repository.LicenseRepository;
 import com.MotorbikeRental.service.LicenseService;
 import org.modelmapper.ModelMapper;
@@ -36,8 +37,12 @@ public class LicenseServiceImpl implements LicenseService {
     @Override
     public LicenseDto getLicenseByUserId(Long userId) {
            License license= licenseRepository.getLicenseByuserId(userId);
+           if(license == null){
+               throw new LicenseNotFound("You don't have license. Please upload and verify!!!");
+           }
            return mapper.map(license, LicenseDto.class);
     }
+
 
     @Override
     public Page<LicenseDto> getPendingLicenseWithPagination(int page, int pageSize, LicenseStatus status) {

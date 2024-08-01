@@ -2,10 +2,7 @@ package com.MotorbikeRental.service.impl;
 
 
 import com.MotorbikeRental.config.VNPayConfig;
-import com.MotorbikeRental.dto.MotorbikeDto;
-import com.MotorbikeRental.dto.PaymentDto;
-import com.MotorbikeRental.dto.RegisterMotorbikeDto;
-import com.MotorbikeRental.dto.UserDto;
+import com.MotorbikeRental.dto.*;
 import com.MotorbikeRental.entity.*;
 import com.MotorbikeRental.exception.UserNotFoundException;
 import com.MotorbikeRental.repository.BookingRepository;
@@ -29,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -179,15 +177,18 @@ public class UserServiceImpl implements UserService {
                 .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
                 .collect(Collectors.toList());
 
+        List<BookingDto> bookingDtos = user.getBookingList().stream()
+                .map(booking -> mapper.map(booking, BookingDto.class))
+                .collect(Collectors.toList());
+
         if (user.getId() != null) {
             Long totalTripCount = bookingRepository.countBookingsByUserId(user.getId());
             userDto.setTotalTripCount(totalTripCount);
         } else {
             userDto.setTotalTripCount(0L); // or handle appropriately if user.getId() is null
         }
-//        userDto.setTotalTripCount(totalTripCount);
 
-        // Set the motorbikes list in UserDto
+        userDto.setBookings(bookingDtos);
         userDto.setMotorbikes(motorbikeDtos);
         return userDto;
     }
@@ -226,11 +227,9 @@ public class UserServiceImpl implements UserService {
                 user.setBalance(newBalance);
                 userRepository.save(user);
             } else {
-                // Nếu balance là null, bạn có thể gán một giá trị mặc định hoặc xử lý theo cách khác
-                // Ví dụ: user.setBalance(amount);
+              
             }
         } else {
-            // Xử lý khi không tìm thấy userId
             System.out.println("User with ID " + userId + " not found.");
         }
 
@@ -254,12 +253,58 @@ public class UserServiceImpl implements UserService {
             transaction.setUsers(user);
             transaction.setAmount(amount);
             transaction.setProcessed(true);
-            transaction.setTransactionDate(new Date());
+            transaction.setTransactionDate(LocalDateTime.now());
             transaction.setType(TransactionType.WITHDRAW);
             transaction.setStatus(TransactionStatus.SUCCESS);
             transactionRepository.save(transaction);
         }
     }
+
+    @Override
+    public void subtractMoney(Long userId, BigDecimal amount) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            BigDecimal currentBalance = user.getBalance();
+            if (currentBalance.compareTo(amount) < 0) {
+                throw new Exception("Insufficient money");
+            }
+            BigDecimal newBalance = currentBalance.subtract(amount);
+            user.setBalance(newBalance);
+            userRepository.save(user);
+
+            Transaction transaction = new Transaction();
+            transaction.setUsers(user);
+            transaction.setAmount(amount);
+            transaction.setProcessed(true);
+            transaction.setTransactionDate(LocalDateTime.now());
+            transaction.setType(TransactionType.WITHDRAW);
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            transactionRepository.save(transaction);
+        }
+    }
+
+    @Override
+    public void addMoney(Long userId, BigDecimal amount) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            BigDecimal currentBalance = user.getBalance();
+            BigDecimal newBalance = currentBalance.add(amount);
+            user.setBalance(newBalance);
+            userRepository.save(user);
+
+            Transaction transaction = new Transaction();
+            transaction.setUsers(user);
+            transaction.setAmount(amount);
+            transaction.setProcessed(true);
+            transaction.setTransactionDate(LocalDateTime.now());
+            transaction.setType(TransactionType.TOP_UP);
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            transactionRepository.save(transaction);
+        }
+    }
+
     public void activeUserStatus(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setActive(true);

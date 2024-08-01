@@ -43,6 +43,7 @@ public class DiscountServiceImpl implements DiscountService {
         if(discountRepository.existsByCode(discountDto.getCode())){
             throw new ValidationException("Discount code already exists");
         }
+        DiscountValidation(discountDto);
         Discount discount = modelMapper.map(discountDto, Discount.class);
         discount.setCreatedBy(createdBy);
         discount.setExpired(false);
@@ -63,7 +64,7 @@ public class DiscountServiceImpl implements DiscountService {
     private DiscountDtoResponse convertToDto(Discount discount) {
         DiscountDtoResponse discountDto = modelMapper.map(discount, DiscountDtoResponse.class);
         if (discount.getCreatedBy() != null) {
-            UserDto createdByDto = modelMapper.map(discount.getCreatedBy(), UserDto.class);
+//            UserDto createdByDto = modelMapper.map(discount.getCreatedBy(), UserDto.class);
             discountDto.setCreatedByUserId(discount.getCreatedBy().getId());
             discountDto.setCreatedByUserName(discount.getCreatedBy().getFirstName() + " " + discount.getCreatedBy().getLastName());
         }
@@ -113,7 +114,15 @@ public class DiscountServiceImpl implements DiscountService {
         }
         return false;
     }
-
+    @Override
+    public boolean deleteDiscountByIdAndUserId(Long id, Long userId) {
+        Discount discount = discountRepository.findByDiscountIdAndUserId(id, userId);
+        if (discount != null) {
+            discountRepository.delete(discount);
+            return true;
+        }
+        return false;
+    }
     public DiscountDtoResponse  updateDiscount(Long id, DiscountDto discountDto) {
         Discount existingDiscount = discountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Discount not found"));
@@ -125,6 +134,8 @@ public class DiscountServiceImpl implements DiscountService {
             }
             existingDiscount.setCode(discountDto.getCode());
         }
+
+        DiscountValidation(discountDto);
 
         existingDiscount.setName(discountDto.getName());
         existingDiscount.setDescription(discountDto.getDescription());
@@ -152,6 +163,37 @@ public class DiscountServiceImpl implements DiscountService {
         return convertToDto(updatedDiscount);
     }
 
+    @Override
+    public List<DiscountDtoResponse> getListDiscountByUser(Long id) {
+        User user = userRepository.getUserById(id);
+        List<Discount> discountList = discountRepository.findDiscountsByUserId(id);
+        List<DiscountDtoResponse> discountDtoResponseList =  discountList.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return discountDtoResponseList;
+    }
+
+
+
+    private void DiscountValidation(DiscountDto discountDto) {
+        if (discountDto.getDiscountPercent() < 0 || discountDto.getDiscountPercent() > 100) {
+            throw new ValidationException("Discount percent must be between 0 and 100");
+        }
+        if (discountDto.getDiscountMoney() < 0 || discountDto.getMaxDiscountMoney() < 0) {
+            throw new ValidationException("Discount money must be a positive value");
+        }
+
+        if (discountDto.getStartDate() == null || discountDto.getExpirationDate() == null) {
+            throw new ValidationException("Start date and end date must not be null");
+        }
+        if (discountDto.getExpirationDate().isBefore(discountDto.getStartDate())) {
+            throw new ValidationException("End date must be after start date");
+        }
+
+        if (discountDto.getQuantity() <= 0) {
+            throw new ValidationException("Quantity must be greater than 0");
+        }
+    }
 
 
     @Transactional
