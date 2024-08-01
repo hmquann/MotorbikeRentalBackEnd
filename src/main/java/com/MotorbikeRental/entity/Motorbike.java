@@ -74,9 +74,6 @@ public class Motorbike {
     @OneToMany(mappedBy = "motorbike")
     private List<MotorbikeImage>motorbikeImages;
 
-    @Enumerated(EnumType.STRING)
-    private LicenseType licenseType;
-
     @ManyToOne
     @JoinColumn(name="model_id")
     private Model model;
