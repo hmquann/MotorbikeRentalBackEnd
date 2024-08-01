@@ -259,25 +259,11 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                     }}
 
             });
-         List<MotorbikeDto> dtoList = filter.stream()
-                 .map(this::convertToDto)
-                 .collect(Collectors.toList());
-         if(filterMotorbikeDto.getIsFiveStar()!=null){
-            List<Long>fiveStarUserIdList=motorbikeFilterRepository.getFiveStarLessor();
-             for(MotorbikeDto motorbikeDto:dtoList){
-                 if(!fiveStarUserIdList.contains(motorbikeDto.getUserId())){
-                   dtoList.remove(motorbikeDto);
-                    }
-
-                }
-            }};
-
-
-
+        };
             List<MotorbikeDto> dtoList = filter.stream()
-                    .map(motorbike -> mapper.map(motorbike, MotorbikeDto.class))
+                    .map(this::convertToDto)
                     .collect(Collectors.toList());
-            if (filterMotorbikeDto.getIsFiveStar() != null) {
+            if (filterMotorbikeDto.getIsFiveStar() ==true) {
                 List<Long> fiveStarUserIdList = motorbikeFilterRepository.getFiveStarLessor();
                 for (MotorbikeDto motorbikeDto : dtoList) {
                     if (!fiveStarUserIdList.contains(motorbikeDto.getUserId())) {

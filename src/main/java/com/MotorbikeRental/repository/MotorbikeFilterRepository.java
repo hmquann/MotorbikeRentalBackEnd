@@ -49,7 +49,6 @@ public class MotorbikeFilterRepository {
             predicates.add(criteriaBuilder.equal(brandJoin.get("brandId"), brandId));
         }
 
-
         if (modelType != null) {
             predicates.add(criteriaBuilder.equal(modelJoin.get("modelType"), modelType));
         }
@@ -90,6 +89,7 @@ public class MotorbikeFilterRepository {
         TypedQuery<Motorbike> query = entityManager.createQuery(criteriaQuery);
         return query.getResultList();
     }
+
 
     public List<Long> getFiveStarLessor() {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
