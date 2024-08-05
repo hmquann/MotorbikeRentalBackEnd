@@ -42,5 +42,7 @@ public class RegisterMotorbikeDto {
 
     private Long modelId;
 
+    private Double longitude;
 
+    private Double latitude;
 }

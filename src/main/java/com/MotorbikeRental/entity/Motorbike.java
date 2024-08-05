@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 public class Motorbike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "motorbike_id")
     private Long id;
 
     @Column(name="price_per_day")
