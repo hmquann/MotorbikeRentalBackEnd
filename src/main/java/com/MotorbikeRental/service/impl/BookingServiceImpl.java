@@ -2,15 +2,11 @@ package com.MotorbikeRental.service.impl;
 
 
 import com.MotorbikeRental.dto.*;
-import com.MotorbikeRental.entity.Booking;
-import com.MotorbikeRental.entity.BookingStatus;
-import com.MotorbikeRental.entity.Model;
+import com.MotorbikeRental.entity.*;
 
 import com.MotorbikeRental.dto.BookingRequest;
 import com.MotorbikeRental.dto.FilterBookingDto;
-import com.MotorbikeRental.entity.License;
 
-import com.MotorbikeRental.entity.Motorbike;
 import com.MotorbikeRental.repository.BookingFilterRepository;
 import com.MotorbikeRental.repository.BookingRepository;
 import com.MotorbikeRental.repository.MotorbikeRepository;
@@ -49,7 +45,7 @@ public class BookingServiceImpl implements BookingService {
 
     private final BookingFilterRepository bookingFilterRepository;
     @Override
-    public Booking saveBooking(BookingRequest bookingRequest) {
+    public String saveBooking(BookingRequest bookingRequest) {
         Booking booking = new Booking();
 
         booking.setStartDate(bookingRequest.getStartDate());
@@ -62,16 +58,25 @@ public class BookingServiceImpl implements BookingService {
         booking.setReceiveLocation(bookingRequest.getReceiveLocation());
         booking.setTotalPrice(bookingRequest.getTotalPrice());
         booking.setStatus(PENDING);
-
-        return bookingRepository.save(booking);
+        bookingRepository.save(booking);
+        return "booking done";
     }
 
 
     @Override
-    public Booking changeStatusBooking(Long id, String status) {
+    public String changeStatusBooking(Long id, String status) {
         Booking booking = bookingRepository.getById(id);
-        booking.setStatus(BookingStatus.fromString(status));
-        return bookingRepository.save(booking);
+        BookingStatus newStatus = BookingStatus.fromString(status);
+
+        booking.setStatus(newStatus);
+        bookingRepository.save(booking);
+
+        if (newStatus == BookingStatus.DONE) {
+            Motorbike motorbike = booking.getMotorbike();
+            motorbike.setTripCount(motorbike.getTripCount() + 1);
+            motorbikeRepository.save(motorbike);
+        }
+        return "Change done";
     }
 
     @Override
@@ -189,6 +194,14 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = bookingRepository.findByMotorbikeId(motorbikeId);
         return bookings.stream()
                 .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserToChat> getListUserFromBookingToChat(Long userId) {
+        List<User> userList = bookingRepository.getListUserFromBookingToChat(userId);
+        return userList.stream()
+                .map(user -> mapper.map(user, UserToChat.class))
                 .collect(Collectors.toList());
     }
 

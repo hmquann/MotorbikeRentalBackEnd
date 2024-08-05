@@ -14,4 +14,6 @@ public class FeedbackDto {
     private int rate;
     private LocalDateTime feedbackTime;
     private String renterName;
+    private Long renterId;
+
 }

@@ -25,12 +25,12 @@ public class BookingController {
     private final EmailService emailService;
 
     @RequestMapping (value="/create",method =RequestMethod.POST)
-    public ResponseEntity<Booking> createBooking(@RequestBody BookingRequest bookingRequest){
+    public ResponseEntity<String> createBooking(@RequestBody BookingRequest bookingRequest){
         return ResponseEntity.ok(bookingService.saveBooking(bookingRequest));
     }
 
     @PutMapping(value="/changeStatus/{id}/{status}")
-    public ResponseEntity<Booking> changeStatusBooking(@PathVariable Long id,@PathVariable String status){
+    public ResponseEntity<String> changeStatusBooking(@PathVariable Long id,@PathVariable String status){
         return ResponseEntity.ok(bookingService.changeStatusBooking(id,status));
     }
     @GetMapping(value="/listSchedule/{id}")
@@ -66,15 +66,21 @@ public class BookingController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/motorbike/{motorbikeId}")
-    public ResponseEntity<List<BookingRequest>> getBookingsByMotorbikeId(@PathVariable Long motorbikeId) {
-        List<BookingRequest> bookings = bookingService.findByMotorbikeId(motorbikeId);
-        return ResponseEntity.ok(bookings);
+    @GetMapping("/getListUserFromBookingToChat/{userId}")
+    public ResponseEntity<List<UserToChat>> getListUserFromBookingToChat(@PathVariable Long userId) {
+        List<UserToChat> userToChatList = bookingService.getListUserFromBookingToChat(userId);
+        return ResponseEntity.ok(userToChatList);
     }
 
 
     @RequestMapping (value="/sendEmailSuccessBooking",method =RequestMethod.POST)
     public String sendEmailSuccessBooking(@RequestBody EmailSuccessBookingDto emailSuccessBookingDto){
         return emailService.sendEmailSuccessBooking(emailSuccessBookingDto);
+    }
+
+    @GetMapping("/motorbike/{motorbikeId}")
+    public ResponseEntity<List<BookingRequest>> getBookingsByMotorbikeId(@PathVariable Long motorbikeId) {
+        List<BookingRequest> bookings = bookingService.findByMotorbikeId(motorbikeId);
+        return ResponseEntity.ok(bookings);
     }
 }

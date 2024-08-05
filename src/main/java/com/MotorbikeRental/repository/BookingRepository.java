@@ -3,13 +3,7 @@ package com.MotorbikeRental.repository;
 import com.MotorbikeRental.dto.BookingCountDto;
 import com.MotorbikeRental.dto.MonthlyRevenueDto;
 import com.MotorbikeRental.dto.TopModelDto;
-import com.MotorbikeRental.entity.Booking;
-
-import com.MotorbikeRental.entity.Model;
-
-import com.MotorbikeRental.entity.BookingStatus;
-
-import com.MotorbikeRental.entity.Motorbike;
+import com.MotorbikeRental.entity.*;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -55,7 +49,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
                                  @Param("startTime") LocalDateTime startTime,
                                  @Param("endTime") LocalDateTime endTime);
 
-    @Query("SELECT COUNT(b) FROM Booking b WHERE b.motorbike.user.id = :userId")
+    @Query("SELECT COUNT(b) FROM Booking b WHERE b.motorbike.user.id = :userId AND b.status = 'DONE'")
     Long countBookingsByUserId(@Param("userId") Long userId);
 
 
@@ -102,5 +96,11 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
             "WHERE b.status = 'DONE'")
     Long countDoneBooking();
 
-
+    @Query("SELECT DISTINCT u FROM User u " +
+            "WHERE u.id IN (" +
+            "   SELECT b.motorbike.user.id FROM Booking b WHERE b.renter.id = :userId" +
+            ") OR u.id IN (" +
+            "   SELECT b.renter.id FROM Booking b WHERE b.motorbike.user.id = :userId" +
+            ") AND u.id != :userId")
+    List<User> getListUserFromBookingToChat(@Param("userId") Long userId);
 }

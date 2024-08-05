@@ -59,6 +59,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
 
         feedbackDto.setId(feedBack.getId());
+        feedbackDto.setRenterId(booking.getRenter().getId());
         feedbackDto.setRenterName(booking.getRenter().getFirstName() + " " + booking.getRenter().getLastName());
         feedbackDto.setFeedbackTime(feedBack.getFeedbackTime());
         return modelMapper.map(feedbackDto, FeedbackDto.class);
@@ -116,7 +117,8 @@ public class FeedbackServiceImpl implements FeedbackService {
                 updatedFeedback.getFeedbackContent(),
                 updatedFeedback.getRate(),
                 updatedFeedback.getFeedbackTime(),
-                updatedFeedback.getBooking().getRenter().getFirstName() + " " + updatedFeedback.getBooking().getRenter().getLastName()
+                updatedFeedback.getBooking().getRenter().getFirstName() + " " + updatedFeedback.getBooking().getRenter().getLastName(),
+                updatedFeedback.getBooking().getRenter().getId()
         );
 
         return updatedFeedbackDto;
