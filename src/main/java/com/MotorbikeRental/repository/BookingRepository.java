@@ -49,7 +49,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
                                  @Param("startTime") LocalDateTime startTime,
                                  @Param("endTime") LocalDateTime endTime);
 
-    @Query("SELECT COUNT(b) FROM Booking b WHERE b.motorbike.user.id = :userId")
+    @Query("SELECT COUNT(b) FROM Booking b WHERE b.motorbike.user.id = :userId AND b.status = 'DONE'")
     Long countBookingsByUserId(@Param("userId") Long userId);
 
 

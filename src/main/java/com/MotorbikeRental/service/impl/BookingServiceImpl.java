@@ -66,8 +66,16 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public String changeStatusBooking(Long id, String status) {
         Booking booking = bookingRepository.getById(id);
-        booking.setStatus(BookingStatus.fromString(status));
+        BookingStatus newStatus = BookingStatus.fromString(status);
+
+        booking.setStatus(newStatus);
         bookingRepository.save(booking);
+
+        if (newStatus == BookingStatus.DONE) {
+            Motorbike motorbike = booking.getMotorbike();
+            motorbike.setTripCount(motorbike.getTripCount() + 1);
+            motorbikeRepository.save(motorbike);
+        }
         return "Change done";
     }
 
