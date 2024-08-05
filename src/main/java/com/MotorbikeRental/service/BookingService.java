@@ -19,7 +19,7 @@ import java.util.Map;
 @Service
 public interface BookingService {
 
-    Booking saveBooking(BookingRequest bookingRequest);
+    String saveBooking(BookingRequest bookingRequest);
 
     List<BookingDto> getBookingListByMotorbikeId(Long motorbikeId);
     List<TopModelDto> getTop5ModelsInCurrentMonth();
@@ -29,7 +29,7 @@ public interface BookingService {
     Map<String,Long>mainLocationPercentage();
     void markBusyDays(LocalDateTime startDate, LocalDateTime endDate,Long motorbikeId);
 
-    Booking changeStatusBooking(Long id,String status);
+    String changeStatusBooking(Long id,String status);
 
 //    ResponseEntity<List<Booking>> getBookingListByMotorbikeId(Long motorbikeId);
 
@@ -43,5 +43,7 @@ public interface BookingService {
     boolean hasFeedbackBeenSent(Long bookingId);
 
     List<BookingRequest> findByMotorbikeId(Long motorbikeId);
+
+    List<UserToChat> getListUserFromBookingToChat(Long userId);
 
 }
