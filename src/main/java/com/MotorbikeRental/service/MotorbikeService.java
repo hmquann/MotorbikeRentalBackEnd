@@ -43,5 +43,6 @@ public interface MotorbikeService {
     MotorbikeDto existMotorbikeByUserId(Long motorbikeId, Long userId);
     MotorbikeDto updateMotorbike(Long id, UpdateMotorbikeDto updateMotorbikeDto);
     MotorbikeDto getMotorbikeById(Long id);
+    List<MotorbikeDto> getMotorbikeByUserId(Long userId);
 
 }
