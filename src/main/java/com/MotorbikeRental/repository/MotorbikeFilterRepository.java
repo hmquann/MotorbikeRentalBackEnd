@@ -40,7 +40,7 @@ public class MotorbikeFilterRepository {
         Join<Model, Brand> brandJoin = modelJoin.join("brand", JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
-
+        predicates.add(criteriaBuilder.equal(root.get("status"),MotorbikeStatus.ACTIVE));
         if (address != null && !address.isEmpty()) {
             predicates.add(criteriaBuilder.like(root.get("motorbikeAddress"), "%" + address + "%"));
         }
@@ -76,7 +76,6 @@ public class MotorbikeFilterRepository {
             );
 
             subquery.where(bookingOverlapPredicate);
-
             Predicate noBookingDuringTimePredicate = criteriaBuilder.not(
                     root.get("id").in(subquery)
             );
@@ -92,37 +91,37 @@ public class MotorbikeFilterRepository {
 
 
     public List<Long> getFiveStarLessor() {
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
 
-            // Root for Feedback
-            Root<FeedBack> feedbackRoot = criteriaQuery.from(FeedBack.class);
+        // Root for Feedback
+        Root<FeedBack> feedbackRoot = criteriaQuery.from(FeedBack.class);
 
-            // Join with Booking
-            Join<FeedBack, Booking> bookingJoin = feedbackRoot.join("booking");
+        // Join with Booking
+        Join<FeedBack, Booking> bookingJoin = feedbackRoot.join("booking");
 
-            // Join with Motorbike through Booking
-            Join<Booking, Motorbike> motorbikeJoin = bookingJoin.join("motorbike");
+        // Join with Motorbike through Booking
+        Join<Booking, Motorbike> motorbikeJoin = bookingJoin.join("motorbike");
 
-            // Select lessorId and average rate
-            criteriaQuery.multiselect(
-                            motorbikeJoin.get("user").get("id").alias("lessorId"),
-                            criteriaBuilder.avg(feedbackRoot.get("rate")).alias("avgRate")
-                    )
-                    .groupBy(motorbikeJoin.get("user").get("id"));
+        // Select lessorId and average rate
+        criteriaQuery.multiselect(
+                        motorbikeJoin.get("user").get("id").alias("lessorId"),
+                        criteriaBuilder.avg(feedbackRoot.get("rate")).alias("avgRate")
+                )
+                .groupBy(motorbikeJoin.get("user").get("id"));
 
-            // Execute query
-            TypedQuery<Tuple> query = entityManager.createQuery(criteriaQuery);
-            List<Tuple> result = query.getResultList();
+        // Execute query
+        TypedQuery<Tuple> query = entityManager.createQuery(criteriaQuery);
+        List<Tuple> result = query.getResultList();
 
-            // Filter results where ceil(avgRate) = 5
-            List<Long> lessorIds = result.stream()
-                    .filter(tuple -> Math.round((Double) tuple.get("avgRate")) == 5.0)
-                    .map(tuple -> (Long) tuple.get("lessorId"))
-                    .collect(Collectors.toList());
-            return lessorIds;
-        }
-
-
-
+        // Filter results where ceil(avgRate) = 5
+        List<Long> lessorIds = result.stream()
+                .filter(tuple -> Math.round((Double) tuple.get("avgRate")) == 5.0)
+                .map(tuple -> (Long) tuple.get("lessorId"))
+                .collect(Collectors.toList());
+        return lessorIds;
     }
+
+
+
+}

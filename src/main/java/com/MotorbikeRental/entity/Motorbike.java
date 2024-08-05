@@ -74,10 +74,8 @@ public class Motorbike {
     @OneToMany(mappedBy = "motorbike")
     private List<MotorbikeImage>motorbikeImages;
 
-//    @JsonManagedReference
-//    public User user(){
-//        return user;
-//    }
+    @Enumerated(EnumType.STRING)
+    private LicenseType licenseType;
 
     @ManyToOne
     @JoinColumn(name="model_id")
@@ -87,4 +85,8 @@ public class Motorbike {
     @OneToMany(mappedBy = "motorbike")
     @JsonBackReference
     private List<Booking> bookingList;
+
+    @OneToMany(mappedBy = "motorbike", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<Schedule> schedules = new ArrayList<>();
 }

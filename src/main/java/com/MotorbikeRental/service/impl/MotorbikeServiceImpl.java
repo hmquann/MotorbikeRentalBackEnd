@@ -178,6 +178,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
     @Override
     public Motorbike registerMotorbike(String accessToken,RegisterMotorbikeDto registerMotorbikeDto) {
+        System.out.println(registerMotorbikeDto.getMotorbikeAddress()+registerMotorbikeDto.getLatitude()+registerMotorbikeDto.getLongitude());
         if(motorbikeRepository.existsByMotorbikePlate(registerMotorbikeDto.getMotorbikePlate())){
             throw  new ExistPlateException("The plate is exist in the system");
         }
@@ -203,7 +204,8 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         motorbike.setYearOfManuFacture(registerMotorbikeDto.getYearOfManufacture());
         motorbike.setStatus(MotorbikeStatus.PENDING);
         motorbike.setTripCount(Long.valueOf(0));
-
+        motorbike.setLatitude(registerMotorbikeDto.getLatitude());
+        motorbike.setLongitude(registerMotorbikeDto.getLongitude());
         Motorbike savedMotorbike=motorbikeRepository.save(motorbike);
         return savedMotorbike;
     }
@@ -263,7 +265,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
             List<MotorbikeDto> dtoList = filter.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
-            if (filterMotorbikeDto.getIsFiveStar() ==true) {
+            if (filterMotorbikeDto.getIsFiveStar()!=null) {
                 List<Long> fiveStarUserIdList = motorbikeFilterRepository.getFiveStarLessor();
                 for (MotorbikeDto motorbikeDto : dtoList) {
                     if (!fiveStarUserIdList.contains(motorbikeDto.getUserId())) {

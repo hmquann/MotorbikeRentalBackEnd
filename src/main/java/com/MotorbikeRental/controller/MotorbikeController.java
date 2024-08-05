@@ -102,9 +102,6 @@ public class MotorbikeController {
         Motorbike approvedMotorbike = motorbikeService.rejectMotorbike(id);
         return ResponseEntity.ok(approvedMotorbike);
     }
-
-
-
     @RequestMapping (value="/register",method =RequestMethod.POST)
     public ResponseEntity<Motorbike> registerMotorbike( @RequestHeader("Authorization") String accessToken,@ModelAttribute RegisterMotorbikeDto registerMotorbikeDto) {
         System.out.println(registerMotorbikeDto);
