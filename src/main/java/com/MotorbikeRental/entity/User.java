@@ -54,6 +54,14 @@ public class User implements UserDetails {
     @ToString.Exclude
     private List<Transaction> transactions;
 
+//    @OneToMany(mappedBy = "user1")
+//    @ToString.Exclude
+//    private List<Chatting> chatsAsUser1;
+//
+//    @OneToMany(mappedBy = "user2")
+//    @ToString.Exclude
+//    private List<Chatting> chatsAsUser2;
+
     @OneToMany(mappedBy = "createdBy")
     @JsonBackReference
     private List<Discount> createdDiscounts;
