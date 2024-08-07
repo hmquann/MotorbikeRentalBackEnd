@@ -81,6 +81,13 @@ public class UserServiceImpl implements UserService {
         User user= userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
         return convertToDto(user);
+}
+
+    @Override
+    public UserDto getAdmin() {
+        User user= userRepository.getAdmin()
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        return convertToDto(user);
     }
 
     @Override
@@ -321,5 +328,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getUserNameByEmail(String email) {
         return userRepository.getUserNameByEmail(email);
+    }
+
+    @Override
+    public UserDto updateUserNotifications(Long userId, Boolean systemNoti, Boolean emailNoti, Boolean minimizeNoti) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            // Chỉ cập nhật thuộc tính nào có giá trị khác null
+            if (systemNoti != null) {
+                user.setSystemNoti(systemNoti);
+            }
+            if (emailNoti != null) {
+                user.setEmailNoti(emailNoti);
+            }
+            if (minimizeNoti != null) {
+                user.setMinimizeNoti(minimizeNoti);
+            }
+            User user1 = userRepository.save(user);
+            return  mapper.map(user, UserDto.class);
+        } else {
+            throw new RuntimeException("User not found with id: " + userId);
+        }
     }
 }

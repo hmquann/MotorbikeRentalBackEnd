@@ -22,6 +22,12 @@ public class UserDto {
 
     private boolean gender;
 
+    private boolean systemNoti;
+
+    private boolean emailNoti;
+
+    private boolean minimizeNoti;
+
     private BigDecimal balance;
 
     private boolean isActive;

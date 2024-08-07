@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -203,6 +204,23 @@ public class BookingServiceImpl implements BookingService {
         return userList.stream()
                 .map(user -> mapper.map(user, UserToChat.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LocalDate> getDatesByMotorbikeId(Long motorbikeId) {
+        List<Booking> bookings = bookingRepository.findByMotorbikeId(motorbikeId);
+        List<LocalDate> dates = new ArrayList<>();
+
+        for (Booking booking : bookings) {
+            LocalDate start = booking.getStartDate().toLocalDate();
+            LocalDate end = booking.getEndDate().toLocalDate();
+
+            while (!start.isAfter(end)) {
+                dates.add(start);
+                start = start.plusDays(1);
+            }
+        }
+        return dates;
     }
 
 }
