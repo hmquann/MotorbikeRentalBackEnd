@@ -37,9 +37,11 @@ public class PaymentController {
     }
 
     @PostMapping("/subtract")
-    public ResponseEntity<String> subtract(@RequestParam Long id, @RequestParam BigDecimal amount) {
+    public ResponseEntity<String> subtract(@RequestParam Long id, @RequestParam BigDecimal amount,
+                                           @RequestParam String motorbikeName,
+                                           @RequestParam String motorbikePlate) {
         try {
-            userService.subtractMoney(id, amount);
+            userService.subtractMoney(id, amount, motorbikeName, motorbikePlate);
             return ResponseEntity.ok("Subtraction successful");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Subtraction failed: " + e.getMessage());
@@ -47,9 +49,11 @@ public class PaymentController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestParam Long id, @RequestParam BigDecimal amount) {
+    public ResponseEntity<String> add(@RequestParam Long id, @RequestParam BigDecimal amount,
+                                      @RequestParam String motorbikeName,
+                                      @RequestParam String motorbikePlate) {
         try {
-            userService.addMoney(id, amount);
+            userService.addMoney(id, amount, motorbikeName, motorbikePlate);
             return ResponseEntity.ok("Addition successful");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Addition failed: " + e.getMessage());
