@@ -14,7 +14,8 @@ public class FilterMotorbikeDto implements Serializable {
     LocalDateTime startDate;
 
     LocalDateTime endDate;
-    String address;
+    Double longitude;
+    Double latitude;
     Boolean isFiveStar;
     Long brandId;
     FuelType fuelType;

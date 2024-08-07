@@ -17,4 +17,6 @@ public class BookingRequest {
     private String receiveLocation;
     private BookingStatus status;
     private boolean isFeedbackkk;
+    private Double longitude;
+    private Double latitude;
 }

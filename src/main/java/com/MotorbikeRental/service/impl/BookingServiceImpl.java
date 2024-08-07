@@ -61,6 +61,8 @@ public class BookingServiceImpl implements BookingService {
         booking.setMotorbike(motorbike);
         booking.setReceiveLocation(bookingRequest.getReceiveLocation());
         booking.setTotalPrice(bookingRequest.getTotalPrice());
+        booking.setLongitude(booking.getLongitude());
+        booking.setLatitude(booking.getLatitude());
         booking.setStatus(PENDING);
 
         return bookingRepository.save(booking);

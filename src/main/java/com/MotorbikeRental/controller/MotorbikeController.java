@@ -125,9 +125,9 @@ public class MotorbikeController {
     public List<MotorbikeDto> getAllActiveMotorbike(){
         return motorbikeService.getAllMotorbikeByStatus(MotorbikeStatus.ACTIVE);
     }
-    @PostMapping("/filter")
-    public List<MotorbikeDto>getMotorbikeByFilter(@RequestBody FilterMotorbikeDto filter){
-        return motorbikeService.listMotorbikeByFilter(filter);
+    @PostMapping(value="/filter/{page}/{pageSize}", consumes = "application/json", produces = "application/json")
+    public Page<MotorbikeDto>getMotorbikeByFilter(@RequestBody FilterMotorbikeDto filter,@PathVariable int page,@PathVariable int pageSize){
+        return motorbikeService.listMotorbikeByFilter(filter,page,pageSize);
     }
     @PostMapping("/updateMotorbike/{id}")
     public MotorbikeDto updateMotorbike(@PathVariable Long id,@RequestBody UpdateMotorbikeDto updateMotorbikeDto){
