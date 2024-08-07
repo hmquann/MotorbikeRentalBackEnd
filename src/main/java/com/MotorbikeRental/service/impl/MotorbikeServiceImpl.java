@@ -2,6 +2,7 @@
 package com.MotorbikeRental.service.impl;
 
 
+import com.MotorbikeRental.algorithm.Haversine;
 import com.MotorbikeRental.dto.*;
 import com.MotorbikeRental.dto.ModelDto;
 import com.MotorbikeRental.dto.RegisterMotorbikeDto;
@@ -52,11 +53,11 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     private UserRepository userRepository;
     @Autowired
     private final MotorbikeFilterRepository motorbikeFilterRepository;
+
     private final UserService userService;
 
     private final BookingRepository bookingRepository;
-
-
+    private  final Haversine haversine;
     @Override
     public Page<MotorbikeDto> getAllMotorbike(int page, int pageSize, Long userId, List<String> roles,String status) {
         Pageable pageable = PageRequest.of(page, pageSize);
@@ -211,70 +212,45 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     }
 
     @Override
-    public List<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto) {
+    public Page<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
         List<Motorbike> filter = motorbikeFilterRepository.listMotorbikeByFilter(
                 filterMotorbikeDto.getStartDate(),
                 filterMotorbikeDto.getEndDate(),
-                filterMotorbikeDto.getAddress(),
                 filterMotorbikeDto.getBrandId(),
                 filterMotorbikeDto.getModelType(),
                 filterMotorbikeDto.getIsDelivery(),
                 filterMotorbikeDto.getMinPrice(),
                 filterMotorbikeDto.getMaxPrice()
         );
-        if (filter.size() < 5) {
-            String district = "";
-            String province = "";
-            if (filterMotorbikeDto.getAddress() != null && !filterMotorbikeDto.getAddress().isEmpty()) {
-                int commaIndex = filterMotorbikeDto.getAddress().indexOf(",");
-                if (commaIndex != -1) {
-                    district = filterMotorbikeDto.getAddress().substring(0, commaIndex).trim();
-                    province = filterMotorbikeDto.getAddress().substring(1, commaIndex).trim();
-                }
-            }
 
-            filter = motorbikeFilterRepository.listMotorbikeByFilter(
-                    filterMotorbikeDto.getStartDate(),
-                    filterMotorbikeDto.getEndDate(),
-                    province,
-                    filterMotorbikeDto.getBrandId(),
-                    filterMotorbikeDto.getModelType(),
-                    filterMotorbikeDto.getIsDelivery(),
-                    filterMotorbikeDto.getMinPrice(),
-                    filterMotorbikeDto.getMaxPrice()
-            );
-            final String selectedDistrict = district;
-            Collections.sort(filter, new Comparator<Motorbike>() {
-                @Override
-                public int compare(Motorbike m1, Motorbike m2) {
-                    boolean m1ContainsDistrict = m1.getMotorbikeAddress().contains(selectedDistrict);
-                    boolean m2ContainsDistrict = m2.getMotorbikeAddress().contains(selectedDistrict);
-
-                    // Nếu m1 chứa district mà m2 không chứa, m1 sẽ được đặt lên trước
-                    if (m1ContainsDistrict && !m2ContainsDistrict) {
-                        return -1;
-                    } else if (!m1ContainsDistrict && m2ContainsDistrict) {
-                        return 1;
-                    } else {
-                        return 0;
-
-                    }}
-
-            });
-        };
             List<MotorbikeDto> dtoList = filter.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
-            if (filterMotorbikeDto.getIsFiveStar()!=null) {
-                List<Long> fiveStarUserIdList = motorbikeFilterRepository.getFiveStarLessor();
-                for (MotorbikeDto motorbikeDto : dtoList) {
+        if (!dtoList.isEmpty()) {
+            Iterator<MotorbikeDto> iterator = dtoList.iterator();
+            while (iterator.hasNext()) {
+                MotorbikeDto motorbikeDto = iterator.next();
+
+                if (filterMotorbikeDto.getIsFiveStar() != null && filterMotorbikeDto.getIsFiveStar()) {
+                    List<Long> fiveStarUserIdList = motorbikeFilterRepository.getFiveStarLessor();
                     if (!fiveStarUserIdList.contains(motorbikeDto.getUserId())) {
-                        dtoList.remove(motorbikeDto);
+                        iterator.remove(); // Sử dụng iterator.remove() để xóa phần tử an toàn
+                        continue; // Bỏ qua kiểm tra tiếp theo nếu phần tử đã bị xóa
+                    }
+                }
+
+                if (filterMotorbikeDto.getLongitude() != null && filterMotorbikeDto.getLatitude() != null &&
+                        motorbikeDto.getLatitude() != null && motorbikeDto.getLongitude() != null) {
+                    if (haversine.CalculateTheDistanceAsTheCrowFlies(
+                            motorbikeDto.getLatitude(), motorbikeDto.getLongitude(),
+                            filterMotorbikeDto.getLatitude(), filterMotorbikeDto.getLongitude()) > 1000000) {
+                        iterator.remove(); // Sử dụng iterator.remove() để xóa phần tử an toàn
                     }
                 }
             }
-
-            return dtoList;
+        }
+            return  new PageImpl<>(dtoList, pageable, dtoList.size());
     }
 
 

@@ -31,7 +31,7 @@ public interface MotorbikeService {
     public List<MotorbikeDto>getAllMotorbikeByStatus(MotorbikeStatus status);
 
     public Motorbike registerMotorbike(String accessToken,RegisterMotorbikeDto registerMotorbikeDto);
-    public List<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto);
+    public Page<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto, int page, int pageSize);
 
     public Motorbike checkExistPlate(String motorbikePlate);
 

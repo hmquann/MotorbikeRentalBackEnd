@@ -24,7 +24,6 @@ public class MotorbikeFilterRepository {
     public List<Motorbike> listMotorbikeByFilter(
             LocalDateTime startDate,
             LocalDateTime endDate,
-            String address,
             Long brandId,
             ModelType modelType,
             Boolean isDelivery,
@@ -35,15 +34,11 @@ public class MotorbikeFilterRepository {
         CriteriaQuery<Motorbike> criteriaQuery = criteriaBuilder.createQuery(Motorbike.class);
         Root<Motorbike> root = criteriaQuery.from(Motorbike.class);
 
-        Join<Motorbike, Booking> bookingJoin = root.join("bookingList", JoinType.LEFT);
         Join<Motorbike, Model> modelJoin = root.join("model", JoinType.LEFT);
         Join<Model, Brand> brandJoin = modelJoin.join("brand", JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(criteriaBuilder.equal(root.get("status"),MotorbikeStatus.ACTIVE));
-        if (address != null && !address.isEmpty()) {
-            predicates.add(criteriaBuilder.like(root.get("motorbikeAddress"), "%" + address + "%"));
-        }
+        predicates.add(criteriaBuilder.equal(root.get("status"), MotorbikeStatus.ACTIVE));
 
         if (brandId != null) {
             predicates.add(criteriaBuilder.equal(brandJoin.get("brandId"), brandId));
@@ -68,11 +63,12 @@ public class MotorbikeFilterRepository {
         if (startDate != null && endDate != null) {
             Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
             Root<Booking> bookingRoot = subquery.from(Booking.class);
+
             subquery.select(bookingRoot.get("motorbike").get("id"));
 
-            Predicate bookingOverlapPredicate = criteriaBuilder.and(
-                    criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("startDate"), endDate),
-                    criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("endDate"), startDate)
+            Predicate bookingOverlapPredicate = criteriaBuilder.or(
+                    criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("endDate"), endDate),
+                    criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("startDate"), startDate)
             );
 
             subquery.where(bookingOverlapPredicate);
@@ -88,6 +84,7 @@ public class MotorbikeFilterRepository {
         TypedQuery<Motorbike> query = entityManager.createQuery(criteriaQuery);
         return query.getResultList();
     }
+
 
 
     public List<Long> getFiveStarLessor() {
