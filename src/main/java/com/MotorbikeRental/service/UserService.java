@@ -14,6 +14,7 @@ import java.util.List;
 public interface UserService {
     UserDetailsService userDetailsService();
     UserDto getUserDtoById(Long id);
+    UserDto getAdmin();
     User getUserById(Long id);
     UserDto getUserDtoByEmail(String email);
     User getUserByEmail(String email);
@@ -42,5 +43,5 @@ public interface UserService {
 
     String getUserNameByEmail(String email);
 
-
+    UserDto updateUserNotifications(Long userId, Boolean systemNoti, Boolean emailNoti, Boolean minimizeNoti);
 }

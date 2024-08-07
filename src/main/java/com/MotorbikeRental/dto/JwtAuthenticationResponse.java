@@ -32,6 +32,12 @@ public class JwtAuthenticationResponse {
     private String userToken;
 
     private boolean isGender;
+    
+    private boolean systemNoti;
+
+    private boolean emailNoti;
+
+    private boolean minimizeNoti;
 
     private Long totalTripCount;
 

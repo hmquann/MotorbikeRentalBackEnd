@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,5 +83,12 @@ public class BookingController {
     public ResponseEntity<List<BookingRequest>> getBookingsByMotorbikeId(@PathVariable Long motorbikeId) {
         List<BookingRequest> bookings = bookingService.findByMotorbikeId(motorbikeId);
         return ResponseEntity.ok(bookings);
+    }
+
+
+    @GetMapping("/dates/motorbike/{motorbikeId}")
+    public ResponseEntity<List<LocalDate>> getDatesByMotorbikeId(@PathVariable Long motorbikeId) {
+        List<LocalDate> dates = bookingService.getDatesByMotorbikeId(motorbikeId);
+        return ResponseEntity.ok(dates);
     }
 }

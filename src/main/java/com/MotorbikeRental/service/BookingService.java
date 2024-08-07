@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -45,5 +46,7 @@ public interface BookingService {
     List<BookingRequest> findByMotorbikeId(Long motorbikeId);
 
     List<UserToChat> getListUserFromBookingToChat(Long userId);
+
+    List<LocalDate> getDatesByMotorbikeId(Long motorbikeId);
 
 }
