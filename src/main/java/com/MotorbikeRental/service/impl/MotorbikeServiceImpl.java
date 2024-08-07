@@ -326,5 +326,13 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         }
 
 
+        public List<MotorbikeDto> getMotorbikeByUserId(Long userId) {
+             List<Motorbike> motorbikeList = motorbikeRepository.findByUserId(userId);
+            List<MotorbikeDto> dtoList = motorbikeList.stream()
+                    .map(this::convertToDto)
+                    .collect(Collectors.toList());
+             return dtoList;
+        }
+
     }
 

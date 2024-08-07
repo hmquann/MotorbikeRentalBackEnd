@@ -10,9 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class FilterMotorbikeDto implements Serializable {
-
     LocalDateTime startDate;
-
     LocalDateTime endDate;
     Double longitude;
     Double latitude;

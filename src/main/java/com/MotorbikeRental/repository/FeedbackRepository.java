@@ -14,6 +14,6 @@ public interface FeedbackRepository extends JpaRepository<FeedBack, Long> {
     @Query("SELECT COUNT(f) > 0 FROM FeedBack f WHERE f.booking.bookingId = :bookingId")
     boolean existsByBookingId(Long bookingId);
 
-    @Query("SELECT new com.MotorbikeRental.dto.FeedbackDto(f.id, f.booking.bookingId, f.feedbackContent, f.rate, f.feedbackTime,CONCAT(r.firstName, ' ' ,r.lastName)) FROM FeedBack f JOIN f.booking b JOIN b.motorbike m JOIN b.renter r WHERE m.id = :motorbikeId")
+    @Query("SELECT new com.MotorbikeRental.dto.FeedbackDto(f.id, f.booking.bookingId, f.feedbackContent, f.rate, f.feedbackTime,CONCAT(r.firstName, ' ' ,r.lastName),r.id) FROM FeedBack f JOIN f.booking b JOIN b.motorbike m JOIN b.renter r WHERE m.id = :motorbikeId")
     List<FeedbackDto> findByMotorbikeId(@Param("motorbikeId") Long motorbikeId);
 }

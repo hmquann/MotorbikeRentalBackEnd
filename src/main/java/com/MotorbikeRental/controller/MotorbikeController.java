@@ -160,6 +160,10 @@ public class MotorbikeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    @GetMapping("/{id}/motorbikes")
+    public List<MotorbikeDto> getUserMotorbikes(@PathVariable Long id) {
+        return motorbikeService.getMotorbikeByUserId(id);
+    }
 
 
 }

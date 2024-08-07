@@ -60,4 +60,6 @@ public interface MotorbikeRepository extends JpaRepository<Motorbike, Long>{
     @Query("SELECT COUNT(m)from Motorbike  m where m.user.id=:id")
     Long countMotorbikeByUser(Long id);
 
+    List<Motorbike> findByUserId(Long userId);
+
 }
