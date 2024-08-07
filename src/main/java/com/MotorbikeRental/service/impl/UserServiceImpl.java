@@ -261,7 +261,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void subtractMoney(Long userId, BigDecimal amount) throws Exception {
+    public void subtractMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -280,12 +280,13 @@ public class UserServiceImpl implements UserService {
             transaction.setTransactionDate(LocalDateTime.now());
             transaction.setType(TransactionType.DEPOSIT);
             transaction.setStatus(TransactionStatus.SUCCESS);
+            transaction.setDescription("Đặt cọc xe "+ motorbikeName + '(' + motorbikePlate + ')');
             transactionRepository.save(transaction);
         }
     }
 
     @Override
-    public void addMoney(Long userId, BigDecimal amount) throws Exception {
+    public void addMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -301,6 +302,7 @@ public class UserServiceImpl implements UserService {
             transaction.setTransactionDate(LocalDateTime.now());
             transaction.setType(TransactionType.DEPOSIT_RECEIVE);
             transaction.setStatus(TransactionStatus.SUCCESS);
+            transaction.setDescription("Nhận đặt cọc xe "+ motorbikeName + '(' + motorbikePlate + ')');
             transactionRepository.save(transaction);
         }
     }
