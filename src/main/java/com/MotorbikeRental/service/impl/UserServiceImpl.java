@@ -26,7 +26,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -256,6 +258,8 @@ public class UserServiceImpl implements UserService {
             user.setBalance(newBalance);
             userRepository.save(user);
 
+            String transactionCode = generateTransactionCode(userId);
+
             Transaction transaction = new Transaction();
             transaction.setUsers(user);
             transaction.setAmount(amount);
@@ -263,12 +267,13 @@ public class UserServiceImpl implements UserService {
             transaction.setTransactionDate(LocalDateTime.now());
             transaction.setType(TransactionType.WITHDRAW);
             transaction.setStatus(TransactionStatus.SUCCESS);
+            transaction.setDescription("Rút tiền khỏi ví "+ "- Mã giao dịch: " + transactionCode);
             transactionRepository.save(transaction);
         }
     }
 
     @Override
-    public void subtractMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception {
+    public void subtractMoney(Long userId, Long receiverId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -280,6 +285,8 @@ public class UserServiceImpl implements UserService {
             user.setBalance(newBalance);
             userRepository.save(user);
 
+            String transactionCode = generateTransactionCode(userId);
+
             Transaction transaction = new Transaction();
             transaction.setUsers(user);
             transaction.setAmount(amount);
@@ -287,13 +294,16 @@ public class UserServiceImpl implements UserService {
             transaction.setTransactionDate(LocalDateTime.now());
             transaction.setType(TransactionType.DEPOSIT);
             transaction.setStatus(TransactionStatus.SUCCESS);
-            transaction.setDescription("Đặt cọc xe "+ motorbikeName + '(' + motorbikePlate + ')');
+            transaction.setDescription("Đặt cọc xe " + motorbikeName + '(' + motorbikePlate + ')' + " - Mã giao dịch: " + transactionCode);
             transactionRepository.save(transaction);
+
+
+            addMoney(receiverId, amount, motorbikeName, motorbikePlate, transactionCode);
         }
     }
 
     @Override
-    public void addMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception {
+    public void addMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate, String transactionCode) throws Exception {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -309,7 +319,7 @@ public class UserServiceImpl implements UserService {
             transaction.setTransactionDate(LocalDateTime.now());
             transaction.setType(TransactionType.DEPOSIT_RECEIVE);
             transaction.setStatus(TransactionStatus.SUCCESS);
-            transaction.setDescription("Nhận đặt cọc xe "+ motorbikeName + '(' + motorbikePlate + ')');
+            transaction.setDescription("Nhận đặt cọc xe " + motorbikeName + '(' + motorbikePlate + ')' + " - Mã giao dịch: " + transactionCode);
             transactionRepository.save(transaction);
         }
     }
@@ -333,6 +343,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String generateTransactionCode(Long userId) {
+        // Get the current date in yyyyMMdd format
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String currentDate = LocalDate.now().format(dateFormatter);
+
+        // Combine date, user ID, and a random UUID for uniqueness
+        String uniquePart = UUID.randomUUID().toString().substring(0, 8); // Take first 8 characters for brevity
+        return currentDate + userId  + uniquePart;
+     }
+  
     public UserDto updateUserNotifications(Long userId, Boolean systemNoti, Boolean emailNoti, Boolean minimizeNoti) {
         Optional<User> optionalUser = userRepository.findById(userId);
 
@@ -354,5 +374,8 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new RuntimeException("User not found with id: " + userId);
         }
-    }
 }
+
+}
+
+
