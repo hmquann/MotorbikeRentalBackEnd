@@ -1,5 +1,6 @@
 package com.MotorbikeRental.controller;
 
+import com.MotorbikeRental.dto.NotificationChangeRequest;
 import com.MotorbikeRental.dto.UserDto;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.exception.UserNotFoundException;
@@ -52,6 +53,13 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
+    @GetMapping("/getAdmin")
+    public ResponseEntity<?> getAdmin(){
+        UserDto userDto = userService.getAdmin();
+        if(userDto == null) throw new UserNotFoundException("User not found");
+        return ResponseEntity.ok(userDto);
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id,@RequestBody User user){
         User updatedUser = userService.updateUser(id,user);
@@ -81,6 +89,16 @@ public class UserController {
         } catch (UserNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PutMapping("/changeNotifications/{userId}")
+    public ResponseEntity<UserDto> updateUserNotifications(@PathVariable Long userId,
+                                                        @RequestBody NotificationChangeRequest request) {
+        UserDto updatedUser = userService.updateUserNotifications(userId,
+                request.getSystemNoti(),
+                request.getEmailNoti(),
+                request.getMinimizeNoti());
+        return ResponseEntity.ok(updatedUser);
     }
 
 }

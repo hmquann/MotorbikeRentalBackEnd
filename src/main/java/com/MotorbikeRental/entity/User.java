@@ -38,6 +38,9 @@ public class User implements UserDetails {
 
     private String password;
     private boolean gender;
+    private boolean systemNoti;
+    private boolean emailNoti;
+    private boolean minimizeNoti;
 
     @Column(name = "status")
     private boolean isActive;

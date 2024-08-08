@@ -61,7 +61,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPhone(signupRequest.getPhone());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setGender(signupRequest.isGender());
-
+        user.setEmailNoti(true);
+        user.setSystemNoti(true);
+        user.setMinimizeNoti(true);
         user.setBalance(BigDecimal.valueOf(0.00));
         user.setActive(false);
 
@@ -124,6 +126,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         jwtAuthenticationResponse.setFirstName(user.getFirstName());
         jwtAuthenticationResponse.setLastName(user.getLastName());
         jwtAuthenticationResponse.setGender(user.isGender());
+        jwtAuthenticationResponse.setEmailNoti(user.isEmailNoti());
+        jwtAuthenticationResponse.setSystemNoti(user.isSystemNoti());
+        jwtAuthenticationResponse.setMinimizeNoti(user.isMinimizeNoti());
         jwtAuthenticationResponse.setEmail(user.getEmail());
         jwtAuthenticationResponse.setPhone(user.getPhone());
         jwtAuthenticationResponse.setTotalTripCount(userDto.getTotalTripCount());
