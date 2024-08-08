@@ -66,7 +66,7 @@ public class MotorbikeFilterRepository {
 
             subquery.select(bookingRoot.get("motorbike").get("id"));
 
-            Predicate bookingOverlapPredicate = criteriaBuilder.or(
+            Predicate bookingOverlapPredicate = criteriaBuilder.and(
                     criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("endDate"), endDate),
                     criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("startDate"), startDate)
             );

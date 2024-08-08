@@ -27,9 +27,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-
+    @Column(columnDefinition = "nvarchar(255)")
     private String firstName;
-
+    @Column(columnDefinition = "nvarchar(255)")
     private String lastName;
 
     private String email;
