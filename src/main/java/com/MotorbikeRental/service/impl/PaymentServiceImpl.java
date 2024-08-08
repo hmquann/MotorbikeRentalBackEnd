@@ -102,6 +102,7 @@ public class PaymentServiceImpl implements PaymentService {
         transaction.setProcessed(false);
         transaction.setTransactionDate(LocalDateTime.now());
         transaction.setType(TransactionType.TOP_UP);
+        transaction.setDescription("Nạp tiền vào ví " + "- Mã giao dịch: " + vnp_TxnRef);
         transactionRepository.save(transaction);
 
 
