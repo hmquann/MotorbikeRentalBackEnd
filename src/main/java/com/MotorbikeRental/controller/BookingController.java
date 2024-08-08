@@ -79,6 +79,71 @@ public class BookingController {
         return emailService.sendEmailSuccessBooking(emailSuccessBookingDto);
     }
 
+    @RequestMapping (value="/sendEmailSuccessBookingForLessor",method =RequestMethod.POST)
+    public String sendEmailSuccessBookingForLessor(@RequestBody EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto){
+        return emailService.sendEmailSuccessBookingForLessor(emailSuccessBookingForLessorDto);
+    }
+
+    @RequestMapping (value="/sendEmailCancelBooking",method =RequestMethod.POST)
+    public String sendEmailCancelBooking(@RequestBody EmailCancelBookingDto emailCancelBookingDto){
+        return emailService.sendEmailCancleBooking(emailCancelBookingDto);
+    }
+
+    @RequestMapping (value="/sendEmailCancelBookingForLessor",method =RequestMethod.POST)
+    public String sendEmailCancelBookingForLessor(@RequestBody EmailCancelBookingForLessorDto emailCancelBookingForLessorDto){
+        return emailService.sendEmailCancleBookingForLessor(emailCancelBookingForLessorDto);
+    }
+
+    @RequestMapping (value="/sendEmailRejectBooking",method =RequestMethod.POST)
+    public String sendEmailRejectBooking(@RequestBody EmailCancelBookingDto emailCancelBookingDto){
+        return emailService.sendEmailRejectBooking(emailCancelBookingDto);
+    }
+
+    @RequestMapping (value="/sendEmailRejectBookingForLessor",method =RequestMethod.POST)
+    public String sendEmailRejectBookingForLessor(@RequestBody EmailCancelBookingForLessorDto emailCancelBookingForLessorDto){
+        return emailService.sendEmailRejectBookingForLessor(emailCancelBookingForLessorDto);
+    }
+
+    @RequestMapping (value="/sendEmailApproveBooking",method =RequestMethod.POST)
+    public String sendEmailApproveBooking(@RequestBody EmailSuccessBookingDto emailSuccessBookingDto){
+        return emailService.sendEmailApproveBooking(emailSuccessBookingDto);
+    }
+
+    @RequestMapping (value="/sendEmailApproveBookingForLessor",method =RequestMethod.POST)
+    public String sendEmailApproveBookingForLessor(@RequestBody EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto){
+        return emailService.sendEmailApproveBookingForLessor(emailSuccessBookingForLessorDto);
+    }
+
+    @RequestMapping (value="/sendEmailRentingBooking",method =RequestMethod.POST)
+    public String sendEmailRentingBooking(@RequestBody EmailSuccessBookingDto emailSuccessBookingDto){
+        return emailService.sendEmailRentingBooking(emailSuccessBookingDto);
+    }
+
+    @RequestMapping (value="/sendEmailRentingBookingForLessor",method =RequestMethod.POST)
+    public String sendEmailRentingBookingForLessor(@RequestBody EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto){
+        return emailService.sendEmailRentingBookingForLessor(emailSuccessBookingForLessorDto);
+    }
+
+    @RequestMapping (value="/sendEmailDepositMadeBooking",method =RequestMethod.POST)
+    public String sendEmailDepositMadeBooking(@RequestBody EmailSuccessBookingDto emailSuccessBookingDto){
+        return emailService.sendEmailDepositMadeBooking(emailSuccessBookingDto);
+    }
+
+    @RequestMapping (value="/sendEmailDepositMadeBookingForLessor",method =RequestMethod.POST)
+    public String sendEmailDepositMadeBookingForLessor(@RequestBody EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto){
+        return emailService.sendEmailDepositMadeBookingForLessor(emailSuccessBookingForLessorDto);
+    }
+
+    @RequestMapping (value="/sendEmailDoneBooking",method =RequestMethod.POST)
+    public String sendEmailDoneBooking(@RequestBody EmailSuccessBookingDto emailSuccessBookingDto){
+        return emailService.sendEmailDoneBooking(emailSuccessBookingDto);
+    }
+
+    @RequestMapping (value="/sendEmailDoneBookingForLessor",method =RequestMethod.POST)
+    public String sendEmailDoneBookingForLessor(@RequestBody EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto){
+        return emailService.sendEmailDoneBookingForLessor(emailSuccessBookingForLessorDto);
+    }
+
     @GetMapping("/motorbike/{motorbikeId}")
     public ResponseEntity<List<BookingRequest>> getBookingsByMotorbikeId(@PathVariable Long motorbikeId) {
         List<BookingRequest> bookings = bookingService.findByMotorbikeId(motorbikeId);
