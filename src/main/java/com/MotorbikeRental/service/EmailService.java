@@ -1,6 +1,9 @@
 package com.MotorbikeRental.service;
 
+import com.MotorbikeRental.dto.EmailCancelBookingDto;
+import com.MotorbikeRental.dto.EmailCancelBookingForLessorDto;
 import com.MotorbikeRental.dto.EmailSuccessBookingDto;
+import com.MotorbikeRental.dto.EmailSuccessBookingForLessorDto;
 import com.MotorbikeRental.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
@@ -21,4 +24,29 @@ public interface EmailService {
 
     String sendEmailSuccessBooking(EmailSuccessBookingDto emailSuccessBookingDto);
 
+    String sendEmailSuccessBookingForLessor(EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto);
+
+    String sendEmailCancleBooking(EmailCancelBookingDto emailCancelBookingDto);
+
+    String sendEmailCancleBookingForLessor(EmailCancelBookingForLessorDto emailCancelBookingForLessorDto);
+
+    String sendEmailApproveBooking(EmailSuccessBookingDto emailSuccessBookingDto);
+
+    String sendEmailApproveBookingForLessor(EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto);
+
+    String sendEmailRentingBooking(EmailSuccessBookingDto emailSuccessBookingDto);
+
+    String sendEmailRentingBookingForLessor(EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto);
+
+    String sendEmailDoneBooking(EmailSuccessBookingDto emailSuccessBookingDto);
+
+    String sendEmailDoneBookingForLessor(EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto);
+
+    String sendEmailRejectBooking(EmailCancelBookingDto emailCancelBookingDto);
+
+    String sendEmailRejectBookingForLessor(EmailCancelBookingForLessorDto emailCancelBookingForLessorDto);
+
+    String sendEmailDepositMadeBooking(EmailSuccessBookingDto emailSuccessBookingDto);
+
+    String sendEmailDepositMadeBookingForLessor(EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto);
 }

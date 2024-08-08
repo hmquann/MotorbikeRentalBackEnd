@@ -1,6 +1,9 @@
 package com.MotorbikeRental.service.impl;
 
+import com.MotorbikeRental.dto.EmailCancelBookingDto;
+import com.MotorbikeRental.dto.EmailCancelBookingForLessorDto;
 import com.MotorbikeRental.dto.EmailSuccessBookingDto;
+import com.MotorbikeRental.dto.EmailSuccessBookingForLessorDto;
 import com.MotorbikeRental.entity.User;
 import com.MotorbikeRental.service.EmailService;
 import com.MotorbikeRental.service.UserService;
@@ -178,6 +181,442 @@ public class EmailServiceImpl implements EmailService {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public String sendEmailSuccessBookingForLessor(EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailSuccessBookingForLessorDto.getLessorEmail());
+            mimeMessageHelper.setSubject("Yêu Cầu Đặt Xe Mới");
+
+            Context context = new Context();
+            context.setVariable("userName", emailSuccessBookingForLessorDto.getLessorName());
+            context.setVariable("renterName", emailSuccessBookingForLessorDto.getRenterName());
+            context.setVariable("motorbikeName", emailSuccessBookingForLessorDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailSuccessBookingForLessorDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailSuccessBookingForLessorDto.getBookingTime());
+            context.setVariable("startDate", emailSuccessBookingForLessorDto.getStartDate());
+            context.setVariable("endDate", emailSuccessBookingForLessorDto.getEndDate());
+            context.setVariable("receiveLocation", emailSuccessBookingForLessorDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailSuccessBookingForLessorDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+
+            String htmlContent = templateEngine.process("sendEmailSuccessBookingForLessor", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String sendEmailCancleBooking(EmailCancelBookingDto emailCancelBookingDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailCancelBookingDto.getRenterEmail());
+            mimeMessageHelper.setSubject("Thông Báo Hủy Chuyến");
+
+            Context context = new Context();
+            context.setVariable("userName", emailCancelBookingDto.getRenterName());
+            context.setVariable("motorbikeName", emailCancelBookingDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailCancelBookingDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailCancelBookingDto.getBookingTime());
+            context.setVariable("startDate", emailCancelBookingDto.getStartDate());
+            context.setVariable("endDate", emailCancelBookingDto.getEndDate());
+            context.setVariable("receiveLocation", emailCancelBookingDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailCancelBookingDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            context.setVariable("reason", emailCancelBookingDto.getReason());
+            String htmlContent = templateEngine.process("sendEmailCancelBooking", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String sendEmailCancleBookingForLessor(EmailCancelBookingForLessorDto emailCancelBookingForLessorDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailCancelBookingForLessorDto.getLessorEmail());
+            mimeMessageHelper.setSubject("Thông Báo Hủy Chuyến");
+
+            Context context = new Context();
+            context.setVariable("userName", emailCancelBookingForLessorDto.getLessorName());
+            context.setVariable("renterName", emailCancelBookingForLessorDto.getRenterName());
+            context.setVariable("motorbikeName", emailCancelBookingForLessorDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailCancelBookingForLessorDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailCancelBookingForLessorDto.getBookingTime());
+            context.setVariable("startDate", emailCancelBookingForLessorDto.getStartDate());
+            context.setVariable("endDate", emailCancelBookingForLessorDto.getEndDate());
+            context.setVariable("receiveLocation", emailCancelBookingForLessorDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailCancelBookingForLessorDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            context.setVariable("reason", emailCancelBookingForLessorDto.getReason());
+            String htmlContent = templateEngine.process("sendEmailCancelBookingForLessor", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String sendEmailRejectBooking(EmailCancelBookingDto emailCancelBookingDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailCancelBookingDto.getRenterEmail());
+            mimeMessageHelper.setSubject("Thông Báo Từ Chối Chuyến");
+
+            Context context = new Context();
+            context.setVariable("userName", emailCancelBookingDto.getRenterName());
+            context.setVariable("motorbikeName", emailCancelBookingDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailCancelBookingDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailCancelBookingDto.getBookingTime());
+            context.setVariable("startDate", emailCancelBookingDto.getStartDate());
+            context.setVariable("endDate", emailCancelBookingDto.getEndDate());
+            context.setVariable("receiveLocation", emailCancelBookingDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailCancelBookingDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            context.setVariable("reason", emailCancelBookingDto.getReason());
+            String htmlContent = templateEngine.process("sendEmailRejectBooking", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String sendEmailRejectBookingForLessor(EmailCancelBookingForLessorDto emailCancelBookingForLessorDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailCancelBookingForLessorDto.getLessorEmail());
+            mimeMessageHelper.setSubject("Thông Báo Từ Chối Chuyến");
+
+            Context context = new Context();
+            context.setVariable("userName", emailCancelBookingForLessorDto.getLessorName());
+            context.setVariable("renterName", emailCancelBookingForLessorDto.getRenterName());
+            context.setVariable("motorbikeName", emailCancelBookingForLessorDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailCancelBookingForLessorDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailCancelBookingForLessorDto.getBookingTime());
+            context.setVariable("startDate", emailCancelBookingForLessorDto.getStartDate());
+            context.setVariable("endDate", emailCancelBookingForLessorDto.getEndDate());
+            context.setVariable("receiveLocation", emailCancelBookingForLessorDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailCancelBookingForLessorDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            context.setVariable("reason", emailCancelBookingForLessorDto.getReason());
+            String htmlContent = templateEngine.process("sendEmailRejectBookingForLessor", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+    @Override
+    public String sendEmailApproveBooking(EmailSuccessBookingDto emailSuccessBookingDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailSuccessBookingDto.getRenterEmail());
+            mimeMessageHelper.setSubject("Yêu Cầu Thuê Xe Đã Được Duyệt");
+
+            Context context = new Context();
+            context.setVariable("userName", emailSuccessBookingDto.getRenterName());
+            context.setVariable("motorbikeName", emailSuccessBookingDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailSuccessBookingDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailSuccessBookingDto.getBookingTime());
+            context.setVariable("startDate", emailSuccessBookingDto.getStartDate());
+            context.setVariable("endDate", emailSuccessBookingDto.getEndDate());
+            context.setVariable("receiveLocation", emailSuccessBookingDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailSuccessBookingDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            String htmlContent = templateEngine.process("sendEmailApproveBooking", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String sendEmailApproveBookingForLessor(EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailSuccessBookingForLessorDto.getLessorEmail());
+            mimeMessageHelper.setSubject("Duyệt Thành Công Yêu Cầu Thuê Xe");
+
+            Context context = new Context();
+            context.setVariable("userName", emailSuccessBookingForLessorDto.getLessorName());
+            context.setVariable("renterName", emailSuccessBookingForLessorDto.getRenterName());
+            context.setVariable("motorbikeName", emailSuccessBookingForLessorDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailSuccessBookingForLessorDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailSuccessBookingForLessorDto.getBookingTime());
+            context.setVariable("startDate", emailSuccessBookingForLessorDto.getStartDate());
+            context.setVariable("endDate", emailSuccessBookingForLessorDto.getEndDate());
+            context.setVariable("receiveLocation", emailSuccessBookingForLessorDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailSuccessBookingForLessorDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            String htmlContent = templateEngine.process("sendEmailApproveBookingForLessor", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String sendEmailDepositMadeBooking(EmailSuccessBookingDto emailSuccessBookingDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailSuccessBookingDto.getRenterEmail());
+            mimeMessageHelper.setSubject("Thông Báo Đặt Cọc Thành Công");
+
+            Context context = new Context();
+            context.setVariable("userName", emailSuccessBookingDto.getRenterName());
+            context.setVariable("motorbikeName", emailSuccessBookingDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailSuccessBookingDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailSuccessBookingDto.getBookingTime());
+            context.setVariable("startDate", emailSuccessBookingDto.getStartDate());
+            context.setVariable("endDate", emailSuccessBookingDto.getEndDate());
+            context.setVariable("receiveLocation", emailSuccessBookingDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailSuccessBookingDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            String formattedDepositPrice = currencyFormatter.format(emailSuccessBookingDto.getTotalPrice() * 30/ 100);
+            context.setVariable("depositPrice", formattedDepositPrice);
+            String htmlContent = templateEngine.process("sendEmailDepositMadeBooking", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String sendEmailDepositMadeBookingForLessor(EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailSuccessBookingForLessorDto.getLessorEmail());
+            mimeMessageHelper.setSubject("Thông Báo Xe Đã Được Đặt Cọc Thành Công");
+
+            Context context = new Context();
+            context.setVariable("userName", emailSuccessBookingForLessorDto.getLessorName());
+            context.setVariable("renterName", emailSuccessBookingForLessorDto.getRenterName());
+            context.setVariable("motorbikeName", emailSuccessBookingForLessorDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailSuccessBookingForLessorDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailSuccessBookingForLessorDto.getBookingTime());
+            context.setVariable("startDate", emailSuccessBookingForLessorDto.getStartDate());
+            context.setVariable("endDate", emailSuccessBookingForLessorDto.getEndDate());
+            context.setVariable("receiveLocation", emailSuccessBookingForLessorDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailSuccessBookingForLessorDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            String formattedDepositPrice = currencyFormatter.format(emailSuccessBookingForLessorDto.getTotalPrice() * 30/ 100);
+            context.setVariable("depositPrice", formattedDepositPrice);
+            String htmlContent = templateEngine.process("sendEmailDepositMadeBookingForLessor", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String sendEmailRentingBooking(EmailSuccessBookingDto emailSuccessBookingDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailSuccessBookingDto.getRenterEmail());
+            mimeMessageHelper.setSubject("Giao Xe Thành Công");
+
+            Context context = new Context();
+            context.setVariable("userName", emailSuccessBookingDto.getRenterName());
+            context.setVariable("motorbikeName", emailSuccessBookingDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailSuccessBookingDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailSuccessBookingDto.getBookingTime());
+            context.setVariable("startDate", emailSuccessBookingDto.getStartDate());
+            context.setVariable("endDate", emailSuccessBookingDto.getEndDate());
+            context.setVariable("receiveLocation", emailSuccessBookingDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailSuccessBookingDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            String htmlContent = templateEngine.process("sendEmailRentingBooking", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String sendEmailRentingBookingForLessor(EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailSuccessBookingForLessorDto.getLessorEmail());
+            mimeMessageHelper.setSubject("Giao Xe Thành Công");
+
+            Context context = new Context();
+            context.setVariable("userName", emailSuccessBookingForLessorDto.getLessorName());
+            context.setVariable("renterName", emailSuccessBookingForLessorDto.getRenterName());
+            context.setVariable("motorbikeName", emailSuccessBookingForLessorDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailSuccessBookingForLessorDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailSuccessBookingForLessorDto.getBookingTime());
+            context.setVariable("startDate", emailSuccessBookingForLessorDto.getStartDate());
+            context.setVariable("endDate", emailSuccessBookingForLessorDto.getEndDate());
+            context.setVariable("receiveLocation", emailSuccessBookingForLessorDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailSuccessBookingForLessorDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            String htmlContent = templateEngine.process("sendEmailRentingBookingForLessor", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String sendEmailDoneBooking(EmailSuccessBookingDto emailSuccessBookingDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailSuccessBookingDto.getRenterEmail());
+            mimeMessageHelper.setSubject("Hoàn Thành Chuyến");
+
+            Context context = new Context();
+            context.setVariable("userName", emailSuccessBookingDto.getRenterName());
+            context.setVariable("motorbikeName", emailSuccessBookingDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailSuccessBookingDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailSuccessBookingDto.getBookingTime());
+            context.setVariable("startDate", emailSuccessBookingDto.getStartDate());
+            context.setVariable("endDate", emailSuccessBookingDto.getEndDate());
+            context.setVariable("receiveLocation", emailSuccessBookingDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailSuccessBookingDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            String htmlContent = templateEngine.process("sendEmailDoneBooking", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String sendEmailDoneBookingForLessor(EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailSuccessBookingForLessorDto.getLessorEmail());
+            mimeMessageHelper.setSubject("Hoàn Thành Chuyến");
+
+            Context context = new Context();
+            context.setVariable("userName", emailSuccessBookingForLessorDto.getLessorName());
+            context.setVariable("renterName", emailSuccessBookingForLessorDto.getRenterName());
+            context.setVariable("motorbikeName", emailSuccessBookingForLessorDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailSuccessBookingForLessorDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailSuccessBookingForLessorDto.getBookingTime());
+            context.setVariable("startDate", emailSuccessBookingForLessorDto.getStartDate());
+            context.setVariable("endDate", emailSuccessBookingForLessorDto.getEndDate());
+            context.setVariable("receiveLocation", emailSuccessBookingForLessorDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailSuccessBookingForLessorDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            String htmlContent = templateEngine.process("sendEmailDoneBookingForLessor", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
 
 }
