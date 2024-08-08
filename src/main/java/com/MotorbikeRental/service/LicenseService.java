@@ -10,6 +10,6 @@ public interface LicenseService {
    void approveLicense(String licenseNumber);
    void rejectLicense(String licenseNumber);
    LicenseDto getLicenseByUserId(Long userId);
-
+   void updateLicense(Long id,LicenseDto licenseDto);
    Page<LicenseDto> getPendingLicenseWithPagination(int page, int pageSize, LicenseStatus status);
 }

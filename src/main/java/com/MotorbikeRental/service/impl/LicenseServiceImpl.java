@@ -43,6 +43,14 @@ public class LicenseServiceImpl implements LicenseService {
            return mapper.map(license, LicenseDto.class);
     }
 
+    @Override
+    public void updateLicense(Long id,LicenseDto licenseDto) {
+        License license=licenseRepository.getLicenseByuserId(id);
+        mapper.map(licenseDto,license);
+        license.setStatus(LicenseStatus.PENDING);
+        licenseRepository.save(license);
+    }
+
 
     @Override
     public Page<LicenseDto> getPendingLicenseWithPagination(int page, int pageSize, LicenseStatus status) {
