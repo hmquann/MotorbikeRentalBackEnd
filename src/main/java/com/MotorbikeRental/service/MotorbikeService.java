@@ -33,7 +33,7 @@ public interface MotorbikeService {
     public Motorbike registerMotorbike(String accessToken,RegisterMotorbikeDto registerMotorbikeDto);
     public Page<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto, int page, int pageSize);
 
-    public Motorbike checkExistPlate(String motorbikePlate);
+    public MotorbikeDto checkExistPlate(String motorbikePlate);
 
     Page<MotorbikeDto> getPendingMotorbikes(MotorbikeStatus status, int page, int pageSize);
     Motorbike approveMotorbike(Long id);
