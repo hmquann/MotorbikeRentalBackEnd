@@ -164,7 +164,10 @@ public class MotorbikeController {
     public List<MotorbikeDto> getUserMotorbikes(@PathVariable Long id) {
         return motorbikeService.getMotorbikeByUserId(id);
     }
-
+    @GetMapping("/checkExistPlate/{plate}")
+    public MotorbikeDto checkExistPlate(@PathVariable String plate){
+        return motorbikeService.checkExistPlate(plate);
+    }
 
 }
 

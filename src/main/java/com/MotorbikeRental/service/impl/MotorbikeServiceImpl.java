@@ -256,8 +256,9 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
 
     @Override
-    public Motorbike checkExistPlate( String motorbikePlate) {
-        return motorbikeRepository.findByMotorbikePlate(motorbikePlate);
+    public MotorbikeDto checkExistPlate( String motorbikePlate) {
+        Motorbike motorbike=motorbikeRepository.findByMotorbikePlate(motorbikePlate);
+        return motorbike==null?null:convertToDto(motorbike);
     }
 
     @Override
