@@ -48,4 +48,6 @@ public interface UserService {
 
     UserDto updateUserNotifications(Long userId, Boolean systemNoti, Boolean emailNoti, Boolean minimizeNoti);
 
+    void refundSubtractMoney(Long userId,Long receiverId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception;
+    void refundAddMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate, String transactionCode) throws Exception;
 }
