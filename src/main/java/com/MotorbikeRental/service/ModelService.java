@@ -16,6 +16,7 @@ public interface ModelService {
     Page<ModelDto> getBrandWithPagination(int page, int pageSize);
     ModelDto getModelById(Long id);
     Page<ModelDto> searchModel(String searchTerm, int page, int size);
+    ModelDto updateModel(Long modelId, ModelDto modelDto);
 
 }
 
