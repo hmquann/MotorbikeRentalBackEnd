@@ -77,4 +77,11 @@ public class ModelController {
         return modelService.searchModel(searchTerm, page, size);
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ModelDto> updateModel(@PathVariable Long id, @RequestBody ModelDto modelDto) {
+        ModelDto updatedModel = modelService.updateModel(id, modelDto);
+        return ResponseEntity.ok(updatedModel);
+    }
+
+
 }

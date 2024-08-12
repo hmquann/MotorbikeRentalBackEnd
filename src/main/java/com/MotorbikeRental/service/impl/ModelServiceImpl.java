@@ -126,6 +126,42 @@ public class ModelServiceImpl implements ModelService {
         return modelDto;
 
     }
+    @Override
+    public ModelDto updateModel(Long modelId, ModelDto modelDto) {
+        Model existingModel = modelRepository.findById(modelId)
+                .orElseThrow(() -> new EntityNotFoundException("Model not found with id: " + modelId));
+
+        if (!existingModel.getModelName().equals(modelDto.getModelName()) &&
+                modelRepository.existsByModelName(modelDto.getModelName())) {
+            throw new ValidationException("Model name already exists: " + modelDto.getModelName());
+        }
+
+        existingModel.setModelName(modelDto.getModelName());
+        existingModel.setCylinderCapacity(modelDto.getCylinderCapacity());
+        existingModel.setFuelType(modelDto.getFuelType());
+        existingModel.setFuelConsumption(modelDto.getFuelConsumption());
+        existingModel.setModelType(modelDto.getModelType());
+
+        if (modelDto.getBrand() != null && modelDto.getBrand().getBrandId() != null) {
+            BrandDto brandDto = brandService.getBrand(modelDto.getBrand().getBrandId());
+            if (brandDto != null) {
+                Brand brand = new Brand();
+                brand.setBrandId(brandDto.getBrandId());
+                brand.setBrandName(brandDto.getBrandName());
+                brand.setOrigin(brandDto.getBrandOrigin());
+                existingModel.setBrand(brand);
+            } else {
+                throw new RuntimeException("Brand not found with id: " + modelDto.getBrand().getBrandId());
+            }
+        } else {
+            throw new ValidationException("BrandId must not be null");
+        }
+
+        Model updatedModel = modelRepository.save(existingModel);
+
+        return convertToDto(updatedModel);
+    }
+
 
 
 }
