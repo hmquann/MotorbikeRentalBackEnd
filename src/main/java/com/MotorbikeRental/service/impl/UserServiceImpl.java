@@ -376,6 +376,58 @@ public class UserServiceImpl implements UserService {
         }
 }
 
+    @Override
+    public void refundSubtractMoney(Long userId, Long receiverId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            BigDecimal currentBalance = user.getBalance();
+            if (currentBalance.compareTo(amount) < 0) {
+                throw new Exception("Insufficient money");
+            }
+            BigDecimal newBalance = currentBalance.subtract(amount);
+            user.setBalance(newBalance);
+            userRepository.save(user);
+
+            String transactionCode = generateTransactionCode(userId);
+
+            Transaction transaction = new Transaction();
+            transaction.setUsers(user);
+            transaction.setAmount(amount);
+            transaction.setProcessed(true);
+            transaction.setTransactionDate(LocalDateTime.now());
+            transaction.setType(TransactionType.REFUND);
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            transaction.setDescription("Hoàn cọc xe " + motorbikeName + '(' + motorbikePlate + ')' + " - Mã giao dịch: " + transactionCode);
+            transactionRepository.save(transaction);
+
+
+            addMoney(receiverId, amount, motorbikeName, motorbikePlate, transactionCode);
+        }
+    }
+
+    @Override
+    public void refundAddMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate, String transactionCode) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            BigDecimal currentBalance = user.getBalance();
+            BigDecimal newBalance = currentBalance.add(amount);
+            user.setBalance(newBalance);
+            userRepository.save(user);
+
+            Transaction transaction = new Transaction();
+            transaction.setUsers(user);
+            transaction.setAmount(amount);
+            transaction.setProcessed(true);
+            transaction.setTransactionDate(LocalDateTime.now());
+            transaction.setType(TransactionType.REFUND);
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            transaction.setDescription("Hoàn cọc xe " + motorbikeName + '(' + motorbikePlate + ')' + " - Mã giao dịch: " + transactionCode);
+            transactionRepository.save(transaction);
+        }
+    }
+
 }
 
 
