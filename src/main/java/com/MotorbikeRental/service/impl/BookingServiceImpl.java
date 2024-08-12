@@ -142,6 +142,13 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public void markBusyDays(LocalDateTime startDate, LocalDateTime endDate,Long motorbikeId) {
+        List<BookingDto> listBooks=getBookingListByMotorbikeId(motorbikeId);
+        for(BookingDto booking:listBooks){
+            if(booking.getStatus()==BookingStatus.BUSY&&booking.getStartDate().isAfter(startDate)&&
+            booking.getEndTime().isBefore(endDate)){
+            markAvailableDays(booking.getStartDate(),booking.getEndTime(),motorbikeId);
+            }
+        }
         Booking b= new Booking();
         b.setStartDate(startDate);
         b.setEndDate(endDate);
@@ -151,6 +158,17 @@ public class BookingServiceImpl implements BookingService {
         b.setTotalPrice(0);
         b.setReceiveLocation("");
         bookingRepository.save(b);
+    }
+
+    @Override
+    public void markAvailableDays(LocalDateTime startDate, LocalDateTime endDate, Long motorbikeId) {
+       Booking bookings = bookingRepository.findBookingsByMotorbikeIdAndDateRange(motorbikeId, startDate, endDate);
+        if (bookings != null) {
+                bookingRepository.delete(bookings);
+            }
+       else {
+            throw new IllegalArgumentException("No booking found for the given date range and motorbike ID.");
+        }
     }
 
     public List<BookingRequest> getBookingListByRenterId(Long renterId) {
