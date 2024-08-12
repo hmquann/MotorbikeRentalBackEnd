@@ -71,14 +71,22 @@ public class MotorbikeFilterRepository {
                     criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("endDate"), startDate)
             );
 
-            subquery.where(bookingOverlapPredicate);
+            // Check if the booking status is not "rejected"
+            Predicate statusNotRejectedPredicate =
+                    criteriaBuilder.and(
+                            criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("endDate"),startDate),
+                            criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("startDate"), endDate),
+                            criteriaBuilder.equal(bookingRoot.get("status"), BookingStatus.REJECTED));
+
+            // Combine the predicates
+            subquery.where(criteriaBuilder.and(bookingOverlapPredicate, statusNotRejectedPredicate));
+
             Predicate noBookingDuringTimePredicate = criteriaBuilder.not(
                     root.get("id").in(subquery)
             );
 
             predicates.add(noBookingDuringTimePredicate);
         }
-
         criteriaQuery.select(root).where(criteriaBuilder.and(predicates.toArray(new Predicate[0]))).distinct(true);
 
         TypedQuery<Motorbike> query = entityManager.createQuery(criteriaQuery);
