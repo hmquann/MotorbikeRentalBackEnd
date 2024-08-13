@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,10 @@ public class BookingController {
     public void markBusyDays(@PathVariable Long id,@RequestBody BookingDto bookingDto){
         bookingService.markBusyDays(bookingDto.getStartDate(),bookingDto.getEndTime(),id);
 }
-
+@PostMapping(value="/markAvailableDays/{id}")
+public void markAvailableDays(@PathVariable Long id,@RequestBody BookingDto bookingDto){
+     bookingService.markAvailableDays(bookingDto.getStartDate(),bookingDto.getEndTime(),id);
+}
     @GetMapping(value = "/getListBookingByRenterId/{id}")
     public ResponseEntity<List<BookingRequest>> getListBookingByRenterId(@PathVariable Long id){
         return ResponseEntity.ok(bookingService.getBookingListByRenterId(id));
@@ -144,6 +148,21 @@ public class BookingController {
         return emailService.sendEmailDoneBookingForLessor(emailSuccessBookingForLessorDto);
     }
 
+    @RequestMapping (value="/sendEmailDepositNotification",method =RequestMethod.POST)
+    public String sendEmailDepositNotification(@RequestBody EmailSuccessBookingDto emailSuccessBookingDto){
+        return emailService.sendEmailDepositNotification(emailSuccessBookingDto);
+    }
+
+    @RequestMapping (value="/changeDepositNotification/{id}",method =RequestMethod.POST)
+    public boolean changeDepositNotification(@PathVariable Long id){
+        return bookingService.changeDepositNotification(id);
+    }
+
+    @RequestMapping (value="/changeDepositCanceled/{id}",method =RequestMethod.POST)
+    public boolean changeDepositCanceled(@PathVariable Long id){
+        return bookingService.changeDepositCanceled(id);
+    }
+
     @GetMapping("/motorbike/{motorbikeId}")
     public ResponseEntity<List<BookingRequest>> getBookingsByMotorbikeId(@PathVariable Long motorbikeId) {
         List<BookingRequest> bookings = bookingService.findByMotorbikeId(motorbikeId);
@@ -155,5 +174,11 @@ public class BookingController {
     public ResponseEntity<List<LocalDate>> getDatesByMotorbikeId(@PathVariable Long motorbikeId) {
         List<LocalDate> dates = bookingService.getDatesByMotorbikeId(motorbikeId);
         return ResponseEntity.ok(dates);
+    }
+
+
+    @RequestMapping (value="/saveDepositTime",method =RequestMethod.POST)
+    public String saveDepositTime(@RequestBody DepositTimeDto depositTimeDto){
+        return bookingService.saveDepositTime(depositTimeDto);
     }
 }

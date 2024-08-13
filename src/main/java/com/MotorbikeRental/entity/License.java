@@ -21,9 +21,11 @@ import java.util.stream.Collectors;
 @Table(name = "[License]")
 
 public class License {
-    @Id
-    private String licenseNumber;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String licenseNumber;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

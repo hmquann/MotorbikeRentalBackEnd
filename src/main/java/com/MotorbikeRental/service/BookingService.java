@@ -29,7 +29,7 @@ public interface BookingService {
     List<BookingCountDto> getBookingCountForLastTwoMonths();
     Map<String,Long>mainLocationPercentage();
     void markBusyDays(LocalDateTime startDate, LocalDateTime endDate,Long motorbikeId);
-
+    void markAvailableDays(LocalDateTime startDate, LocalDateTime endDate,Long motorbikeId);
     String changeStatusBooking(Long id,String status);
 
 //    ResponseEntity<List<Booking>> getBookingListByMotorbikeId(Long motorbikeId);
@@ -49,4 +49,9 @@ public interface BookingService {
 
     List<LocalDate> getDatesByMotorbikeId(Long motorbikeId);
 
+    String saveDepositTime(DepositTimeDto depositTimeDto);
+
+    boolean changeDepositNotification(Long bookingId);
+
+    boolean changeDepositCanceled(Long bookingId);
 }

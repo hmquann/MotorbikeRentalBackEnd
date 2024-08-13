@@ -49,4 +49,6 @@ public interface EmailService {
     String sendEmailDepositMadeBooking(EmailSuccessBookingDto emailSuccessBookingDto);
 
     String sendEmailDepositMadeBookingForLessor(EmailSuccessBookingForLessorDto emailSuccessBookingForLessorDto);
+
+    String sendEmailDepositNotification(EmailSuccessBookingDto emailSuccessBookingDto);
 }

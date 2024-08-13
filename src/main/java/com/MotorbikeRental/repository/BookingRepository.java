@@ -1,6 +1,7 @@
 package com.MotorbikeRental.repository;
 
 import com.MotorbikeRental.dto.BookingCountDto;
+import com.MotorbikeRental.dto.BookingDto;
 import com.MotorbikeRental.dto.MonthlyRevenueDto;
 import com.MotorbikeRental.dto.TopModelDto;
 import com.MotorbikeRental.entity.*;
@@ -103,4 +104,14 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
             "   SELECT b.renter.id FROM Booking b WHERE b.motorbike.user.id = :userId" +
             ") AND u.id != :userId")
     List<User> getListUserFromBookingToChat(@Param("userId") Long userId);
+    @Query("SELECT b " +
+            "FROM Booking b " +
+            "WHERE b.motorbike.id = :motorbikeId " +
+            "AND CAST(b.startDate AS DATE) <= CAST(:endDate AS DATE) " +
+            "AND CAST(b.endDate AS DATE) >= CAST(:startDate AS DATE)")
+    Booking findBookingsByMotorbikeIdAndDateRange(
+            @Param("motorbikeId") Long motorbikeId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
 }
+

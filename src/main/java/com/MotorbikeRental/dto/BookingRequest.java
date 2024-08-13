@@ -19,4 +19,8 @@ public class BookingRequest {
     private boolean isFeedbackkk;
     private Double longitude;
     private Double latitude;
+    private LocalDateTime depositTime;
+    private boolean depositNoti;
+    private boolean depositCanceled;
+
 }

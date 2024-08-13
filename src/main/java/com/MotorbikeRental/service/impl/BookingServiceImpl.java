@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -58,9 +60,11 @@ public class BookingServiceImpl implements BookingService {
         booking.setMotorbike(motorbike);
         booking.setReceiveLocation(bookingRequest.getReceiveLocation());
         booking.setTotalPrice(bookingRequest.getTotalPrice());
-        booking.setLongitude(booking.getLongitude());
-        booking.setLatitude(booking.getLatitude());
+        booking.setLongitude(bookingRequest.getLongitude());
+        booking.setLatitude(bookingRequest.getLatitude());
         booking.setStatus(PENDING);
+        booking.setDepositNoti(true);
+        booking.setDepositCanceled(true);
         bookingRepository.save(booking);
         return "booking done";
     }
@@ -138,6 +142,13 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public void markBusyDays(LocalDateTime startDate, LocalDateTime endDate,Long motorbikeId) {
+        List<BookingDto> listBooks=getBookingListByMotorbikeId(motorbikeId);
+        for(BookingDto booking:listBooks){
+            if(booking.getStatus()==BookingStatus.BUSY&&booking.getStartDate().isAfter(startDate)&&
+            booking.getEndTime().isBefore(endDate)){
+            markAvailableDays(booking.getStartDate(),booking.getEndTime(),motorbikeId);
+            }
+        }
         Booking b= new Booking();
         b.setStartDate(startDate);
         b.setEndDate(endDate);
@@ -147,6 +158,17 @@ public class BookingServiceImpl implements BookingService {
         b.setTotalPrice(0);
         b.setReceiveLocation("");
         bookingRepository.save(b);
+    }
+
+    @Override
+    public void markAvailableDays(LocalDateTime startDate, LocalDateTime endDate, Long motorbikeId) {
+       Booking bookings = bookingRepository.findBookingsByMotorbikeIdAndDateRange(motorbikeId, startDate, endDate);
+        if (bookings != null) {
+                bookingRepository.delete(bookings);
+            }
+       else {
+            throw new IllegalArgumentException("No booking found for the given date range and motorbike ID.");
+        }
     }
 
     public List<BookingRequest> getBookingListByRenterId(Long renterId) {
@@ -214,15 +236,50 @@ public class BookingServiceImpl implements BookingService {
         List<LocalDate> dates = new ArrayList<>();
 
         for (Booking booking : bookings) {
-            LocalDate start = booking.getStartDate().toLocalDate();
-            LocalDate end = booking.getEndDate().toLocalDate();
-
-            while (!start.isAfter(end)) {
-                dates.add(start);
-                start = start.plusDays(1);
+            if(booking.getStatus() == PENDING ||
+                    booking.getStatus() == BookingStatus.PENDING_DEPOSIT ||
+                        booking.getStatus() == BookingStatus.DEPOSIT_MADE ||
+                            booking.getStatus() == BookingStatus.RENTING ||
+                                booking.getStatus() == BookingStatus.BUSY){
+                LocalDate start = booking.getStartDate().toLocalDate();
+                LocalDate end = booking.getEndDate().toLocalDate();
+                while (!start.isAfter(end)) {
+                    dates.add(start);
+                    start = start.plusDays(1);
+                }
             }
+
+
+
         }
         return dates;
     }
+
+    @Override
+    public String saveDepositTime(DepositTimeDto depositTimeDto) {
+        Booking booking = bookingRepository.findByBookingId(depositTimeDto.getBookingId());
+        booking.setDepositTime(depositTimeDto.getDepositTime());
+        bookingRepository.save(booking);
+        return "save deposit time done";
+    }
+
+    @Override
+    public boolean changeDepositNotification(Long bookingId) {
+        Booking booking = bookingRepository.findByBookingId(bookingId);
+        booking.setDepositNoti(false);
+        bookingRepository.save(booking);
+        return false ;
+    }
+
+    @Override
+    public boolean changeDepositCanceled(Long bookingId) {
+        Booking booking = bookingRepository.findByBookingId(bookingId);
+        booking.setDepositCanceled(false);
+        bookingRepository.save(booking);
+        return false ;
+    }
+
+
+
 
 }

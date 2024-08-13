@@ -47,4 +47,14 @@ public class Booking {
     @Column(name = "is_feedback")
     private boolean isFeedbackkk;
 
+
+    @Column(name = "deposit_time")
+    private LocalDateTime depositTime;
+
+    @Column(name = "deposit_noti")
+    private boolean depositNoti;
+
+    @Column(name = "deposit_canceled")
+    private boolean depositCanceled;
+
 }

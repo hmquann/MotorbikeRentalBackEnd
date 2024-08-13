@@ -48,6 +48,18 @@ public class PaymentController {
         }
     }
 
+    @PostMapping("/refund")
+    public ResponseEntity<String> refund(@RequestParam Long senderId, @RequestParam Long receiverId,
+                                           @RequestParam BigDecimal amount, @RequestParam String motorbikeName,
+                                           @RequestParam String motorbikePlate) {
+        try {
+            userService.refundSubtractMoney(senderId, receiverId, amount, motorbikeName, motorbikePlate);
+            return ResponseEntity.ok("Refund successful");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Refund failed: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/add")
     public ResponseEntity<String> add(@RequestParam Long id, @RequestParam BigDecimal amount,
                                       @RequestParam String motorbikeName,
