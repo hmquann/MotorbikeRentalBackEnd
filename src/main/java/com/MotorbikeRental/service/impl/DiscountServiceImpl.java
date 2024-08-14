@@ -43,6 +43,13 @@ public class DiscountServiceImpl implements DiscountService {
         if(discountRepository.existsByCode(discountDto.getCode())){
             throw new ValidationException("Discount code already exists");
         }
+        LocalDate today = LocalDate.now();
+        if (discountDto.getStartDate().isBefore(today)) {
+            throw new ValidationException("Start date cannot be before today.");
+        }
+        if (discountDto.getExpirationDate().isBefore(today)) {
+            throw new ValidationException("End date cannot be before today.");
+        }
         DiscountValidation(discountDto);
         Discount discount = modelMapper.map(discountDto, Discount.class);
         discount.setCreatedBy(createdBy);

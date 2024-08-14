@@ -24,6 +24,7 @@ public class License {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "license_id")
     private Long id;
     private String licenseNumber;
     @OneToOne
