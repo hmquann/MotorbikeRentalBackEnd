@@ -8,7 +8,6 @@ public class Haversine {
     public  double toRadians(double degrees) {
         return degrees * (Math.PI / 180);
     }
-
     public  Double CalculateTheDistanceAsTheCrowFlies(Double lat1, Double lon1, Double lat2, Double lon2) {
         Double dLat = toRadians(lat2 - lat1);
         Double dLon = toRadians(lon2 - lon1);

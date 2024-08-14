@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 
@@ -113,5 +114,10 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
             @Param("motorbikeId") Long motorbikeId,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT b FROM Booking b")
+    List<Booking> getAllBooking();
+    @Query("SELECT b FROM Booking b WHERE b.motorbike.user.id = :lessorId")
+    List<Booking> getAllBookingByLessorId(@Param("lessorId") Long lessorId);
 }
 
