@@ -214,14 +214,15 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     @Override
     public Page<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        List<Motorbike> filter = motorbikeFilterRepository.listMotorbikeByFilter(
+        Page<Motorbike> filter = motorbikeFilterRepository.listMotorbikeByFilter(
                 filterMotorbikeDto.getStartDate(),
                 filterMotorbikeDto.getEndDate(),
                 filterMotorbikeDto.getBrandId(),
                 filterMotorbikeDto.getModelType(),
                 filterMotorbikeDto.getIsDelivery(),
                 filterMotorbikeDto.getMinPrice(),
-                filterMotorbikeDto.getMaxPrice()
+                filterMotorbikeDto.getMaxPrice(),
+                pageable
         );
 
             List<MotorbikeDto> dtoList = filter.stream()
@@ -250,7 +251,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                 }
             }
         }
-            return  new PageImpl<>(dtoList, pageable, dtoList.size());
+            return  new PageImpl<>(dtoList, pageable, filter.getTotalElements());
     }
 
 

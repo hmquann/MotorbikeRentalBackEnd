@@ -7,6 +7,9 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -21,14 +24,15 @@ public class MotorbikeFilterRepository {
     @Autowired
     private final BookingRepository bookingRepository;
 
-    public List<Motorbike> listMotorbikeByFilter(
+    public Page<Motorbike> listMotorbikeByFilter(
             LocalDateTime startDate,
             LocalDateTime endDate,
             Long brandId,
             ModelType modelType,
             Boolean isDelivery,
             Long minPrice,
-            Long maxPrice) {
+            Long maxPrice,
+            Pageable pageable) {
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Motorbike> criteriaQuery = criteriaBuilder.createQuery(Motorbike.class);
@@ -90,7 +94,14 @@ public class MotorbikeFilterRepository {
         criteriaQuery.select(root).where(criteriaBuilder.and(predicates.toArray(new Predicate[0]))).distinct(true);
 
         TypedQuery<Motorbike> query = entityManager.createQuery(criteriaQuery);
-        return query.getResultList();
+        int totalRows = query.getResultList().size();
+
+        // Áp dụng offset và limit cho phân trang
+        query.setFirstResult((int) pageable.getOffset());
+        query.setMaxResults(pageable.getPageSize());
+
+        List<Motorbike> motorbikes = query.getResultList();
+        return new PageImpl<>(motorbikes, pageable, totalRows);
     }
 
 
