@@ -279,7 +279,13 @@ public class BookingServiceImpl implements BookingService {
         return false ;
     }
 
-
+    @Override
+    public List<BookingRequest> getAllBooking() {
+        List<Booking> bookingList = bookingRepository.getAllBooking();
+        return bookingList.stream()
+                .map(booking -> mapper.map(booking, BookingRequest.class))
+                .collect(Collectors.toList());
+    }
 
 
 }
