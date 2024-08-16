@@ -49,4 +49,6 @@ public class MotorbikeDto {
     private UserDto user;
 
     private LicenseType licenseType;
+
+    private double avgRate;
 }

@@ -92,6 +92,15 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 //            dto.setModel(modelDto);
             dto.setUser(userDto);
 
+            double avgRate = motorbike.getBookingList().stream()
+                    .map(Booking::getFeedback)
+                    .filter(Objects::nonNull)
+                    .mapToInt(FeedBack::getRate)
+                    .average()
+                    .orElse(0.0);
+
+            dto.setAvgRate(avgRate);
+
             return dto;
         }
 
@@ -214,15 +223,14 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     @Override
     public Page<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Motorbike> filter = motorbikeFilterRepository.listMotorbikeByFilter(
+        List<Motorbike> filter = motorbikeFilterRepository.listMotorbikeByFilter(
                 filterMotorbikeDto.getStartDate(),
                 filterMotorbikeDto.getEndDate(),
                 filterMotorbikeDto.getBrandId(),
                 filterMotorbikeDto.getModelType(),
                 filterMotorbikeDto.getIsDelivery(),
                 filterMotorbikeDto.getMinPrice(),
-                filterMotorbikeDto.getMaxPrice(),
-                pageable
+                filterMotorbikeDto.getMaxPrice()
         );
 
             List<MotorbikeDto> dtoList = filter.stream()
@@ -245,13 +253,19 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                         motorbikeDto.getLatitude() != null && motorbikeDto.getLongitude() != null) {
                     if (haversine.CalculateTheDistanceAsTheCrowFlies(
                             motorbikeDto.getLatitude(), motorbikeDto.getLongitude(),
-                            filterMotorbikeDto.getLatitude(), filterMotorbikeDto.getLongitude()) > 1000000) {
+                            filterMotorbikeDto.getLatitude(), filterMotorbikeDto.getLongitude()) > 30) {
                         iterator.remove(); // Sử dụng iterator.remove() để xóa phần tử an toàn
                     }
                 }
             }
         }
-            return  new PageImpl<>(dtoList, pageable, filter.getTotalElements());
+        int start = (int) pageable.getOffset();
+        if (start >= dtoList.size()) {
+            return new PageImpl<>(Collections.emptyList(), pageable, dtoList.size());
+        }
+        int end = Math.min((start + pageable.getPageSize()), dtoList.size());
+        List<MotorbikeDto> pagedDtoList = dtoList.subList(start, end);
+            return  new PageImpl<>(pagedDtoList, pageable, dtoList.size());
     }
 
 

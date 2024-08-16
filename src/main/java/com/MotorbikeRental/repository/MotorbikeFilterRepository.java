@@ -24,15 +24,14 @@ public class MotorbikeFilterRepository {
     @Autowired
     private final BookingRepository bookingRepository;
 
-    public Page<Motorbike> listMotorbikeByFilter(
+    public List<Motorbike> listMotorbikeByFilter(
             LocalDateTime startDate,
             LocalDateTime endDate,
             Long brandId,
             ModelType modelType,
             Boolean isDelivery,
             Long minPrice,
-            Long maxPrice,
-            Pageable pageable) {
+            Long maxPrice) {
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Motorbike> criteriaQuery = criteriaBuilder.createQuery(Motorbike.class);
@@ -94,14 +93,7 @@ public class MotorbikeFilterRepository {
         criteriaQuery.select(root).where(criteriaBuilder.and(predicates.toArray(new Predicate[0]))).distinct(true);
 
         TypedQuery<Motorbike> query = entityManager.createQuery(criteriaQuery);
-        int totalRows = query.getResultList().size();
-
-        // Áp dụng offset và limit cho phân trang
-        query.setFirstResult((int) pageable.getOffset());
-        query.setMaxResults(pageable.getPageSize());
-
-        List<Motorbike> motorbikes = query.getResultList();
-        return new PageImpl<>(motorbikes, pageable, totalRows);
+        return query.getResultList();
     }
 
 
