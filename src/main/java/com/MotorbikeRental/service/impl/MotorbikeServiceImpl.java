@@ -163,12 +163,11 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
         }
 
-
-
     @Override
     public List<Motorbike> getMotorbikeByLessorId() {
         return null;
     }
+
 
     @Override
     public List<MotorbikeDto> getAllMotorbikeByStatus(MotorbikeStatus status) {
@@ -202,7 +201,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         Motorbike motorbike=new Motorbike();
         motorbike.setMotorbikeAddress(registerMotorbikeDto.getMotorbikeAddress());
         motorbike.setMotorbikePlate(registerMotorbikeDto.getMotorbikePlate());
-        motorbike.setConstraintMotorbike(registerMotorbikeDto.getConstraintMotorbike());
+        motorbike.setConstraintMotorbike(registerMotorbikeDto.getConstraintMotorbike().isEmpty()?registerMotorbikeDto.getConstraintMotorbike():"Không có");
         motorbike.setModel(modelRepository.findById(registerMotorbikeDto.getModelId()).get());
         motorbike.setUser(user.get());
         motorbike.setDelivery(registerMotorbikeDto.isDelivery());

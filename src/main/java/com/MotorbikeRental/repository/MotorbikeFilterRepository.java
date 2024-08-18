@@ -64,31 +64,44 @@ public class MotorbikeFilterRepository {
         }
 
         if (startDate != null && endDate != null) {
+            // Subquery to find Motorbike IDs that have bookings with startDate or endDate within the specified date range,
+            // or the specified date range is within startDate and endDate, and status not REJECTED
             Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
             Root<Booking> bookingRoot = subquery.from(Booking.class);
 
+            // Select Motorbike IDs
             subquery.select(bookingRoot.get("motorbike").get("id"));
 
-            Predicate bookingOverlapPredicate = criteriaBuilder.and(
-                    criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("startDate"), endDate),
-                    criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("endDate"), startDate)
+            // Predicate for bookings that have startDate or endDate within the specified date range
+            Predicate dateRangePredicate1 = criteriaBuilder.or(
+                    criteriaBuilder.between(bookingRoot.get("startDate"), startDate, endDate),
+                    criteriaBuilder.between(bookingRoot.get("endDate"), startDate, endDate)
             );
 
-            // Check if the booking status is not "rejected"
-            Predicate statusNotRejectedPredicate =
-                    criteriaBuilder.and(
-                            criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("endDate"),startDate),
-                            criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("startDate"), endDate),
-                            criteriaBuilder.equal(bookingRoot.get("status"), BookingStatus.REJECTED));
+            // Predicate for bookings where the specified date range is within the booking's date range
+            Predicate dateRangePredicate2 = criteriaBuilder.and(
+                    criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("startDate"), startDate),
+                    criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("endDate"), endDate)
+            );
+
+            // Predicate for bookings that are not rejected
+            Predicate statusNotRejectedPredicate = criteriaBuilder.notEqual(
+                    bookingRoot.get("status"), BookingStatus.REJECTED
+            );
 
             // Combine the predicates
-            subquery.where(criteriaBuilder.and(bookingOverlapPredicate, statusNotRejectedPredicate));
+            subquery.where(criteriaBuilder.and(
+                    criteriaBuilder.or(dateRangePredicate1, dateRangePredicate2),
+                    statusNotRejectedPredicate
+            ));
 
+            // Predicate to select motorbikes that are not in the subquery result
             Predicate noBookingDuringTimePredicate = criteriaBuilder.not(
                     root.get("id").in(subquery)
             );
 
-            predicates.add(noBookingDuringTimePredicate);
+            // Add the predicate to the main query
+            criteriaQuery.where(noBookingDuringTimePredicate);
         }
         criteriaQuery.select(root).where(criteriaBuilder.and(predicates.toArray(new Predicate[0]))).distinct(true);
 

@@ -181,4 +181,7 @@ public void markAvailableDays(@PathVariable Long id,@RequestBody BookingDto book
     public String saveDepositTime(@RequestBody DepositTimeDto depositTimeDto){
         return bookingService.saveDepositTime(depositTimeDto);
     }
+
+
+
 }
