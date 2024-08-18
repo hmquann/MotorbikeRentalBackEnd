@@ -98,8 +98,9 @@ public class MotorbikeFilterRepository {
             );
 
             // Add the predicate to the main query
-            criteriaQuery.where(noBookingDuringTimePredicate);
+            predicates.add(noBookingDuringTimePredicate);
         }
+
         criteriaQuery.select(root).where(criteriaBuilder.and(predicates.toArray(new Predicate[0]))).distinct(true);
 
         TypedQuery<Motorbike> query = entityManager.createQuery(criteriaQuery);
