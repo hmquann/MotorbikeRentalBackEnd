@@ -1,7 +1,9 @@
 package com.MotorbikeRental.controller;
 
+import com.MotorbikeRental.dto.TransactionDto;
 import com.MotorbikeRental.entity.Brand;
 import com.MotorbikeRental.entity.Transaction;
+import com.MotorbikeRental.entity.TransactionStatus;
 import com.MotorbikeRental.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +34,20 @@ public class TransactionController {
     @GetMapping("/{userId}")
     public ResponseEntity<List<Transaction>> getTransactionsByUserIdd(@PathVariable Long userId){
         return ResponseEntity.ok(transactionService.getTransactionByUserIdd(userId));
+    }
+
+    @GetMapping("/withdrawalsRequest")
+    public Page<TransactionDto> getPendingWithdrawals(
+            @RequestParam int page,
+            @RequestParam int size) {
+        return transactionService.getPendingWithdrawals(page, size);
+    }
+
+    @GetMapping("/withdrawList")
+    public Page<TransactionDto> getWithdrawals(
+            @RequestParam TransactionStatus status,
+            @RequestParam int page,
+            @RequestParam int size) {
+        return transactionService.getWithdrawals(status,page, size);
     }
 }

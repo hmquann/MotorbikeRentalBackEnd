@@ -27,12 +27,24 @@ public class PaymentController {
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<?> withdraw(@RequestParam Long id, @RequestParam BigDecimal amount) throws UnsupportedEncodingException {
+    public ResponseEntity<?> withdraw(@RequestParam Long id, @RequestParam BigDecimal amount,
+                                      @RequestParam String accountNumber,
+                                      @RequestParam String bankName) throws UnsupportedEncodingException {
         try {
-            userService.withdrawMoney(id, amount);
-            return ResponseEntity.ok("Withdrawal successful");
+            userService.withdrawMoney(id, amount, accountNumber, bankName);
+            return ResponseEntity.ok("Request Withdrawal successful");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Withdrawal failed: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/approveWithdrawal")
+    public ResponseEntity<?> approveWithdrawal(@RequestParam Long transactionId) {
+        try {
+            userService.approveWithdrawal(transactionId);
+            return ResponseEntity.ok("Withdrawal approved successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Approval failed: " + e.getMessage());
         }
     }
 
