@@ -287,5 +287,17 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public BookingDepositNotiDto getBookingDepositByBookingId(Long bookingId) {
+        Booking booking = bookingRepository.findByBookingId(bookingId);
+        return mapper.map(booking, BookingDepositNotiDto.class );
+    }
+
+    @Override
+    public LocalDateTime getStartDateTimeByBookingId(Long bookingId) {
+        Booking booking = bookingRepository.findByBookingId(bookingId);
+        return booking.getStartDate();
+    }
+
 
 }

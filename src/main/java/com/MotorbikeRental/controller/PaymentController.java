@@ -60,6 +60,18 @@ public class PaymentController {
         }
     }
 
+    @PostMapping("/punish")
+    public ResponseEntity<String> punish(@RequestParam Long senderId, @RequestParam Long receiverId,
+                                         @RequestParam BigDecimal amount, @RequestParam String motorbikeName,
+                                         @RequestParam String motorbikePlate) {
+        try {
+            userService.punishSubtractMoney(senderId, receiverId, amount, motorbikeName, motorbikePlate);
+            return ResponseEntity.ok("Punish successful");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Refund failed: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/add")
     public ResponseEntity<String> add(@RequestParam Long id, @RequestParam BigDecimal amount,
                                       @RequestParam String motorbikeName,

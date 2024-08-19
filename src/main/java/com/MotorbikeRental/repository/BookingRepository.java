@@ -119,5 +119,6 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     List<Booking> getAllBooking();
     @Query("SELECT b FROM Booking b WHERE b.motorbike.user.id = :lessorId")
     List<Booking> getAllBookingByLessorId(@Param("lessorId") Long lessorId);
+
 }
 

@@ -183,5 +183,15 @@ public void markAvailableDays(@PathVariable Long id,@RequestBody BookingDto book
     }
 
 
+    @GetMapping("/getBookingDepositByBookingId/{bookingId}")
+    public ResponseEntity<BookingDepositNotiDto> getBookingDepositByBookingId(@PathVariable Long bookingId) {
+        BookingDepositNotiDto booking = bookingService.getBookingDepositByBookingId(bookingId);
+        return ResponseEntity.ok(booking);
+    }
 
+    @GetMapping("/getStartDateTimeByBookingId/{bookingId}")
+    public ResponseEntity<LocalDateTime> getStartDateTimeByBookingId(@PathVariable Long bookingId) {
+        LocalDateTime startDateTime = bookingService.getStartDateTimeByBookingId(bookingId);
+        return ResponseEntity.ok(startDateTime);
+    }
 }

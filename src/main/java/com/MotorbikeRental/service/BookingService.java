@@ -56,4 +56,8 @@ public interface BookingService {
     boolean changeDepositCanceled(Long bookingId);
 
     List<BookingRequest> getAllBooking();
+
+    BookingDepositNotiDto getBookingDepositByBookingId(Long bookingId);
+
+    LocalDateTime getStartDateTimeByBookingId(Long bookingId);
 }
