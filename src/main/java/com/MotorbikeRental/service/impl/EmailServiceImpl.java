@@ -47,7 +47,7 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom(fromEmail);
             mimeMessageHelper.setTo(user.getEmail());
-            mimeMessageHelper.setSubject("Verify Registration");
+            mimeMessageHelper.setSubject("Xác thực Email");
 
             Context context = new Context();
             context.setVariable("userName",user.getFirstName()+ user.getLastName());
