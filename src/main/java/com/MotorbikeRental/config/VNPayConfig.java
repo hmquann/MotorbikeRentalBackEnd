@@ -20,7 +20,8 @@ import java.util.*;
 public class VNPayConfig {
 
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_ReturnUrl = "http://localhost:8080/api/payment/return";
+    //public static String vnp_ReturnUrl = "http://localhost:8080/api/payment/return";
+    public static String vnp_ReturnUrl = "https://rentalmotorbikewebapp.azurewebsites.net/api/payment/return";
     public static String vnp_TmnCode = "XE80KNIC";
     public static String secretKey = "YAE86FY8SBZAY8Y372H9A98CFD9N3WWI";
     public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
