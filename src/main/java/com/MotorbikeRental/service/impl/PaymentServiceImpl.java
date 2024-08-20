@@ -119,7 +119,8 @@ public class PaymentServiceImpl implements PaymentService {
     public ResponseEntity<Void> returnPayment(String vnp_ResponseCode, BigDecimal amount, Long id, String vnp_TxnRef) {
         Optional<Transaction> optionalTransaction = transactionRepository.findByVnpTxnRef(vnp_TxnRef);
         if (!optionalTransaction.isPresent()) {
-            String redirectUrl = "http://localhost:3000/payment-failed";
+        //    String redirectUrl = "http://localhost:3000/payment-failed";
+            String redirectUrl = "https://mimotor.online/payment-failed";
             return ResponseEntity.status(HttpStatus.FOUND)
                     .header("Location", redirectUrl)
                     .build();
@@ -128,7 +129,9 @@ public class PaymentServiceImpl implements PaymentService {
         Transaction transaction = optionalTransaction.get();
 
         if (transaction.isProcessed()) {
-            String redirectUrl = "http://localhost:3000/wallet";
+            //String redirectUrl = "http://localhost:3000/wallet";
+            String redirectUrl = "https://mimotor.online/wallet";
+            https://rentalmotorbikewebapp.azurewebsites.net
             return ResponseEntity.status(HttpStatus.FOUND)
                     .header("Location", redirectUrl)
                     .build();
@@ -142,7 +145,8 @@ public class PaymentServiceImpl implements PaymentService {
             transaction.setStatus(TransactionStatus.SUCCESS);
             transactionRepository.save(transaction);
 
-            String redirectUrl = "http://localhost:3000/payment-success";
+            //String redirectUrl = "http://localhost:3000/payment-success";
+            String redirectUrl = "https://mimotor.online/payment-success";
             return ResponseEntity.status(HttpStatus.FOUND)
                     .header("Location", redirectUrl)
                     .build();
@@ -152,7 +156,8 @@ public class PaymentServiceImpl implements PaymentService {
             transaction.setStatus(TransactionStatus.FAILED);
             transactionRepository.save(transaction);
 
-            String redirectUrl = "http://localhost:3000/payment-failed";
+//            String redirectUrl = "http://localhost:3000/payment-failed";
+            String redirectUrl = "https://mimotor.online/payment-failed";
             return ResponseEntity.status(HttpStatus.FOUND)
                     .header("Location", redirectUrl)
                     .build();
