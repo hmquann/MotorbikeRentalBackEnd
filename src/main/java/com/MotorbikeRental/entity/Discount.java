@@ -22,8 +22,10 @@ public class Discount {
 
     private String code;
 
+    @Column(columnDefinition = "nvarchar(255)")
     private String name;
 
+    @Column(columnDefinition = "nvarchar(255)")
     private String description;
 
     @Enumerated(EnumType.STRING)
