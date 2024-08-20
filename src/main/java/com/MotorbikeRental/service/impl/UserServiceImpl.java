@@ -259,21 +259,65 @@ public class UserServiceImpl implements UserService {
             if (currentBalance.compareTo(amount) < 0) {
                 throw new Exception("Insufficient money");
             }
-            user.setBalance(currentBalance.subtract(amount));
-            userRepository.save(user);
-            String transactionCode = generateTransactionCode(userId);
-            Transaction transaction = new Transaction();
-            transaction.setUsers(user);
-            transaction.setAmount(amount);
-            transaction.setProcessed(false);
-            transaction.setTransactionDate(LocalDateTime.now());
-            transaction.setType(TransactionType.WITHDRAW);
-            transaction.setStatus(TransactionStatus.PENDING);
-            transaction.setDescription("Rút tiền khỏi ví "+ "- Mã giao dịch: " + transactionCode);
-            transaction.setAccountNumber(accountNumber);
-            transaction.setBankName(bankName);
+            boolean isAdmin = user.getRoles().stream()
+                    .anyMatch(role -> role.getName().equals("ADMIN"));
 
-            transactionRepository.save(transaction);
+            if (isAdmin) {
+                user.setBalance(currentBalance.subtract(amount));
+                userRepository.save(user);
+
+                Transaction transaction = new Transaction();
+                transaction.setUsers(user);
+                transaction.setAmount(amount);
+                transaction.setProcessed(true);
+                transaction.setTransactionDate(LocalDateTime.now());
+                transaction.setType(TransactionType.WITHDRAW);
+                transaction.setStatus(TransactionStatus.SUCCESS);
+                transaction.setDescription("Rút tiền khỏi ví " + "- Mã giao dịch: " + generateTransactionCode(userId));
+                transaction.setAccountNumber(accountNumber);
+                transaction.setBankName(bankName);
+                transactionRepository.save(transaction);
+            } else {
+                user.setBalance(currentBalance.subtract(amount));
+                userRepository.save(user);
+
+                String transactionCode = generateTransactionCode(userId);
+                Transaction transaction = new Transaction();
+                transaction.setUsers(user);
+                transaction.setAmount(amount);
+                transaction.setProcessed(false);
+                transaction.setTransactionDate(LocalDateTime.now());
+                transaction.setType(TransactionType.WITHDRAW);
+                transaction.setStatus(TransactionStatus.PENDING);
+                transaction.setDescription("Rút tiền khỏi ví " + "- Mã giao dịch: " + transactionCode);
+                transaction.setAccountNumber(accountNumber);
+                transaction.setBankName(bankName);
+                transactionRepository.save(transaction);
+
+
+                Long mainAdminId = 1L;
+                Optional<User> optionalAdmin = userRepository.findById(mainAdminId);
+                if (!optionalAdmin.isPresent()) {
+                    throw new Exception("Admin account not found");
+                }
+
+                User admin = optionalAdmin.get();
+
+                BigDecimal adminCurrentBalance = admin.getBalance();
+                admin.setBalance(adminCurrentBalance.add(amount));
+                userRepository.save(admin);
+
+                Transaction adminTransaction = new Transaction();
+                adminTransaction.setUsers(admin);
+                adminTransaction.setAmount(amount);
+                adminTransaction.setProcessed(true);
+                adminTransaction.setTransactionDate(LocalDateTime.now());
+                adminTransaction.setType(TransactionType.WITHDRAW_REQUEST);
+                adminTransaction.setStatus(TransactionStatus.SUCCESS);
+                adminTransaction.setDescription("Yêu cầu rút tiền từ " + user.getFirstName() + " " + user.getLastName() + " - " +
+                        "Mã giao dịch :" + transactionCode);
+                transactionRepository.save(adminTransaction);
+            }
         }else {
             throw new Exception("User not found");
         }
@@ -313,6 +357,25 @@ public class UserServiceImpl implements UserService {
                     User user = transaction.getUsers();
                     user.setBalance(user.getBalance().add(transaction.getAmount()));
                     userRepository.save(user);
+
+                    Long mainAdminId = 1L;
+                    Optional<User> optionalAdmin = userRepository.findById(mainAdminId);
+                    if (optionalAdmin.isPresent()) {
+                        User admin = optionalAdmin.get();
+                        BigDecimal adminCurrentBalance = admin.getBalance();
+                        admin.setBalance(adminCurrentBalance.subtract(transaction.getAmount()));
+                        userRepository.save(admin);
+
+                        Transaction adminTransaction = new Transaction();
+                        adminTransaction.setUsers(admin);
+                        adminTransaction.setAmount(transaction.getAmount());
+                        adminTransaction.setProcessed(true);
+                        adminTransaction.setTransactionDate(LocalDateTime.now());
+                        adminTransaction.setType(TransactionType.REFUND_WITHDRAW);
+                        adminTransaction.setStatus(TransactionStatus.SUCCESS);
+                        adminTransaction.setDescription("Hoàn trả tiền rút cho " + user.getFirstName() + " " + user.getLastName());
+                        transactionRepository.save(adminTransaction);
+                    }
 
                     transaction.setStatus(TransactionStatus.FAILED);
                     transaction.setProcessed(true);

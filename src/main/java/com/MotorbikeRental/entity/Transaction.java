@@ -41,10 +41,10 @@ public class Transaction {
     @Column(columnDefinition = "nvarchar(255)")
     private String description;
 
-    @Column(name = "account_number", nullable = false)
+    @Column(name = "account_number")
     private String accountNumber;
 
-    @Column(name = "bank_name", nullable = false,columnDefinition = "nvarchar(255)")
+    @Column(name = "bank_name",columnDefinition = "nvarchar(255)")
     private String bankName;
 
     @Override
