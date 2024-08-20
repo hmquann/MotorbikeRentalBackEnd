@@ -42,16 +42,16 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     public ModelDto createModel(ModelDto modelDto) {
-        // Kiểm tra xem tên model đã tồn tại chưa
+
         if (modelRepository.existsByModelName(modelDto.getModelName())) {
             throw new ValidationException("Model name already exists: " + modelDto.getModelName());
         }
 
-        // Nếu có thông tin về brand và brandId, kiểm tra và thêm model vào brand
+
         if (modelDto.getBrand().getBrandId() != null) {
             BrandDto brandDto = brandService.getBrand(modelDto.getBrand().getBrandId());
             if (brandDto != null) {
-                // Tạo một đối tượng Model từ ModelDto
+
                 Model model = new Model();
                 model.setModelName(modelDto.getModelName());
                 model.setCylinderCapacity(modelDto.getCylinderCapacity());
@@ -66,10 +66,10 @@ public class ModelServiceImpl implements ModelService {
 
                 model.setBrand(brand);
 
-                // Lưu model vào cơ sở dữ liệu
+
                 modelRepository.save(model);
 
-                // Chuyển đổi từ Model sang ModelDto và trả về
+
                 return convertToDto(model);
             } else {
                 throw new RuntimeException("Brand not found with id: " + modelDto.getBrand().getBrandId());

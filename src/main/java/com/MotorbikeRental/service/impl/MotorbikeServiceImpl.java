@@ -92,6 +92,15 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 //            dto.setModel(modelDto);
             dto.setUser(userDto);
 
+            double avgRate = motorbike.getBookingList().stream()
+                    .map(Booking::getFeedback)
+                    .filter(Objects::nonNull)
+                    .mapToInt(FeedBack::getRate)
+                    .average()
+                    .orElse(0.0);
+
+            dto.setAvgRate(avgRate);
+
             return dto;
         }
 
@@ -154,12 +163,11 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
 
         }
 
-
-
     @Override
     public List<Motorbike> getMotorbikeByLessorId() {
         return null;
     }
+
 
     @Override
     public List<MotorbikeDto> getAllMotorbikeByStatus(MotorbikeStatus status) {
@@ -193,7 +201,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
         Motorbike motorbike=new Motorbike();
         motorbike.setMotorbikeAddress(registerMotorbikeDto.getMotorbikeAddress());
         motorbike.setMotorbikePlate(registerMotorbikeDto.getMotorbikePlate());
-        motorbike.setConstraintMotorbike(registerMotorbikeDto.getConstraintMotorbike());
+        motorbike.setConstraintMotorbike(registerMotorbikeDto.getConstraintMotorbike().isEmpty()?registerMotorbikeDto.getConstraintMotorbike():"Không có");
         motorbike.setModel(modelRepository.findById(registerMotorbikeDto.getModelId()).get());
         motorbike.setUser(user.get());
         motorbike.setDelivery(registerMotorbikeDto.isDelivery());
@@ -214,15 +222,14 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
     @Override
     public Page<MotorbikeDto> listMotorbikeByFilter(FilterMotorbikeDto filterMotorbikeDto, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Motorbike> filter = motorbikeFilterRepository.listMotorbikeByFilter(
+        List<Motorbike> filter = motorbikeFilterRepository.listMotorbikeByFilter(
                 filterMotorbikeDto.getStartDate(),
                 filterMotorbikeDto.getEndDate(),
                 filterMotorbikeDto.getBrandId(),
                 filterMotorbikeDto.getModelType(),
                 filterMotorbikeDto.getIsDelivery(),
                 filterMotorbikeDto.getMinPrice(),
-                filterMotorbikeDto.getMaxPrice(),
-                pageable
+                filterMotorbikeDto.getMaxPrice()
         );
 
             List<MotorbikeDto> dtoList = filter.stream()
@@ -251,7 +258,13 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                 }
             }
         }
-            return  new PageImpl<>(dtoList, pageable, filter.getTotalElements());
+        int start = (int) pageable.getOffset();
+        if (start >= dtoList.size()) {
+            return new PageImpl<>(Collections.emptyList(), pageable, dtoList.size());
+        }
+        int end = Math.min((start + pageable.getPageSize()), dtoList.size());
+        List<MotorbikeDto> pagedDtoList = dtoList.subList(start, end);
+            return  new PageImpl<>(pagedDtoList, pageable, dtoList.size());
     }
 
 
