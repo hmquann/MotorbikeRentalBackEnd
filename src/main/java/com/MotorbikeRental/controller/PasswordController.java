@@ -25,7 +25,9 @@ public class PasswordController {
     public ResponseEntity<User> forgotPassword(@RequestParam String email){
         passwordService.checkEmail(email);
         User user = userService.getUserByEmail(email);
-        String url = "http://localhost:3000/password/resetnewpassword/"+user.getToken();
+
+        //String url = "http://localhost:3000/password/resetnewpassword/"+user.getToken();
+        String url = "https://mimotorbe-htccgvbqdzb6h2em.eastus2-01.azurewebsites.net/password/resetnewpassword/"+user.getToken();
         emailService.sendForgotPasswordEmail(user,url);
 
         return ResponseEntity.ok(user);
