@@ -243,7 +243,7 @@ public class MotorbikeServiceImpl  implements MotorbikeService {
                         motorbikeDto.getLatitude() != null && motorbikeDto.getLongitude() != null) {
                     if (haversine.CalculateTheDistanceAsTheCrowFlies(
                             motorbikeDto.getLatitude(), motorbikeDto.getLongitude(),
-                            filterMotorbikeDto.getLatitude(), filterMotorbikeDto.getLongitude()) > 1000000) {
+                            filterMotorbikeDto.getLatitude(), filterMotorbikeDto.getLongitude()) > 50) {
                         iterator.remove(); // Sử dụng iterator.remove() để xóa phần tử an toàn
                     }
                 }
