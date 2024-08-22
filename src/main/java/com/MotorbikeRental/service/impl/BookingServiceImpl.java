@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -61,6 +63,8 @@ public class BookingServiceImpl implements BookingService {
         booking.setLongitude(bookingRequest.getLongitude());
         booking.setLatitude(bookingRequest.getLatitude());
         booking.setStatus(PENDING);
+        booking.setDepositNoti(true);
+        booking.setDepositCanceled(true);
         bookingRepository.save(booking);
         return "booking done";
     }
@@ -232,15 +236,56 @@ public class BookingServiceImpl implements BookingService {
         List<LocalDate> dates = new ArrayList<>();
 
         for (Booking booking : bookings) {
-            LocalDate start = booking.getStartDate().toLocalDate();
-            LocalDate end = booking.getEndDate().toLocalDate();
-
-            while (!start.isAfter(end)) {
-                dates.add(start);
-                start = start.plusDays(1);
+            if(booking.getStatus() == PENDING ||
+                    booking.getStatus() == BookingStatus.PENDING_DEPOSIT ||
+                        booking.getStatus() == BookingStatus.DEPOSIT_MADE ||
+                            booking.getStatus() == BookingStatus.RENTING ||
+                                booking.getStatus() == BookingStatus.BUSY){
+                LocalDate start = booking.getStartDate().toLocalDate();
+                LocalDate end = booking.getEndDate().toLocalDate();
+                while (!start.isAfter(end)) {
+                    dates.add(start);
+                    start = start.plusDays(1);
+                }
             }
+
+
+
         }
         return dates;
     }
+
+    @Override
+    public String saveDepositTime(DepositTimeDto depositTimeDto) {
+        Booking booking = bookingRepository.findByBookingId(depositTimeDto.getBookingId());
+        booking.setDepositTime(depositTimeDto.getDepositTime());
+        bookingRepository.save(booking);
+        return "save deposit time done";
+    }
+
+    @Override
+    public boolean changeDepositNotification(Long bookingId) {
+        Booking booking = bookingRepository.findByBookingId(bookingId);
+        booking.setDepositNoti(false);
+        bookingRepository.save(booking);
+        return false ;
+    }
+
+    @Override
+    public boolean changeDepositCanceled(Long bookingId) {
+        Booking booking = bookingRepository.findByBookingId(bookingId);
+        booking.setDepositCanceled(false);
+        bookingRepository.save(booking);
+        return false ;
+    }
+
+    @Override
+    public List<BookingRequest> getAllBooking() {
+        List<Booking> bookingList = bookingRepository.getAllBooking();
+        return bookingList.stream()
+                .map(booking -> mapper.map(booking, BookingRequest.class))
+                .collect(Collectors.toList());
+    }
+
 
 }

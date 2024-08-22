@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        /* Thêm CSS ở đây */
+        .email-container {
+            font-family: Arial, sans-serif;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background-color: #F97316;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .body {
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+        .green-button {
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <h1>Thông báo hạn đặt cọc</h1>
+    </div>
+    <div class="body">
+        <p>Xin chào <strong th:text="${userName}"></strong>,</p>
+        <p>Bạn có 1 chuyến đã được phê duyệt và sắp hết hạn đặt cọc!</p>
+        <p>Chi tiết chuyến:</p>
+        <ul>
+            <li>Xe: <strong th:text="${motorbikeName}"></strong></li>
+            <li>Biển số xe: <strong th:text="${motorbikePlate}"></strong></li>
+            <li>Thời gian đặt: <strong th:text="${#temporals.format(bookingTime, 'HH:mm dd/MM/yyyy')}"></strong></li>
+            <li>Thời gian nhận xe: <strong th:text="${#temporals.format(startDate, 'HH:mm dd/MM/yyyy')}"></strong></li>
+            <li>Thời gian trả xe: <strong th:text="${#temporals.format(endDate, 'HH:mm dd/MM/yyyy')}"></strong></li>
+            <li>Địa chỉ giao nhận xe: <strong th:text="${receiveLocation}"></strong></li>
+            <li>Tiền cọc: <strong th:text="${depositPrice}"></strong></li>
+            <li>Tổng tiền: <strong th:text="${totalPrice}"></strong></li>
+        </ul>
+        <p><i style="color: red">Sau 5 giờ kể từ khi bạn thuê chiếc xe này hệ thống chưa ghi nhận được việc bạn đã đặt cọc thành công, bạn vui lòng thanh toán tiền cọc để hoàn tất thủ tục.</i></p>
+        <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi. Nếu có vấn đề cần thắc mắc bạn có thể reply trực tiếp qua email này, chúng tôi rất hân hạnh được hỗ trợ bạn!</p>
+    </div>
+    <div class="footer">
+        <p>© 2024 Motor Rental Service Company. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>

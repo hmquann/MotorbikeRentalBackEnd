@@ -487,6 +487,40 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
+    public String sendEmailDepositNotification(EmailSuccessBookingDto emailSuccessBookingDto) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(emailSuccessBookingDto.getRenterEmail());
+            mimeMessageHelper.setSubject("Thông Báo Hạn Đặt Cọc");
+
+            Context context = new Context();
+            context.setVariable("userName", emailSuccessBookingDto.getRenterName());
+            context.setVariable("motorbikeName", emailSuccessBookingDto.getMotorbikeName());
+            context.setVariable("motorbikePlate", emailSuccessBookingDto.getMotorbikePlate());
+            context.setVariable("bookingTime", emailSuccessBookingDto.getBookingTime());
+            context.setVariable("startDate", emailSuccessBookingDto.getStartDate());
+            context.setVariable("endDate", emailSuccessBookingDto.getEndDate());
+            context.setVariable("receiveLocation", emailSuccessBookingDto.getReceiveLocation());
+
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedTotalPrice = currencyFormatter.format(emailSuccessBookingDto.getTotalPrice());
+            context.setVariable("totalPrice", formattedTotalPrice);
+            String formattedDepositPrice = currencyFormatter.format(emailSuccessBookingDto.getTotalPrice() * 30/ 100);
+            context.setVariable("depositPrice", formattedDepositPrice);
+            String htmlContent = templateEngine.process("sendEmailDepositNoti", context);
+            mimeMessageHelper.setText(htmlContent, true);
+
+
+            javaMailSender.send(mimeMessage);
+            return "mail send";
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public String sendEmailRentingBooking(EmailSuccessBookingDto emailSuccessBookingDto) {
         try{
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();

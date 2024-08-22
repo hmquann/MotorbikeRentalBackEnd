@@ -42,16 +42,16 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     public ModelDto createModel(ModelDto modelDto) {
-        // Kiểm tra xem tên model đã tồn tại chưa
+
         if (modelRepository.existsByModelName(modelDto.getModelName())) {
             throw new ValidationException("Model name already exists: " + modelDto.getModelName());
         }
 
-        // Nếu có thông tin về brand và brandId, kiểm tra và thêm model vào brand
+
         if (modelDto.getBrand().getBrandId() != null) {
             BrandDto brandDto = brandService.getBrand(modelDto.getBrand().getBrandId());
             if (brandDto != null) {
-                // Tạo một đối tượng Model từ ModelDto
+
                 Model model = new Model();
                 model.setModelName(modelDto.getModelName());
                 model.setCylinderCapacity(modelDto.getCylinderCapacity());
@@ -66,10 +66,10 @@ public class ModelServiceImpl implements ModelService {
 
                 model.setBrand(brand);
 
-                // Lưu model vào cơ sở dữ liệu
+
                 modelRepository.save(model);
 
-                // Chuyển đổi từ Model sang ModelDto và trả về
+
                 return convertToDto(model);
             } else {
                 throw new RuntimeException("Brand not found with id: " + modelDto.getBrand().getBrandId());
@@ -126,6 +126,42 @@ public class ModelServiceImpl implements ModelService {
         return modelDto;
 
     }
+    @Override
+    public ModelDto updateModel(Long modelId, ModelDto modelDto) {
+        Model existingModel = modelRepository.findById(modelId)
+                .orElseThrow(() -> new EntityNotFoundException("Model not found with id: " + modelId));
+
+        if (!existingModel.getModelName().equals(modelDto.getModelName()) &&
+                modelRepository.existsByModelName(modelDto.getModelName())) {
+            throw new ValidationException("Model name already exists: " + modelDto.getModelName());
+        }
+
+        existingModel.setModelName(modelDto.getModelName());
+        existingModel.setCylinderCapacity(modelDto.getCylinderCapacity());
+        existingModel.setFuelType(modelDto.getFuelType());
+        existingModel.setFuelConsumption(modelDto.getFuelConsumption());
+        existingModel.setModelType(modelDto.getModelType());
+
+        if (modelDto.getBrand() != null && modelDto.getBrand().getBrandId() != null) {
+            BrandDto brandDto = brandService.getBrand(modelDto.getBrand().getBrandId());
+            if (brandDto != null) {
+                Brand brand = new Brand();
+                brand.setBrandId(brandDto.getBrandId());
+                brand.setBrandName(brandDto.getBrandName());
+                brand.setOrigin(brandDto.getBrandOrigin());
+                existingModel.setBrand(brand);
+            } else {
+                throw new RuntimeException("Brand not found with id: " + modelDto.getBrand().getBrandId());
+            }
+        } else {
+            throw new ValidationException("BrandId must not be null");
+        }
+
+        Model updatedModel = modelRepository.save(existingModel);
+
+        return convertToDto(updatedModel);
+    }
+
 
 
 }

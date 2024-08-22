@@ -49,4 +49,11 @@ public interface BookingService {
 
     List<LocalDate> getDatesByMotorbikeId(Long motorbikeId);
 
+    String saveDepositTime(DepositTimeDto depositTimeDto);
+
+    boolean changeDepositNotification(Long bookingId);
+
+    boolean changeDepositCanceled(Long bookingId);
+
+    List<BookingRequest> getAllBooking();
 }

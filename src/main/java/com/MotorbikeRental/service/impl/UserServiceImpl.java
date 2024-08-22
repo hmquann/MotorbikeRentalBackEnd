@@ -11,6 +11,7 @@ import com.MotorbikeRental.repository.TransactionRepository;
 import com.MotorbikeRental.repository.UserRepository;
 import com.MotorbikeRental.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +19,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -245,8 +250,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-
-    public void withdrawMoney(Long userId, BigDecimal amount) throws Exception {
+    @Transactional
+    public void withdrawMoney(Long userId, BigDecimal amount, String accountNumber, String bankName) throws Exception {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -254,22 +259,134 @@ public class UserServiceImpl implements UserService {
             if (currentBalance.compareTo(amount) < 0) {
                 throw new Exception("Insufficient money");
             }
-            BigDecimal newBalance = currentBalance.subtract(amount);
-            user.setBalance(newBalance);
-            userRepository.save(user);
+            boolean isAdmin = user.getRoles().stream()
+                    .anyMatch(role -> role.getName().equals("ADMIN"));
 
-            String transactionCode = generateTransactionCode(userId);
+            if (isAdmin) {
+                user.setBalance(currentBalance.subtract(amount));
+                userRepository.save(user);
 
-            Transaction transaction = new Transaction();
-            transaction.setUsers(user);
-            transaction.setAmount(amount);
-            transaction.setProcessed(true);
-            transaction.setTransactionDate(LocalDateTime.now());
-            transaction.setType(TransactionType.WITHDRAW);
-            transaction.setStatus(TransactionStatus.SUCCESS);
-            transaction.setDescription("Rút tiền khỏi ví "+ "- Mã giao dịch: " + transactionCode);
-            transactionRepository.save(transaction);
+                Transaction transaction = new Transaction();
+                transaction.setUsers(user);
+                transaction.setAmount(amount);
+                transaction.setProcessed(true);
+                transaction.setTransactionDate(LocalDateTime.now());
+                transaction.setType(TransactionType.WITHDRAW);
+                transaction.setStatus(TransactionStatus.SUCCESS);
+                transaction.setDescription("Rút tiền khỏi ví " + "- Mã giao dịch: " + generateTransactionCode(userId));
+                transaction.setAccountNumber(accountNumber);
+                transaction.setBankName(bankName);
+                transactionRepository.save(transaction);
+            } else {
+                user.setBalance(currentBalance.subtract(amount));
+                userRepository.save(user);
+
+                String transactionCode = generateTransactionCode(userId);
+                Transaction transaction = new Transaction();
+                transaction.setUsers(user);
+                transaction.setAmount(amount);
+                transaction.setProcessed(false);
+                transaction.setTransactionDate(LocalDateTime.now());
+                transaction.setType(TransactionType.WITHDRAW);
+                transaction.setStatus(TransactionStatus.PENDING);
+                transaction.setDescription("Rút tiền khỏi ví " + "- Mã giao dịch: " + transactionCode);
+                transaction.setAccountNumber(accountNumber);
+                transaction.setBankName(bankName);
+                transactionRepository.save(transaction);
+
+
+                Long mainAdminId = 1L;
+                Optional<User> optionalAdmin = userRepository.findById(mainAdminId);
+                if (!optionalAdmin.isPresent()) {
+                    throw new Exception("Admin account not found");
+                }
+
+                User admin = optionalAdmin.get();
+
+                BigDecimal adminCurrentBalance = admin.getBalance();
+                admin.setBalance(adminCurrentBalance.add(amount));
+                userRepository.save(admin);
+
+                Transaction adminTransaction = new Transaction();
+                adminTransaction.setUsers(admin);
+                adminTransaction.setAmount(amount);
+                adminTransaction.setProcessed(true);
+                adminTransaction.setTransactionDate(LocalDateTime.now());
+                adminTransaction.setType(TransactionType.WITHDRAW_REQUEST);
+                adminTransaction.setStatus(TransactionStatus.SUCCESS);
+                adminTransaction.setDescription("Yêu cầu rút tiền từ " + user.getFirstName() + " " + user.getLastName() + " - " +
+                        "Mã giao dịch :" + transactionCode);
+                transactionRepository.save(adminTransaction);
+            }
+        }else {
+            throw new Exception("User not found");
         }
+    }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void approveWithdrawal(Long transactionId) throws Exception {
+        Optional<Transaction> optionalTransaction = transactionRepository.findById(transactionId);
+        if (!optionalTransaction.isPresent()) {
+            throw new Exception("Transaction not found");
+        }
+
+        Transaction transaction = optionalTransaction.get();
+
+        if (!transaction.getStatus().equals(TransactionStatus.PENDING)) {
+            throw new Exception("Transaction has expired and cannot be approved");
+        }
+
+        transaction.setStatus(TransactionStatus.SUCCESS);
+        transactionRepository.save(transaction);
+        transaction.setProcessed(true);
+        transactionRepository.save(transaction);
+    }
+
+    @Scheduled(fixedRate = 14400000) //test để hàm chạy mỗi 1 tiếng
+    @Transactional
+    public void checkPendingTransactions() {
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<Transaction> page;
+        LocalDateTime now = LocalDateTime.now();
+        do {
+            page = transactionRepository.findByTypeAndStatus(TransactionType.WITHDRAW, TransactionStatus.PENDING, pageable);
+
+            for (Transaction transaction : page.getContent()) {
+                if (Duration.between(transaction.getTransactionDate(), now).getSeconds() > 60 * 60 * 24) { // tính toán xem đã quá 1 ngày hay chưa
+                    User user = transaction.getUsers();
+                    user.setBalance(user.getBalance().add(transaction.getAmount()));
+                    userRepository.save(user);
+
+                    Long mainAdminId = 1L;
+                    Optional<User> optionalAdmin = userRepository.findById(mainAdminId);
+                    if (optionalAdmin.isPresent()) {
+                        User admin = optionalAdmin.get();
+                        BigDecimal adminCurrentBalance = admin.getBalance();
+                        admin.setBalance(adminCurrentBalance.subtract(transaction.getAmount()));
+                        userRepository.save(admin);
+
+                        Transaction adminTransaction = new Transaction();
+                        adminTransaction.setUsers(admin);
+                        adminTransaction.setAmount(transaction.getAmount());
+                        adminTransaction.setProcessed(true);
+                        adminTransaction.setTransactionDate(LocalDateTime.now());
+                        adminTransaction.setType(TransactionType.REFUND_WITHDRAW);
+                        adminTransaction.setStatus(TransactionStatus.SUCCESS);
+                        adminTransaction.setDescription("Hoàn trả tiền rút cho " + user.getFirstName() + " " + user.getLastName());
+                        transactionRepository.save(adminTransaction);
+                    }
+
+                    transaction.setStatus(TransactionStatus.FAILED);
+                    transaction.setProcessed(true);
+                    transactionRepository.save(transaction);
+
+                }
+            }
+
+            pageable = page.nextPageable();
+
+        } while (page.hasNext());
     }
 
     @Override
@@ -375,6 +492,58 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("User not found with id: " + userId);
         }
 }
+
+    @Override
+    public void refundSubtractMoney(Long userId, Long receiverId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            BigDecimal currentBalance = user.getBalance();
+            if (currentBalance.compareTo(amount) < 0) {
+                throw new Exception("Insufficient money");
+            }
+            BigDecimal newBalance = currentBalance.subtract(amount);
+            user.setBalance(newBalance);
+            userRepository.save(user);
+
+            String transactionCode = generateTransactionCode(userId);
+
+            Transaction transaction = new Transaction();
+            transaction.setUsers(user);
+            transaction.setAmount(amount);
+            transaction.setProcessed(true);
+            transaction.setTransactionDate(LocalDateTime.now());
+            transaction.setType(TransactionType.REFUND);
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            transaction.setDescription("Hoàn cọc xe " + motorbikeName + '(' + motorbikePlate + ')' + " - Mã giao dịch: " + transactionCode);
+            transactionRepository.save(transaction);
+
+
+            addMoney(receiverId, amount, motorbikeName, motorbikePlate, transactionCode);
+        }
+    }
+
+    @Override
+    public void refundAddMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate, String transactionCode) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            BigDecimal currentBalance = user.getBalance();
+            BigDecimal newBalance = currentBalance.add(amount);
+            user.setBalance(newBalance);
+            userRepository.save(user);
+
+            Transaction transaction = new Transaction();
+            transaction.setUsers(user);
+            transaction.setAmount(amount);
+            transaction.setProcessed(true);
+            transaction.setTransactionDate(LocalDateTime.now());
+            transaction.setType(TransactionType.REFUND);
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            transaction.setDescription("Hoàn cọc xe " + motorbikeName + '(' + motorbikePlate + ')' + " - Mã giao dịch: " + transactionCode);
+            transactionRepository.save(transaction);
+        }
+    }
 
 }
 

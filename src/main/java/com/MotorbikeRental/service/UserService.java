@@ -30,7 +30,8 @@ public interface UserService {
     void activeUser(Long id);
 
     void updateUserBalance(Long id, BigDecimal balance);
-    void withdrawMoney(Long userId, BigDecimal amount) throws Exception;
+    void withdrawMoney(Long userId, BigDecimal amount,String accountNumber, String bankName) throws Exception;
+    void approveWithdrawal(Long transactionId) throws Exception;
     void subtractMoney(Long userId,Long receiverId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception;
     void addMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate, String transactionCode) throws Exception;
     void activeUserStatus(Long id);
@@ -48,4 +49,6 @@ public interface UserService {
 
     UserDto updateUserNotifications(Long userId, Boolean systemNoti, Boolean emailNoti, Boolean minimizeNoti);
 
+    void refundSubtractMoney(Long userId,Long receiverId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception;
+    void refundAddMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate, String transactionCode) throws Exception;
 }

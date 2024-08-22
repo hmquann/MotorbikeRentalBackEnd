@@ -2,6 +2,7 @@ package com.MotorbikeRental.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -39,6 +40,12 @@ public class Transaction {
 
     @Column(columnDefinition = "nvarchar(255)")
     private String description;
+
+    @Column(name = "account_number")
+    private String accountNumber;
+
+    @Column(name = "bank_name",columnDefinition = "nvarchar(255)")
+    private String bankName;
 
     @Override
     public String toString() {
