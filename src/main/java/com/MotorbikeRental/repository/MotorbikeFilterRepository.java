@@ -85,19 +85,23 @@ public class MotorbikeFilterRepository {
             );
 
             // Predicate for bookings that are not rejected
-            Predicate statusNotRejectedPredicate = criteriaBuilder.notEqual(
-                    bookingRoot.get("status"), BookingStatus.REJECTED
+            Predicate statusPredicate = criteriaBuilder.and(
+                    criteriaBuilder.notEqual(bookingRoot.get("status"), BookingStatus.REJECTED),
+                    criteriaBuilder.notEqual(bookingRoot.get("status"), BookingStatus.CANCELED),
+                    criteriaBuilder.notEqual(bookingRoot.get("status"), BookingStatus.DONE)
             );
 
             // Combine the predicates
             subquery.where(criteriaBuilder.and(
                     criteriaBuilder.or(dateRangePredicate1, dateRangePredicate2),
-                    statusNotRejectedPredicate
+                    statusPredicate
+                    // lấy ra pending....
             ));
 
             // Predicate to select motorbikes that are not in the subquery result
             Predicate noBookingDuringTimePredicate = criteriaBuilder.not(
                     root.get("id").in(subquery)
+                    // lấy ra cancel
             );
 
             // Add the predicate to the main query

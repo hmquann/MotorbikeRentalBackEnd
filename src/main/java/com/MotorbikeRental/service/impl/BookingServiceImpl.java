@@ -26,12 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.time.LocalDate;
-import java.util.List;
 
 import static com.MotorbikeRental.entity.BookingStatus.PENDING;
 
@@ -127,16 +124,37 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.getBookingCountForLastTwoMonths(startDate, endDate);
     }
 
-    @Override
     public Map<String, Long> mainLocationPercentage() {
-        Map<String,Long>mainLocationCount=new HashMap<>();
-        mainLocationCount.put("Hà Nội",bookingRepository.countBookingByAddress("Hà Nội"));
-        mainLocationCount.put("Hải Phòng",bookingRepository.countBookingByAddress("Hải Phòng"));
-        mainLocationCount.put(("Đà Nẵng"),bookingRepository.countBookingByAddress("Đà Nẵng"));
-        mainLocationCount.put(("Hồ Chí Minh"),bookingRepository.countBookingByAddress("thành phố Hồ Chí Minh"));
-        mainLocationCount.put("Khác",bookingRepository.countDoneBooking()-bookingRepository.countBookingByAddress("Hà Nội")
-        -bookingRepository.countBookingByAddress("Hải Phòng")-bookingRepository.countBookingByAddress("Đà Nẵng")-
-                bookingRepository.countBookingByAddress("thành phố Hồ Chí Minh"));
+        List<Object[]> locationCounts = bookingRepository.countBookingsByLocation();
+
+        // Tạo một danh sách các địa phương và số lượng booking tương ứng
+        List<Map.Entry<String, Long>> locationList = new ArrayList<>();
+        for (Object[] row : locationCounts) {
+            String location = ((String) row[0]).trim();
+            Long count = (Long) row[1];
+            locationList.add(new AbstractMap.SimpleEntry<>(location, count));
+        }
+
+        // Sắp xếp danh sách theo số lượng booking giảm dần
+        locationList.sort((a, b) -> Long.compare(b.getValue(), a.getValue()));
+
+        Map<String, Long> mainLocationCount = new LinkedHashMap<>();
+        long otherCount = 0L;
+
+        // Lấy top 4 địa điểm
+        for (int i = 0; i < locationList.size(); i++) {
+            if (i < 4) {
+                mainLocationCount.put(locationList.get(i).getKey(), locationList.get(i).getValue());
+            } else {
+                otherCount += locationList.get(i).getValue();
+            }
+        }
+
+        // Thêm phần còn lại vào "Khác"
+        if (otherCount > 0) {
+            mainLocationCount.put("Khác", otherCount);
+        }
+
         return mainLocationCount;
     }
 
