@@ -20,4 +20,7 @@ public class UpdateMotorbikeDto {
 
     private String motorbikeAddress;
 
+    private Double longitude;
+
+    private Double latitude;
 }
