@@ -98,6 +98,12 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
             "WHERE b.status = 'DONE'")
     Long countDoneBooking();
 
+    @Query("SELECT SUBSTRING_INDEX(b.receiveLocation, ',', -1), COUNT(b.bookingId) " +
+            "FROM Booking b " +
+            "WHERE b.status = 'DONE' " +
+            "GROUP BY SUBSTRING_INDEX(b.receiveLocation, ',', -1)")
+    List<Object[]> countBookingsByLocation();
+
     @Query("SELECT DISTINCT u FROM User u " +
             "WHERE u.id IN (" +
             "   SELECT b.motorbike.user.id FROM Booking b WHERE b.renter.id = :userId" +
@@ -119,5 +125,6 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     List<Booking> getAllBooking();
     @Query("SELECT b FROM Booking b WHERE b.motorbike.user.id = :lessorId")
     List<Booking> getAllBookingByLessorId(@Param("lessorId") Long lessorId);
+
 }
 

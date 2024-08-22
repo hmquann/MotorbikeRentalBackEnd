@@ -519,7 +519,7 @@ public class UserServiceImpl implements UserService {
             transactionRepository.save(transaction);
 
 
-            addMoney(receiverId, amount, motorbikeName, motorbikePlate, transactionCode);
+            refundAddMoney(receiverId, amount, motorbikeName, motorbikePlate, transactionCode);
         }
     }
 
@@ -538,10 +538,62 @@ public class UserServiceImpl implements UserService {
             transaction.setAmount(amount);
             transaction.setProcessed(true);
             transaction.setTransactionDate(LocalDateTime.now());
-            transaction.setType(TransactionType.REFUND);
+            transaction.setType(TransactionType.REFUND_RECEIVE);
             transaction.setStatus(TransactionStatus.SUCCESS);
-            transaction.setDescription("Hoàn cọc xe " + motorbikeName + '(' + motorbikePlate + ')' + " - Mã giao dịch: " + transactionCode);
+            transaction.setDescription("Nhận tiền hoàn cọc xe " + motorbikeName + '(' + motorbikePlate + ')' + " - Mã giao dịch: " + transactionCode);
             transactionRepository.save(transaction);
+        }
+    }
+
+    @Override
+    public void punishSubtractMoney(Long userId, Long receiverId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            BigDecimal currentBalance = user.getBalance();
+            if (currentBalance.compareTo(amount) < 0) {
+                throw new Exception("Insufficient money");
+            }
+            BigDecimal newBalance = currentBalance.subtract(amount);
+            user.setBalance(newBalance);
+            userRepository.save(user);
+
+            String transactionCode = generateTransactionCode(userId);
+
+            Transaction transaction = new Transaction();
+            transaction.setUsers(user);
+            transaction.setAmount(amount);
+            transaction.setProcessed(true);
+            transaction.setTransactionDate(LocalDateTime.now());
+            transaction.setType(TransactionType.PUNISH);
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            transaction.setDescription("Phạt tiền hủy chuyến xe " + motorbikeName + '(' + motorbikePlate + ')' + " - Mã giao dịch: " + transactionCode);
+            transactionRepository.save(transaction);
+
+            punishAddMoney(receiverId, amount, motorbikeName, motorbikePlate, transactionCode);
+        }
+    }
+
+    @Override
+    public void punishAddMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate, String transactionCode) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            BigDecimal currentBalance = user.getBalance();
+            BigDecimal newBalance = currentBalance.add(amount);
+            user.setBalance(newBalance);
+            userRepository.save(user);
+
+            Transaction transaction = new Transaction();
+            transaction.setUsers(user);
+            transaction.setAmount(amount);
+            transaction.setProcessed(true);
+            transaction.setTransactionDate(LocalDateTime.now());
+            transaction.setType(TransactionType.PUNISH_RECEIVE);
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            transaction.setDescription("Nhận tiền phạt hủy chuyến xe " + motorbikeName + '(' + motorbikePlate + ')' + " - Mã giao dịch: " + transactionCode);
+            transactionRepository.save(transaction);
+
         }
     }
 

@@ -24,10 +24,10 @@ public class Brand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long brandId;
 
-    @Column(name = "brand_name")
+    @Column(name = "brand_name", columnDefinition = "nvarchar(max)")
     private String brandName;
 
-    @Column(name="origin")
+    @Column(name="origin", columnDefinition = "nvarchar(max)")
     private String origin;
 
 

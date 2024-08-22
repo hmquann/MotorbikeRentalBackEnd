@@ -51,4 +51,8 @@ public interface UserService {
 
     void refundSubtractMoney(Long userId,Long receiverId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception;
     void refundAddMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate, String transactionCode) throws Exception;
+
+    void punishSubtractMoney(Long userId,Long receiverId, BigDecimal amount, String motorbikeName, String motorbikePlate) throws Exception;
+    void punishAddMoney(Long userId, BigDecimal amount, String motorbikeName, String motorbikePlate, String transactionCode) throws Exception;
+
 }

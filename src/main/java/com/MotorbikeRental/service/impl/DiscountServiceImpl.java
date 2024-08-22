@@ -111,6 +111,17 @@ public class DiscountServiceImpl implements DiscountService {
         }
     }
 
+    public void removeUserReferencesByDiscountId(Long discountId, Long userId) {
+        Discount discount = discountRepository.findById(discountId).orElseThrow(() -> new RuntimeException("Discount not found"));
+        for (User user : discount.getUsers()) {
+            if(user.getId() == userId) {
+                user.getDiscounts().remove(discount);
+                userRepository.save(user);
+                return;
+            }
+        }
+    }
+
 
     public boolean deleteDiscountById(Long id) {
         Discount discount = discountRepository.findById(id)
@@ -123,6 +134,7 @@ public class DiscountServiceImpl implements DiscountService {
     }
     @Override
     public boolean deleteDiscountByIdAndUserId(Long id, Long userId) {
+        removeUserReferencesByDiscountId(id, userId);
         Discount discount = discountRepository.findByDiscountIdAndUserId(id, userId);
         if (discount != null) {
             discountRepository.delete(discount);

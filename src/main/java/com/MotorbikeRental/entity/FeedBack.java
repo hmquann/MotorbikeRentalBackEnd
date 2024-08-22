@@ -1,13 +1,17 @@
 package com.MotorbikeRental.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name = "Feedback")
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class FeedBack {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
