@@ -125,37 +125,38 @@ public class BookingServiceImpl implements BookingService {
     }
 
     public Map<String, Long> mainLocationPercentage() {
-        List<Object[]> locationCounts = bookingRepository.countBookingsByLocation();
-
-        // Tạo một danh sách các địa phương và số lượng booking tương ứng
-        List<Map.Entry<String, Long>> locationList = new ArrayList<>();
-        for (Object[] row : locationCounts) {
-            String location = ((String) row[0]).trim();
-            Long count = (Long) row[1];
-            locationList.add(new AbstractMap.SimpleEntry<>(location, count));
-        }
-
-        // Sắp xếp danh sách theo số lượng booking giảm dần
-        locationList.sort((a, b) -> Long.compare(b.getValue(), a.getValue()));
-
-        Map<String, Long> mainLocationCount = new LinkedHashMap<>();
-        long otherCount = 0L;
-
-        // Lấy top 4 địa điểm
-        for (int i = 0; i < locationList.size(); i++) {
-            if (i < 4) {
-                mainLocationCount.put(locationList.get(i).getKey(), locationList.get(i).getValue());
-            } else {
-                otherCount += locationList.get(i).getValue();
-            }
-        }
-
-        // Thêm phần còn lại vào "Khác"
-        if (otherCount > 0) {
-            mainLocationCount.put("Khác", otherCount);
-        }
-
-        return mainLocationCount;
+//        List<Object[]> locationCounts = bookingRepository.countBookingsByLocation();
+//
+//        // Tạo danh sách các địa phương và số lượng booking tương ứng
+//        List<Map.Entry<String, Long>> locationList = new ArrayList<>();
+//        for (Object[] row : locationCounts) {
+//            String location = ((String) row[0]).trim();  // Trích xuất tên địa phương
+//            Long count = (Long) row[1];  // Trích xuất số lượng booking
+//            locationList.add(new AbstractMap.SimpleEntry<>(location, count));
+//        }
+//
+//        // Sắp xếp danh sách theo số lượng booking giảm dần
+//        locationList.sort((a, b) -> Long.compare(b.getValue(), a.getValue()));
+//
+//        Map<String, Long> mainLocationCount = new LinkedHashMap<>();
+//        long otherCount = 0L;
+//
+//        // Lấy top 4 địa phương
+//        for (int i = 0; i < locationList.size(); i++) {
+//            if (i < 4) {
+//                mainLocationCount.put(locationList.get(i).getKey(), locationList.get(i).getValue());
+//            } else {
+//                otherCount += locationList.get(i).getValue();
+//            }
+//        }
+//
+//        // Thêm phần còn lại vào "Khác"
+//        if (otherCount > 0) {
+//            mainLocationCount.put("Khác", otherCount);
+//        }
+//
+//        return mainLocationCount;
+        return null;
     }
 
     @Override
