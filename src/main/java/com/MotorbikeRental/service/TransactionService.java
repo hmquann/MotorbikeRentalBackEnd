@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface TransactionService {
-    Page<Transaction> getTransactionByUserId(Long userId, Pageable pageable);
+    Page<Transaction> getTransactionByUserId(Long userId, int page, int size);
     List<Transaction> getTransactionByUserIdd(Long userId);
     Page<TransactionDto> getPendingWithdrawals(int page, int size);
     public Page<TransactionDto> getWithdrawals(TransactionStatus status, int page, int size);

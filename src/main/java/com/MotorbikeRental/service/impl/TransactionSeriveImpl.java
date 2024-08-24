@@ -11,10 +11,7 @@ import com.MotorbikeRental.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,13 +30,14 @@ public class TransactionSeriveImpl implements TransactionService {
     private final  UserService userService;
 
     @Override
-    public Page<Transaction> getTransactionByUserId(Long userId, Pageable pageable) {
-        return transactionRepository.findByUsers_Id(userId,pageable);
+    public Page<Transaction> getTransactionByUserId(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "transactionDate"));
+        return transactionRepository.findByUsers_Id(userId, pageable);
     }
 
     @Override
     public List<Transaction> getTransactionByUserIdd(Long userId) {
-        return transactionRepository.findByUsers_Id(userId);
+        return transactionRepository.findByUsers_Id(userId, Sort.by(Sort.Direction.DESC, "transactionDate"));
     }
 
     public Page<TransactionDto> getPendingWithdrawals(int page, int size) {

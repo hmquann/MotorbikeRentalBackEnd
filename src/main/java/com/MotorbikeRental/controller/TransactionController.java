@@ -28,7 +28,7 @@ public class TransactionController {
                                                                      @PathVariable int page,
                                                                      @PathVariable int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return ResponseEntity.ok(transactionService.getTransactionByUserId(userId,pageable));
+        return ResponseEntity.ok(transactionService.getTransactionByUserId(userId,page,pageSize));
     }
 
     @GetMapping("/{userId}")

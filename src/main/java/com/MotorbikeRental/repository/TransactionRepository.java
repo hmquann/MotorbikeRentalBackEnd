@@ -5,6 +5,7 @@ import com.MotorbikeRental.entity.TransactionStatus;
 import com.MotorbikeRental.entity.TransactionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     Page<Transaction> findByUsers_Id (Long userId, Pageable pageable);
 
-    List<Transaction> findByUsers_Id (Long userId);
+    List<Transaction> findByUsers_Id (Long userId, Sort sort);
 
     List<Transaction> findByStatus(TransactionStatus status);
 
