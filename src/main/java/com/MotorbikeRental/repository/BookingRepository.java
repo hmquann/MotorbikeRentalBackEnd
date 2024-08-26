@@ -98,11 +98,18 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
             "WHERE b.status = 'DONE'")
     Long countDoneBooking();
 
-//    @Query("SELECT TRIM(SUBSTRING_INDEX(b.receiveLocation, ',', -1)), COUNT(b.bookingId) " +
-//            "FROM Booking b " +
-//            "WHERE b.status = 'DONE' " +
-//            "GROUP BY TRIM(SUBSTRING_INDEX(b.receiveLocation, ',', -1))")
-//    List<Object[]> countBookingsByLocation();
+    @Query("SELECT m.modelName, COUNT(b.bookingId) " +
+            "FROM Booking b " +
+            "JOIN b.motorbike mo " +
+            "JOIN mo.model m " +
+            "WHERE MONTH(b.startDate) = MONTH(CURRENT_DATE) " +
+            "AND YEAR(b.startDate) = YEAR(CURRENT_DATE) " +
+            "GROUP BY m.modelName " +
+            "ORDER BY COUNT(b.bookingId) DESC")
+    List<Object[]> countBookingsByModelInMonth();
+
+    @Query("SELECT b.receiveLocation, COUNT(b) FROM Booking b GROUP BY b.receiveLocation ORDER BY COUNT(b) DESC")
+    List<Object[]> countBookingsByLocation();
 
     @Query("SELECT DISTINCT u FROM User u " +
             "WHERE u.id IN (" +

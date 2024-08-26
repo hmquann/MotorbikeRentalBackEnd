@@ -24,8 +24,8 @@ public class DashboardController {
     @Autowired
     private final TransactionService transactionService;
     @GetMapping("/topModels")
-    public List<TopModelDto> getTop5Models(){
-        return bookingService.getTop5ModelsInCurrentMonth();
+    public Map<String, Long> getTop5Models(){
+        return bookingService.top5ModelsThisMonth();
     }
     @GetMapping("/getRevenue/{id}")
     public Long getRevenue(@PathVariable Long id){
