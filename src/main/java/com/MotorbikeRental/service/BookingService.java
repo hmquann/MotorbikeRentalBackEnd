@@ -23,7 +23,7 @@ public interface BookingService {
     String saveBooking(BookingRequest bookingRequest);
 
     List<BookingDto> getBookingListByMotorbikeId(Long motorbikeId);
-    List<TopModelDto> getTop5ModelsInCurrentMonth();
+    Map<String, Long> top5ModelsThisMonth();
     Long getMonthlyRevenueByLessorId(Long lessorId);
     List<MonthlyRevenueDto> getSixMonthRevenue();
     List<BookingCountDto> getBookingCountForLastTwoMonths();

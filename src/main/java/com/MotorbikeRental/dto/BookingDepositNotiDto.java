@@ -1,5 +1,6 @@
 package com.MotorbikeRental.dto;
 
+import com.MotorbikeRental.entity.BookingStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,4 +11,5 @@ public class BookingDepositNotiDto {
     LocalDateTime depositTime;
     boolean depositNoti;
     boolean depositCanceled;
+    BookingStatus bookingStatus;
 }

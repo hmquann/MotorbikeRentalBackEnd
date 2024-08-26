@@ -69,8 +69,8 @@ public class SecurityConfig {
                 @Override
                 public void addCorsMappings(CorsRegistry registry) {
                     registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
-//                            .allowedOrigins("https://mimotor.online")
-                            .allowedOrigins("http://localhost:3000")
+                            .allowedOrigins("https://mimotor.online")
+//                            .allowedOrigins("http://localhost:3000")
                             .allowedHeaders("*");
                 }
             };

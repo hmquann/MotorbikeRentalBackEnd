@@ -92,10 +92,21 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<TopModelDto> getTop5ModelsInCurrentMonth() {
-        return bookingRepository.topModelsInCurrentMonth(PageRequest.of(0,5));
-    }
+    public Map<String, Long> top5ModelsThisMonth() {
+        List<Object[]> modelCounts = bookingRepository.countBookingsByModelInMonth();
 
+        // Map to store the top 5 models
+        Map<String, Long> topModels = new LinkedHashMap<>();
+
+        // Process top 5 models
+        for (int i = 0; i < modelCounts.size() && i < 5; i++) {
+            String modelName = (String) modelCounts.get(i)[0];
+            Long count = (Long) modelCounts.get(i)[1];
+            topModels.put(modelName, count);
+        }
+
+        return topModels;
+    }
 
 
     public Long getMonthlyRevenueByLessorId(Long lessorId) {
@@ -124,24 +135,48 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.getBookingCountForLastTwoMonths(startDate, endDate);
     }
 
+    public String extractProvince(String location) {
+        // Split the location by comma
+        String[] parts = location.split(",");
+
+        // The last part is assumed to be the province or city
+        String province = parts[parts.length - 1].trim();
+
+        // Remove the "Thành phố" or "Tỉnh" prefix if it exists
+        if (province.startsWith("Thành phố")) {
+            province = province.replace("Thành phố", "").trim();
+        } else if (province.startsWith("Tỉnh")) {
+            province = province.replace("Tỉnh", "").trim();
+        }
+
+        return province;
+    }
+
     public Map<String, Long> mainLocationPercentage() {
         List<Object[]> locationCounts = bookingRepository.countBookingsByLocation();
 
-        // Tạo một danh sách các địa phương và số lượng booking tương ứng
-        List<Map.Entry<String, Long>> locationList = new ArrayList<>();
+        // Map to store the province/city count
+        Map<String, Long> provinceCountMap = new HashMap<>();
+
         for (Object[] row : locationCounts) {
-            String location = ((String) row[0]).trim();
-            Long count = (Long) row[1];
-            locationList.add(new AbstractMap.SimpleEntry<>(location, count));
+            String location = ((String) row[0]).trim();  // Extract location name
+            Long count = (Long) row[1];  // Extract booking count
+
+            // Extract the province or city from the location
+            String province = extractProvince(location);
+
+            // Update the count in the map
+            provinceCountMap.put(province, provinceCountMap.getOrDefault(province, 0L) + count);
         }
 
-        // Sắp xếp danh sách theo số lượng booking giảm dần
+        // Sort the list by count in descending order
+        List<Map.Entry<String, Long>> locationList = new ArrayList<>(provinceCountMap.entrySet());
         locationList.sort((a, b) -> Long.compare(b.getValue(), a.getValue()));
 
         Map<String, Long> mainLocationCount = new LinkedHashMap<>();
         long otherCount = 0L;
 
-        // Lấy top 4 địa điểm
+        // Process top 4 locations and sum the rest as "Khác"
         for (int i = 0; i < locationList.size(); i++) {
             if (i < 4) {
                 mainLocationCount.put(locationList.get(i).getKey(), locationList.get(i).getValue());
@@ -150,7 +185,7 @@ public class BookingServiceImpl implements BookingService {
             }
         }
 
-        // Thêm phần còn lại vào "Khác"
+        // Add "Khác" if there are more locations
         if (otherCount > 0) {
             mainLocationCount.put("Khác", otherCount);
         }
